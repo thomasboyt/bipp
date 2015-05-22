@@ -31,7 +31,8 @@ const fixtureState = new StateRecord({
     new Note({ beat: 4, offset: 0, col: 4 }),
     new Note({ beat: 2, offset: 0, col: 3 }),
     new Note({ beat: 0, offset: 12, col: 1 }),
-    new Note({ beat: 0, offset: 0, col: 2 })
+    new Note({ beat: 0, offset: 0, col: 2 }),
+    new Note({ beat: 140, offset: 0, col: 2 })
   ]),
   bpm: 144
 });
@@ -137,7 +138,7 @@ class EditorStore extends ImmutableStore {
 
     const bpm = this.state.bpm;
     const secPerBeat = 60 / bpm;
-    const secPerThirtySecond = secPerBeat / 8;
+    const secPerThirtySecond = secPerBeat / 24;
     const elapsedOffset = (dt / (secPerThirtySecond * 1000));
 
     this.setState({
