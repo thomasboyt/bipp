@@ -41,14 +41,23 @@ class Editor extends React.Component {
   handleUpdateScrollResolution(increase) {
     const inc = increase ? 1 : -1;
 
-    const nextRes = this.state.scrollResolutionIdx + inc;
+    const nextResIdx = this.state.scrollResolutionIdx + inc;
 
-    if (nextRes < 0 || nextRes >= resolutions.length) {
+    if (nextResIdx < 0 || nextResIdx >= resolutions.length) {
       return;
     }
 
+    const nextRes = resolutions[nextResIdx];
+
+    // Snap to nearest note in resolution if resolution changes
+    // i.e. if you're on an 8th and drop 8ths to 4ths, snap to previous 4th
+    //      if you're on an 8th and drop 16ths to 8ths, stay on the same
+
+    let nextOffset = this.state.offset - (this.state.offset % nextRes);
+
     this.setState({
-      scrollResolutionIdx: nextRes
+      scrollResolutionIdx: nextResIdx,
+      offset: nextOffset
     });
   }
 
@@ -172,7 +181,7 @@ class Editor extends React.Component {
     const height = this.props.numMeasures * BEAT_SPACING * 4;
     const offset = this.getOffset();
 
-    const scrollY = -1 * (height - offset - (VIEWPORT_HEIGHT * .7));
+    const scrollY = -1 * (height - offset - (VIEWPORT_HEIGHT * 0.7));
 
     return (
       <div onKeyDown={(e) => this.handleKeyPress(e)} tabIndex="1">
