@@ -91,13 +91,13 @@ class Editor extends React.Component {
 
     const offset = this.state.offset * THIRTY_SECOND_HEIGHT;
 
-    const scrollY = height - offset - (VIEWPORT_HEIGHT / 2);
+    const scrollY = -1 * (height - offset - (VIEWPORT_HEIGHT / 2));
 
     return (
       <div onKeyDown={(e) => this.handleKeyPress(e)} tabIndex="1">
         <svg width={WIDTH} height={VIEWPORT_HEIGHT}>
           {this.renderCenterBar()}
-          <g transform={`translate(0, -${scrollY})`}>
+          <g transform={`translate(0, ${scrollY})`}>
             <g transform={`translate(0, ${height}) scale(1, -1)`}>
               {this.renderMeasures()}
               {this.renderNotes()}
