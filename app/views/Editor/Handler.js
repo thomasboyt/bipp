@@ -7,7 +7,7 @@ const WIDTH = 450;
 const BEAT_SPACING = 80;
 const LANE_WIDTH = 60;
 const NOTE_HEIGHT = 20;
-const THIRTY_SECOND_HEIGHT = BEAT_SPACING/32;
+const THIRTY_SECOND_HEIGHT = BEAT_SPACING/8;
 
 class Editor extends React.Component {
   constructor(props) {
@@ -18,22 +18,54 @@ class Editor extends React.Component {
     };
   }
 
+  handleToggleNote(column) {
+    this.props.flux.getActions('editor').toggleNote(this.state.offset, column);
+  }
+
   handleKeyPress(e) {
     const UP_ARROW = 38;
     const DOWN_ARROW = 40;
+    const ESC_KEY = 27;
+    const P_KEY = 80;
 
-    if (e.keyCode === UP_ARROW) {
-      // TODO: Check for max offset
+    const toggleNoteMap = {
+      83: 0,  // s
+      68: 1,  // d
+      70: 2,  // f
+      32: 3,  // space
+      74: 4,  // j
+      75: 5,  // k
+      76: 6   // l
+    };
 
-      this.setState((state) => ({
-        offset: state.offset + 8
-      }));
+    if (this.props.inPlayback) {
+      if (e.keyCode === ESC_KEY || e.keyCode === P_KEY) {
+        this.props.flux.getActions('editor').exitPlayback();
+      }
 
-    } else if (e.keyCode === DOWN_ARROW) {
-      if (this.state.offset > 0) {
+    } else {
+      if (e.keyCode === UP_ARROW) {
+        // TODO: Check for max offset
+
         this.setState((state) => ({
-          offset: state.offset - 8
+          offset: state.offset + 4
         }));
+
+      } else if (e.keyCode === DOWN_ARROW) {
+        if (this.state.offset > 0) {
+          this.setState((state) => ({
+            offset: state.offset - 4
+          }));
+        }
+
+      } else if (e.keyCode === P_KEY) {
+        this.props.flux.getActions('editor').enterPlayback(this.state.offset);
+
+      } else if (toggleNoteMap[e.keyCode] !== undefined) {
+        this.handleToggleNote(toggleNoteMap[e.keyCode]);
+
+      } else {
+        console.log(e.keyCode);
       }
     }
   }
@@ -86,10 +118,17 @@ class Editor extends React.Component {
     });
   }
 
+  getOffset() {
+    if (this.props.inPlayback) {
+      return this.props.playbackOffset * THIRTY_SECOND_HEIGHT;
+    } else {
+      return this.state.offset * THIRTY_SECOND_HEIGHT;
+    }
+  }
+
   render() {
     const height = this.props.numMeasures * BEAT_SPACING * 4;
-
-    const offset = this.state.offset * THIRTY_SECOND_HEIGHT;
+    const offset = this.getOffset();
 
     const scrollY = -1 * (height - offset - (VIEWPORT_HEIGHT / 2));
 
@@ -114,8 +153,11 @@ class EditorOuter extends React.Component {
     return (
       <FluxComponent flux={this.props.flux} connectToStores={{
         editor: (store) => ({
-          notes: store.state.get('notes'),
-          numMeasures: store.getNumMeasures()
+          notes: store.state.notes,
+          numMeasures: store.getNumMeasures(),
+
+          inPlayback: store.state.inPlayback,
+          playbackOffset: store.state.playbackOffset
         })
       }}>
         <Editor />
