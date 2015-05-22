@@ -172,7 +172,7 @@ class Editor extends React.Component {
     const height = this.props.numMeasures * BEAT_SPACING * 4;
     const offset = this.getOffset();
 
-    const scrollY = -1 * (height - offset - (VIEWPORT_HEIGHT / 2));
+    const scrollY = -1 * (height - offset - (VIEWPORT_HEIGHT * .7));
 
     return (
       <div onKeyDown={(e) => this.handleKeyPress(e)} tabIndex="1">
