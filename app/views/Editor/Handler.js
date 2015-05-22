@@ -108,18 +108,20 @@ class Editor extends React.Component {
     }
   }
 
-  renderCenterBar() {
-    // const note = ordinal(new Fraction(this.getScrollResolution() / 32).denominator);
-    const note = ordinal((24 / this.getScrollResolution()) * 4);
+  renderOffsetBar() {
+    const noteName = ordinal((24 / this.getScrollResolution()) * 4);
+
+    const y = this.getOffset();
 
     return (
       <g>
-        <rect x="0" y={VIEWPORT_HEIGHT / 2 - NOTE_HEIGHT / 2} width={WIDTH} height={NOTE_HEIGHT} 
-          fill="#4A90E2" />
-        <text x={WIDTH + 10} y={VIEWPORT_HEIGHT / 2}
-          style={{fontFamily: 'Helvetica, sans-serif', fontSize: '16px', dominantBaseline: 'central'}}
-        >
-          {note}
+        <rect x="0" y={y - NOTE_HEIGHT / 2} width={WIDTH} height={NOTE_HEIGHT}
+          fill="#4A90E2"/>
+
+        <text x={WIDTH + 10} y={-y} transform={`scale(1, -1)`}
+          style={{fontFamily: 'Helvetica, sans-serif', fontSize: '16px',
+                  dominantBaseline: 'central'}}>
+          {noteName}
         </text>
       </g>
     );
@@ -175,9 +177,9 @@ class Editor extends React.Component {
     return (
       <div onKeyDown={(e) => this.handleKeyPress(e)} tabIndex="1">
         <svg width={WIDTH + 100} height={VIEWPORT_HEIGHT}>
-          {this.renderCenterBar()}
           <g transform={`translate(0, ${scrollY})`}>
             <g transform={`translate(0, ${height}) scale(1, -1)`}>
+              {this.renderOffsetBar()}
               {this.renderMeasures()}
               {this.renderNotes()}
             </g>
