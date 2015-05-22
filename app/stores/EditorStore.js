@@ -2,13 +2,15 @@ import ImmutableStore from './ImmutableStore';
 import { Record, List } from 'immutable';
 
 const Note = Record({
-  // Measure the note is within
-  measure: 0,
+  // Beat the note starts at (add offset)
+  beat: 0,
 
-  // Offset, in 32nds, from the start of the measure
-  // e.g.: 0 is a 4th at the first beat of the measure
-  //       8 is a 4th on the second beat
-  //       4 is an 8th between the first and second beats
+  // Offset, in "24ths", from the start of the beat
+  // e.g.: 0 is a 4th
+  //       12 is an 8th
+  //       8 and 16 are triplets ("12ths")
+  //       6 and 18 are 16ths
+  //       3 is a 32nd...
   offset: 0,
 
   // Column, between 0 and 6, for the note to be placed in
@@ -25,11 +27,11 @@ const StateRecord = Record({
 
 const fixtureState = new StateRecord({
   notes: new List([
-    new Note({ measure: 0, offset: 0, col: 0 }),
-    new Note({ measure: 0, offset: 0, col: 4 }),
-    new Note({ measure: 0, offset: 16, col: 3 }),
-    new Note({ measure: 1, offset: 0, col: 1 }),
-    new Note({ measure: 32, offset: 0, col: 2 })
+    new Note({ beat: 0, offset: 0, col: 0 }),
+    new Note({ beat: 4, offset: 0, col: 4 }),
+    new Note({ beat: 2, offset: 0, col: 3 }),
+    new Note({ beat: 0, offset: 12, col: 1 }),
+    new Note({ beat: 0, offset: 0, col: 2 })
   ]),
   bpm: 144
 });
@@ -53,7 +55,8 @@ class EditorStore extends ImmutableStore {
    * Data accessors
    */
   getNumMeasures() {
-    return this.state.get('notes').maxBy((note) => note.get('measure')).get('measure') + 1;
+    const maxBeat = this.state.get('notes').maxBy((note) => note.beat).beat + 1;
+    return Math.ceil(maxBeat / 4);
   }
 
 
@@ -61,17 +64,17 @@ class EditorStore extends ImmutableStore {
    * Adding & removing notes
    */
   handleToggleNote({offset, column}) {
-    const measure = Math.floor(offset / 32);
-    const offsetInMeasure = offset % 32;
+    const beat = Math.floor(offset / 24);
+    const offsetInBeat = offset % 24;
 
     const entry = this.state.notes.findEntry((note) => {
-      return note.measure === measure && note.offset === offsetInMeasure && note.col === column;
+      return note.beat === beat && note.offset === offsetInBeat && note.col === column;
     });
 
     if (!entry) {
       const note = new Note({
-        measure: measure,
-        offset: offsetInMeasure,
+        beat: beat,
+        offset: offsetInBeat,
         col: column
       });
 
@@ -85,6 +88,7 @@ class EditorStore extends ImmutableStore {
         notes: this.state.notes.remove(idx)
       });
     }
+
   }
 
   /*

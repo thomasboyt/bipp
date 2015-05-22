@@ -2,29 +2,61 @@ import React from 'react';
 import FluxComponent from 'flummox/component';
 import { Range } from 'immutable';
 
+import ordinal from '../../util/ordinal';
+
 const VIEWPORT_HEIGHT = 600;
 const WIDTH = 450;
 const BEAT_SPACING = 80;
 const LANE_WIDTH = 60;
 const NOTE_HEIGHT = 20;
-const THIRTY_SECOND_HEIGHT = BEAT_SPACING/8;
+
+const resolutions = [24, 12, 8, 6, 4, 3];
 
 class Editor extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      offset: 0
+      offset: 0,
+      scrollResolutionIdx: 0
     };
+  }
+
+  getOffset() {
+    if (this.props.inPlayback) {
+      return this.props.playbackOffset * (BEAT_SPACING/24);
+    } else {
+      return this.state.offset * (BEAT_SPACING/24);
+    }
+  }
+
+  getScrollResolution() {
+    return resolutions[this.state.scrollResolutionIdx];
   }
 
   handleToggleNote(column) {
     this.props.flux.getActions('editor').toggleNote(this.state.offset, column);
   }
 
+  handleUpdateScrollResolution(increase) {
+    const inc = increase ? 1 : -1;
+
+    const nextRes = this.state.scrollResolutionIdx + inc;
+
+    if (nextRes < 0 || nextRes >= resolutions.length) {
+      return;
+    }
+
+    this.setState({
+      scrollResolutionIdx: nextRes
+    });
+  }
+
   handleKeyPress(e) {
     const UP_ARROW = 38;
     const DOWN_ARROW = 40;
+    const LEFT_ARROW = 37;
+    const RIGHT_ARROW = 39;
     const ESC_KEY = 27;
     const P_KEY = 80;
 
@@ -48,15 +80,21 @@ class Editor extends React.Component {
         // TODO: Check for max offset
 
         this.setState((state) => ({
-          offset: state.offset + 4
+          offset: state.offset + this.getScrollResolution()
         }));
 
       } else if (e.keyCode === DOWN_ARROW) {
         if (this.state.offset > 0) {
           this.setState((state) => ({
-            offset: state.offset - 4
+            offset: state.offset - this.getScrollResolution()
           }));
         }
+
+      } else if (e.keyCode === LEFT_ARROW) {
+        this.handleUpdateScrollResolution(false);
+
+      } else if (e.keyCode === RIGHT_ARROW) {
+        this.handleUpdateScrollResolution(true);
 
       } else if (e.keyCode === P_KEY) {
         this.props.flux.getActions('editor').enterPlayback(this.state.offset);
@@ -71,9 +109,19 @@ class Editor extends React.Component {
   }
 
   renderCenterBar() {
+    // const note = ordinal(new Fraction(this.getScrollResolution() / 32).denominator);
+    const note = ordinal((24 / this.getScrollResolution()) * 4);
+
     return (
-      <rect x="0" y={VIEWPORT_HEIGHT / 2 - NOTE_HEIGHT / 2} width={WIDTH} height={NOTE_HEIGHT} 
-        fill="#4A90E2" />
+      <g>
+        <rect x="0" y={VIEWPORT_HEIGHT / 2 - NOTE_HEIGHT / 2} width={WIDTH} height={NOTE_HEIGHT} 
+          fill="#4A90E2" />
+        <text x={WIDTH + 10} y={VIEWPORT_HEIGHT / 2}
+          style={{fontFamily: 'Helvetica, sans-serif', fontSize: '16px', dominantBaseline: 'central'}}
+        >
+          {note}
+        </text>
+      </g>
     );
   }
 
@@ -102,11 +150,11 @@ class Editor extends React.Component {
     const notes = this.props.notes;
 
     return notes.map((note) => {
-      const measureOffset = note.measure * BEAT_SPACING * 4;
-      const beatOffset = BEAT_SPACING / 8 * note.offset;
-      const y = measureOffset + beatOffset - NOTE_HEIGHT / 2;
+      const beatOffset = note.beat * BEAT_SPACING;
+      const offset = (BEAT_SPACING / 24) * note.offset;
+      const y = beatOffset + offset - NOTE_HEIGHT / 2;
 
-      const key = `note-${note.measure}-${note.offset}-${note.col}`;
+      const key = `note-${note.beat}-${note.offset}-${note.col}`;
 
       return (
         <rect key={key}
@@ -118,14 +166,6 @@ class Editor extends React.Component {
     });
   }
 
-  getOffset() {
-    if (this.props.inPlayback) {
-      return this.props.playbackOffset * THIRTY_SECOND_HEIGHT;
-    } else {
-      return this.state.offset * THIRTY_SECOND_HEIGHT;
-    }
-  }
-
   render() {
     const height = this.props.numMeasures * BEAT_SPACING * 4;
     const offset = this.getOffset();
@@ -134,7 +174,7 @@ class Editor extends React.Component {
 
     return (
       <div onKeyDown={(e) => this.handleKeyPress(e)} tabIndex="1">
-        <svg width={WIDTH} height={VIEWPORT_HEIGHT}>
+        <svg width={WIDTH + 100} height={VIEWPORT_HEIGHT}>
           {this.renderCenterBar()}
           <g transform={`translate(0, ${scrollY})`}>
             <g transform={`translate(0, ${height}) scale(1, -1)`}>
