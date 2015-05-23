@@ -1,12 +1,13 @@
 import React from 'react';
 import FluxComponent from 'flummox/component';
 import { Range } from 'immutable';
+import AudioPlayback from './components/AudioPlayback';
+import AudioPicker from './components/AudioPicker';
 
 import ordinal from '../../util/ordinal';
 
 const VIEWPORT_HEIGHT = 600;
 const WIDTH = 450;
-const BEAT_SPACING = 80;
 const LANE_WIDTH = 60;
 const NOTE_HEIGHT = 20;
 
@@ -18,20 +19,32 @@ class Editor extends React.Component {
 
     this.state = {
       offset: 0,
-      scrollResolutionIdx: 0
+      scrollResolutionIdx: 0,
+      beatSpacing: 80
     };
   }
 
   getOffset() {
     if (this.props.inPlayback) {
-      return this.props.playbackOffset * (BEAT_SPACING/24);
+      return this.props.playbackOffset;
     } else {
-      return this.state.offset * (BEAT_SPACING/24);
+      return this.state.offset;
     }
   }
 
   getScrollResolution() {
     return resolutions[this.state.scrollResolutionIdx];
+  }
+
+  getNumMeasures() {
+    const len = this.props.flux.getStore('audio').getLength();
+
+    if (!len) {
+      // No audio == no measures
+      return null;
+    }
+
+    return this.props.flux.getStore('editor').getNumMeasures(len);
   }
 
   handleToggleNote(column) {
@@ -62,10 +75,18 @@ class Editor extends React.Component {
   }
 
   handleKeyPress(e) {
+    e.preventDefault();
+    const PG_UP = 33;
+    const PG_DOWN = 34;
     const UP_ARROW = 38;
     const DOWN_ARROW = 40;
+
     const LEFT_ARROW = 37;
     const RIGHT_ARROW = 39;
+
+    const MINUS = 189;
+    const EQUAL = 187;
+
     const ESC_KEY = 27;
     const P_KEY = 80;
 
@@ -93,11 +114,39 @@ class Editor extends React.Component {
         }));
 
       } else if (e.keyCode === DOWN_ARROW) {
-        if (this.state.offset > 0) {
-          this.setState((state) => ({
-            offset: state.offset - this.getScrollResolution()
-          }));
+        const nextOffset = this.state.offset - this.getScrollResolution();
+
+        if (nextOffset >= 0) {
+          this.setState({
+            offset: nextOffset
+          });
         }
+
+      } else if (e.keyCode === PG_UP) {
+        // TODO: Check for max offset
+
+        this.setState((state) => ({
+          offset: state.offset + (24 * 4)
+        }));
+
+      } else if (e.keyCode === PG_DOWN) {
+        const nextOffset = this.state.offset - (24 * 4);
+
+        if (nextOffset >= 0) {
+          this.setState({
+            offset: nextOffset
+          });
+        }
+
+      } else if (e.keyCode === MINUS) {
+        this.setState({
+          beatSpacing: this.state.beatSpacing - 40
+        });
+
+      } else if (e.keyCode === EQUAL) {
+        this.setState({
+          beatSpacing: this.state.beatSpacing + 40
+        });
 
       } else if (e.keyCode === LEFT_ARROW) {
         this.handleUpdateScrollResolution(false);
@@ -120,7 +169,10 @@ class Editor extends React.Component {
   renderOffsetBar() {
     const noteName = ordinal((24 / this.getScrollResolution()) * 4);
 
-    const y = this.getOffset();
+    const beat = Math.floor(this.getOffset() / 24 / 4) + 1;
+    const text = `${noteName}\n ${beat}`;
+
+    const y = this.getOffset() *  (this.state.beatSpacing/24);
 
     return (
       <g>
@@ -130,28 +182,26 @@ class Editor extends React.Component {
         <text x={WIDTH + 10} y={-y} transform={`scale(1, -1)`}
           style={{fontFamily: 'Helvetica, sans-serif', fontSize: '16px',
                   dominantBaseline: 'central'}}>
-          {noteName}
+          {text}
         </text>
       </g>
     );
   }
 
   renderMeasures() {
-    const numMeasures = this.props.numMeasures;
-
-    const range = Range(0, numMeasures);
+    const range = Range(0, this.getNumMeasures());
 
     return range.map((num) => {
       return (
-        <svg key={`measure-${num}`} y={num * BEAT_SPACING * 4} style={{overflow:"visible"}}>
+        <svg key={`measure-${num}`} y={num * this.state.beatSpacing * 4} style={{overflow:"visible"}}>
           <line x1="0" x2={WIDTH}
-            y1={BEAT_SPACING * 0} y2={BEAT_SPACING * 0} stroke="black" />
+            y1={this.state.beatSpacing * 0} y2={this.state.beatSpacing * 0} stroke="black" />
           <line x1="0" x2={WIDTH}
-            y1={BEAT_SPACING * 1} y2={BEAT_SPACING * 1} stroke="grey" />
+            y1={this.state.beatSpacing * 1} y2={this.state.beatSpacing * 1} stroke="grey" />
           <line x1="0" x2={WIDTH}
-            y1={BEAT_SPACING * 2} y2={BEAT_SPACING * 2} stroke="grey" />
+            y1={this.state.beatSpacing * 2} y2={this.state.beatSpacing * 2} stroke="grey" />
           <line x1="0" x2={WIDTH}
-            y1={BEAT_SPACING * 3} y2={BEAT_SPACING * 3} stroke="grey" />
+            y1={this.state.beatSpacing * 3} y2={this.state.beatSpacing * 3} stroke="grey" />
         </svg>
       );
     });
@@ -161,8 +211,8 @@ class Editor extends React.Component {
     const notes = this.props.notes;
 
     return notes.map((note) => {
-      const beatOffset = note.beat * BEAT_SPACING;
-      const offset = (BEAT_SPACING / 24) * note.offset;
+      const beatOffset = note.beat * this.state.beatSpacing;
+      const offset = (this.state.beatSpacing / 24) * note.offset;
       const y = beatOffset + offset - NOTE_HEIGHT / 2;
 
       const key = `note-${note.beat}-${note.offset}-${note.col}`;
@@ -177,23 +227,41 @@ class Editor extends React.Component {
     });
   }
 
-  render() {
-    const height = this.props.numMeasures * BEAT_SPACING * 4;
-    const offset = this.getOffset();
+  renderChart() {
+    const height = this.getNumMeasures() * this.state.beatSpacing * 4;
+    const offset = this.getOffset() * (this.state.beatSpacing / 24);
 
     const scrollY = -1 * (height - offset - (VIEWPORT_HEIGHT * 0.7));
 
     return (
-      <div onKeyDown={(e) => this.handleKeyPress(e)} tabIndex="1">
-        <svg width={WIDTH + 100} height={VIEWPORT_HEIGHT}>
-          <g transform={`translate(0, ${scrollY})`}>
-            <g transform={`translate(0, ${height}) scale(1, -1)`}>
-              {this.renderOffsetBar()}
-              {this.renderMeasures()}
-              {this.renderNotes()}
-            </g>
+      <svg width={WIDTH + 100} height={VIEWPORT_HEIGHT}>
+        <g transform={`translate(0, ${scrollY})`}>
+          <g transform={`translate(0, ${height}) scale(1, -1)`}>
+            {this.renderOffsetBar()}
+            {this.renderMeasures()}
+            {this.renderNotes()}
           </g>
-        </svg>
+        </g>
+      </svg>
+    );
+  }
+
+  renderLoaded() {
+    return (
+      <div onKeyDown={(e) => this.handleKeyPress(e)} tabIndex="1">
+        {this.renderChart()}
+        <AudioPlayback playing={this.props.inPlayback} playbackOffset={this.state.offset}
+          audioData={this.props.audioData} bpm={this.props.bpm} ctx={this.props.audioCtx}  />
+      </div>
+    );
+  }
+
+  render() {
+    return (
+      <div>
+        <AudioPicker flux={this.props.flux} />
+        <br/>
+        {this.props.audioData ? this.renderLoaded() : null}
       </div>
     );
   }
@@ -205,10 +273,14 @@ class EditorOuter extends React.Component {
       <FluxComponent flux={this.props.flux} connectToStores={{
         editor: (store) => ({
           notes: store.state.notes,
-          numMeasures: store.getNumMeasures(),
+          bpm: store.state.bpm,
 
           inPlayback: store.state.inPlayback,
           playbackOffset: store.state.playbackOffset
+        }),
+        audio: (store) => ({
+          audioData: store.state.audioData,
+          audioCtx: store.state.ctx
         })
       }}>
         <Editor />

@@ -27,14 +27,8 @@ const StateRecord = Record({
 
 const fixtureState = new StateRecord({
   notes: new List([
-    new Note({ beat: 0, offset: 0, col: 0 }),
-    new Note({ beat: 4, offset: 0, col: 4 }),
-    new Note({ beat: 2, offset: 0, col: 3 }),
-    new Note({ beat: 0, offset: 12, col: 1 }),
-    new Note({ beat: 0, offset: 0, col: 2 }),
-    new Note({ beat: 140, offset: 0, col: 2 })
   ]),
-  bpm: 144
+  bpm: 186  // keri baby
 });
 
 class EditorStore extends ImmutableStore {
@@ -55,9 +49,9 @@ class EditorStore extends ImmutableStore {
   /*
    * Data accessors
    */
-  getNumMeasures() {
-    const maxBeat = this.state.get('notes').maxBy((note) => note.beat).beat + 1;
-    return Math.ceil(maxBeat / 4);
+  getNumMeasures(length) {
+    const numBeats = Math.ceil(this.state.bpm / (60 / length));
+    return Math.ceil(numBeats / 4);
   }
 
 
