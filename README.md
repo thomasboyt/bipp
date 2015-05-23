@@ -1,3 +1,7 @@
+# Loud Places
+
+[![Stories in Ready](https://badge.waffle.io/thomasboyt/loud-places.svg?label=ready&title=Ready)](http://waffle.io/thomasboyt/loud-places)
+
 This is a music game engine I'm working on. Currently the only working piece is the editor.
 
 ### Running
