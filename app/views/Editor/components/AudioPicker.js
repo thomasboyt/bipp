@@ -32,7 +32,7 @@ class AudioPicker extends React.Component {
         <input type="file" onChange={(e) => this.handleSelectFile(e)} />
         <label>
           BPM&nbsp;
-          <BlurInput type="number" onChange={(e) => this.handleChangeBPM(e)} 
+          <BlurInput type="number" onChange={(e) => this.handleChangeBPM(e)}
             value={this.props.bpm.toString()} />
         </label>
       </fieldset>

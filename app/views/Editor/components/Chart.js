@@ -9,17 +9,23 @@ const LANE_WIDTH = 60;
 const NOTE_HEIGHT = 20;
 
 /**
- * InnerChart should never get mutated during playback, which *should*
- * lead to a performance boost, I think?
+ * This piece is kept separate because it only re-renders if the following props change:
+ *
+ * - Notes
+ * - Number of measures in song
+ * - Beat spacing
+ *
+ * This DRASTICALLY improves playback performance, as it keeps per-frame rerendering in its
+ * containing <Chart />, which handles the translation that scrolls the chart based on the
+ * current offset.
  */
 class InnerChart extends React.Component {
-
   renderMeasures() {
     const range = Range(0, this.props.numMeasures);
 
     return range.map((num) => {
       return (
-        <svg key={`measure-${num}`} y={num * this.props.beatSpacing * 4} style={{overflow:"visible"}}>
+        <svg key={`measure-${num}`} y={num * this.props.beatSpacing * 4} style={{overflow: 'visible'}}>
           <line x1="0" x2={WIDTH}
             y1={this.props.beatSpacing * 0} y2={this.props.beatSpacing * 0} stroke="black" />
           <line x1="0" x2={WIDTH}
@@ -71,6 +77,12 @@ InnerChart.propTypes = {
   beatSpacing: React.PropTypes.number.isRequired
 };
 
+
+/**
+ * This component contains the chart and scrolls it based on the editor's offset.
+ *
+ * It also renders the offset bar, since it constantly moves during playback.
+ */
 class Chart extends React.Component {
 
   renderOffsetBar() {
@@ -79,7 +91,7 @@ class Chart extends React.Component {
     const beat = Math.floor(this.props.offset / 24 / 4) + 1;
     const text = `${noteName}\n ${beat}`;
 
-    const y = this.props.offset *  (this.props.beatSpacing/24);
+    const y = this.props.offset * (this.props.beatSpacing / 24);
 
     return (
       <g>
@@ -106,7 +118,7 @@ class Chart extends React.Component {
         <g transform={`translate(0, ${scrollY})`}>
           <g transform={`translate(0, ${height}) scale(1, -1)`}>
             {this.renderOffsetBar()}
-            <InnerChart 
+            <InnerChart
               notes={this.props.notes}
               numMeasures={this.props.numMeasures}
               beatSpacing={this.props.beatSpacing} />

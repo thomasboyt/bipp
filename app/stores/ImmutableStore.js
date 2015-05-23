@@ -1,6 +1,10 @@
 import { Store } from 'flummox';
 import { Record } from 'immutable';
 
+function exists(val) {
+  return val !== undefined && val !== null;
+}
+
 export default class ImmutableStore extends Store {
   constructor(options = {}) {
     super();
@@ -38,8 +42,4 @@ export default class ImmutableStore extends Store {
       return null;
     }
   }
-}
-
-function exists(val) {
-  return val !== undefined && val !== null;
 }

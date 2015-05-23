@@ -164,7 +164,7 @@ class Editor extends React.Component {
 
   renderChart() {
     return (
-      <Chart 
+      <Chart
         numMeasures={this.getNumMeasures()}
         notes={this.props.notes}
 
@@ -182,7 +182,7 @@ class Editor extends React.Component {
         </div>
         <br/>
         <AudioPlayback playing={this.props.inPlayback} playbackOffset={this.state.offset}
-          audioData={this.props.audioData} bpm={this.props.bpm} ctx={this.props.audioCtx}  />
+          audioData={this.props.audioData} bpm={this.props.bpm} ctx={this.props.audioCtx} />
         <SaveLoadForm flux={this.props.flux} />
         <span>FPS: {this.props.playbackFps}</span>
       </div>

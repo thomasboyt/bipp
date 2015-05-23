@@ -10,8 +10,11 @@
   },
   "devDependencies": {
     "babel-core": "^4.7.16",
+    "babel-eslint": "^3.1.8",
     "babel-loader": "^4.2.0",
     "css-loader": "^0.13.1",
+    "eslint": "^0.21.2",
+    "eslint-plugin-react": "^2.3.0",
     "style-loader": "^0.12.2",
     "webpack": "^1.7.3",
     "webpack-dev-server": "^1.7.0"

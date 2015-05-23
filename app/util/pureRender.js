@@ -8,5 +8,5 @@ const pureRender = (Component) => {
     }
   });
 };
- 
+
 export default pureRender;

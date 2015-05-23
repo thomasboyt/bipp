@@ -1,3 +1,5 @@
+/* global AudioContext */
+
 import { Store } from 'flummox';
 
 class AudioStore extends Store {
