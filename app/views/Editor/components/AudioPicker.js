@@ -1,4 +1,5 @@
 import React from 'react/addons';
+import BlurInput from '../../../../vendor/BlurInput';
 
 class AudioPicker extends React.Component {
   handleSelectFile(e) {
@@ -15,9 +16,26 @@ class AudioPicker extends React.Component {
     reader.readAsArrayBuffer(file);
   }
 
+  handleChangeBPM(val) {
+    const bpm = parseInt(val, 10);
+
+    if (Number.isNaN(bpm)) {
+      return;
+    }
+
+    this.props.flux.getActions('editor').changeBPM(bpm);
+  }
+
   render() {
     return (
-      <input type="file" onChange={(e) => this.handleSelectFile(e)} />
+      <fieldset>
+        <input type="file" onChange={(e) => this.handleSelectFile(e)} />
+        <label>
+          BPM&nbsp;
+          <BlurInput type="number" onChange={(e) => this.handleChangeBPM(e)} 
+            value={this.props.bpm.toString()} />
+        </label>
+      </fieldset>
     );
   }
 }

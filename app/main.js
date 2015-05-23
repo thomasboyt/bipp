@@ -1,3 +1,6 @@
+require('normalize.css');
+require('../styles/main.css');
+
 import Flummox from 'flummox';
 import EditorStore from './stores/EditorStore';
 import EditorActions from './actions/EditorActions';

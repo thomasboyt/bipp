@@ -12,8 +12,10 @@ class AudioPlayback extends React.Component {
     src.connect(this.volumeNode);
     src.buffer = this.props.audioData;
 
-    // TODO: second value represents starting time in sec, use for offset
+    // playbackOffset is in 1/24th beats, convert to # of beats
     const beatOffset = this.props.playbackOffset / 24;
+
+    // convert # of beats offset to seconds
     const secPerBeat = 60 / this.props.bpm;
     const offsetSec = secPerBeat * beatOffset;
 
@@ -52,13 +54,18 @@ class AudioPlayback extends React.Component {
 }
 
 AudioPlayback.propTypes = {
+  // Whether the audio is playing or stopped
   playing: React.PropTypes.bool.isRequired,
-  playbackOffset: React.PropTypes.number,
+
+  // The offset, in 1/24th beats, to start playing at
+  playbackOffset: React.PropTypes.number.isRequired,
+
+  // bpm of current audio track
+  bpm: React.PropTypes.number.isRequired,
+
+  // TODO: make these objects more specific
   ctx: React.PropTypes.object.isRequired,
   audioData: React.PropTypes.object.isRequired
-
-  // TODO: audio ArrayBuffer
-  // Also need BPM+Song Offset to calculcate seconds
 };
 
 export default AudioPlayback;

@@ -3,6 +3,7 @@ import FluxComponent from 'flummox/component';
 import { Range } from 'immutable';
 import AudioPlayback from './components/AudioPlayback';
 import AudioPicker from './components/AudioPicker';
+import SaveLoadForm from './components/SaveLoadForm';
 
 import ordinal from '../../util/ordinal';
 
@@ -248,10 +249,14 @@ class Editor extends React.Component {
 
   renderLoaded() {
     return (
-      <div onKeyDown={(e) => this.handleKeyPress(e)} tabIndex="1">
-        {this.renderChart()}
+      <div>
+        <div onKeyDown={(e) => this.handleKeyPress(e)} tabIndex="1">
+          {this.renderChart()}
+        </div>
+        <br/>
         <AudioPlayback playing={this.props.inPlayback} playbackOffset={this.state.offset}
           audioData={this.props.audioData} bpm={this.props.bpm} ctx={this.props.audioCtx}  />
+        <SaveLoadForm flux={this.props.flux} />
       </div>
     );
   }
@@ -259,7 +264,7 @@ class Editor extends React.Component {
   render() {
     return (
       <div>
-        <AudioPicker flux={this.props.flux} />
+        <AudioPicker flux={this.props.flux} bpm={this.props.bpm} />
         <br/>
         {this.props.audioData ? this.renderLoaded() : null}
       </div>

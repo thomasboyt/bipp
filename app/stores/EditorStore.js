@@ -25,17 +25,14 @@ const StateRecord = Record({
   playbackOffset: 0
 });
 
-const fixtureState = new StateRecord({
-  notes: new List([
-  ]),
-  bpm: 186  // keri baby
-});
-
 class EditorStore extends ImmutableStore {
   constructor(flux) {
     super({StateRecord});
 
-    this.state = fixtureState;
+    this.state = new StateRecord({
+      notes: new List([]),
+      bpm: 120
+    });
 
     const actionIds = flux.getActionIds('editor');
 
@@ -43,6 +40,9 @@ class EditorStore extends ImmutableStore {
 
     this.register(actionIds.enterPlayback, this.handleEnterPlayback);
     this.register(actionIds.exitPlayback, this.handleExitPlayback);
+
+    this.register(actionIds.changeBPM, this.handleChangeBPM);
+    this.register(actionIds.loadData, this.handleLoadData);
   }
 
 
@@ -84,6 +84,10 @@ class EditorStore extends ImmutableStore {
       });
     }
 
+  }
+
+  handleChangeBPM(bpm) {
+    this.setState({bpm});
   }
 
   /*
@@ -137,6 +141,30 @@ class EditorStore extends ImmutableStore {
 
     this.setState({
       playbackOffset: prevOffset + elapsedOffset
+    });
+  }
+
+
+  /*
+   * Serialization
+   */
+
+  serializeData() {
+    const notes = this.state.notes;
+    const bpm = this.state.bpm;
+
+    return JSON.stringify({notes, bpm});
+  }
+
+  handleLoadData(data) {
+    data = JSON.parse(data);
+
+    const noteRecords = data.notes.map((noteProps) => new Note(noteProps));
+    const notes = new List(noteRecords);
+
+    this.setState({
+      notes,
+      bpm: data.bpm
     });
   }
 }
