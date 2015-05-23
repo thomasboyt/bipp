@@ -1,16 +1,11 @@
 import React from 'react';
 import FluxComponent from 'flummox/component';
-import { Range } from 'immutable';
+
 import AudioPlayback from './components/AudioPlayback';
 import AudioPicker from './components/AudioPicker';
 import SaveLoadForm from './components/SaveLoadForm';
+import Chart from './components/Chart';
 
-import ordinal from '../../util/ordinal';
-
-const VIEWPORT_HEIGHT = 600;
-const WIDTH = 450;
-const LANE_WIDTH = 60;
-const NOTE_HEIGHT = 20;
 
 const resolutions = [24, 12, 8, 6, 4, 3];
 
@@ -167,83 +162,15 @@ class Editor extends React.Component {
     }
   }
 
-  renderOffsetBar() {
-    const noteName = ordinal((24 / this.getScrollResolution()) * 4);
-
-    const beat = Math.floor(this.getOffset() / 24 / 4) + 1;
-    const text = `${noteName}\n ${beat}`;
-
-    const y = this.getOffset() *  (this.state.beatSpacing/24);
-
-    return (
-      <g>
-        <rect x="0" y={y - NOTE_HEIGHT / 2} width={WIDTH} height={NOTE_HEIGHT}
-          fill="#4A90E2"/>
-
-        <text x={WIDTH + 10} y={-y} transform={`scale(1, -1)`}
-          style={{fontFamily: 'Helvetica, sans-serif', fontSize: '16px',
-                  dominantBaseline: 'central'}}>
-          {text}
-        </text>
-      </g>
-    );
-  }
-
-  renderMeasures() {
-    const range = Range(0, this.getNumMeasures());
-
-    return range.map((num) => {
-      return (
-        <svg key={`measure-${num}`} y={num * this.state.beatSpacing * 4} style={{overflow:"visible"}}>
-          <line x1="0" x2={WIDTH}
-            y1={this.state.beatSpacing * 0} y2={this.state.beatSpacing * 0} stroke="black" />
-          <line x1="0" x2={WIDTH}
-            y1={this.state.beatSpacing * 1} y2={this.state.beatSpacing * 1} stroke="grey" />
-          <line x1="0" x2={WIDTH}
-            y1={this.state.beatSpacing * 2} y2={this.state.beatSpacing * 2} stroke="grey" />
-          <line x1="0" x2={WIDTH}
-            y1={this.state.beatSpacing * 3} y2={this.state.beatSpacing * 3} stroke="grey" />
-        </svg>
-      );
-    });
-  }
-
-  renderNotes() {
-    const notes = this.props.notes;
-
-    return notes.map((note) => {
-      const beatOffset = note.beat * this.state.beatSpacing;
-      const offset = (this.state.beatSpacing / 24) * note.offset;
-      const y = beatOffset + offset - NOTE_HEIGHT / 2;
-
-      const key = `note-${note.beat}-${note.offset}-${note.col}`;
-
-      return (
-        <rect key={key}
-          x={note.col * LANE_WIDTH}
-          y={y}
-          width={LANE_WIDTH}
-          height={NOTE_HEIGHT} />
-      );
-    });
-  }
-
   renderChart() {
-    const height = this.getNumMeasures() * this.state.beatSpacing * 4;
-    const offset = this.getOffset() * (this.state.beatSpacing / 24);
-
-    const scrollY = -1 * (height - offset - (VIEWPORT_HEIGHT * 0.7));
-
     return (
-      <svg width={WIDTH + 100} height={VIEWPORT_HEIGHT}>
-        <g transform={`translate(0, ${scrollY})`}>
-          <g transform={`translate(0, ${height}) scale(1, -1)`}>
-            {this.renderOffsetBar()}
-            {this.renderMeasures()}
-            {this.renderNotes()}
-          </g>
-        </g>
-      </svg>
+      <Chart 
+        numMeasures={this.getNumMeasures()}
+        notes={this.props.notes}
+
+        scrollResolution={this.getScrollResolution()}
+        offset={this.getOffset()}
+        beatSpacing={this.state.beatSpacing} />
     );
   }
 
@@ -257,6 +184,7 @@ class Editor extends React.Component {
         <AudioPlayback playing={this.props.inPlayback} playbackOffset={this.state.offset}
           audioData={this.props.audioData} bpm={this.props.bpm} ctx={this.props.audioCtx}  />
         <SaveLoadForm flux={this.props.flux} />
+        <span>FPS: {this.props.playbackFps}</span>
       </div>
     );
   }
@@ -281,7 +209,8 @@ class EditorOuter extends React.Component {
           bpm: store.state.bpm,
 
           inPlayback: store.state.inPlayback,
-          playbackOffset: store.state.playbackOffset
+          playbackOffset: store.state.playbackOffset,
+          playbackFps: store.state.playbackFps
         }),
         audio: (store) => ({
           audioData: store.state.audioData,

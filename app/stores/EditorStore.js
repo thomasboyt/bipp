@@ -1,5 +1,6 @@
 import ImmutableStore from './ImmutableStore';
 import { Record, List } from 'immutable';
+import AvgTick from '../util/AvgTick';
 
 const Note = Record({
   // Beat the note starts at (add offset)
@@ -22,7 +23,8 @@ const StateRecord = Record({
   bpm: null,
 
   inPlayback: false,
-  playbackOffset: 0
+  playbackOffset: 0,
+  playbackFps: null
 });
 
 class EditorStore extends ImmutableStore {
@@ -92,6 +94,7 @@ class EditorStore extends ImmutableStore {
 
   /*
    * Playback things
+   * TODO: Move some of this to a new store?
    */
 
   handleEnterPlayback({offset}) {
@@ -128,6 +131,7 @@ class EditorStore extends ImmutableStore {
       runLoop = () => {};
     };
 
+    this._avgTick = new AvgTick(100);
     window.requestAnimationFrame(runLoop);
   }
 
@@ -139,8 +143,11 @@ class EditorStore extends ImmutableStore {
     const secPerThirtySecond = secPerBeat / 24;
     const elapsedOffset = (dt / (secPerThirtySecond * 1000));
 
+    this._avgTick.update(dt);
+
     this.setState({
-      playbackOffset: prevOffset + elapsedOffset
+      playbackOffset: prevOffset + elapsedOffset,
+      playbackFps: 1000 / this._avgTick.get()
     });
   }
 

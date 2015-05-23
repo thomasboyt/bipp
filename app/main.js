@@ -1,5 +1,6 @@
 require('normalize.css');
 require('../styles/main.css');
+require('babel-core/polyfill');
 
 import Flummox from 'flummox';
 import EditorStore from './stores/EditorStore';

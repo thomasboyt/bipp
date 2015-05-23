@@ -8,7 +8,8 @@ module.exports = {
       'react/addons',
       'react-router',
       'flummox',
-      'immutable'
+      'immutable',
+      'lodash'
     ]
   },
 
