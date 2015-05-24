@@ -6,7 +6,18 @@ import pureRender from '../../../util/pureRender';
 const VIEWPORT_HEIGHT = 600;
 const WIDTH = 450;
 const LANE_WIDTH = 60;
+const CENTER_LANE_WIDTH = 90;
 const NOTE_HEIGHT = 20;
+
+const colorMap = {
+  0: 'orange',
+  1: 'blue',
+  2: 'orange',
+  3: 'green',
+  4: 'orange',
+  5: 'blue',
+  6: 'orange'
+};
 
 /**
  * This piece is kept separate because it only re-renders if the following props change:
@@ -49,12 +60,27 @@ class InnerChart extends React.Component {
 
       const key = `note-${note.beat}-${note.offset}-${note.col}`;
 
+      const color = colorMap[note.col];
+
+      let x, width;
+      if (note.col < 3) {
+        x = note.col * LANE_WIDTH;
+        width = LANE_WIDTH;
+      } else if (note.col === 3) {
+        x = note.col * LANE_WIDTH;
+        width = CENTER_LANE_WIDTH;
+      } else if (note.col > 3) {
+        x = CENTER_LANE_WIDTH + (note.col - 1) * LANE_WIDTH;
+        width = LANE_WIDTH;
+      }
+
       return (
         <rect key={key}
-          x={note.col * LANE_WIDTH}
+          x={x}
           y={y}
-          width={LANE_WIDTH}
-          height={NOTE_HEIGHT} />
+          width={width}
+          height={NOTE_HEIGHT}
+          fill={color} />
       );
     });
   }
