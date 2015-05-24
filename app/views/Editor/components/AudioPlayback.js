@@ -38,14 +38,6 @@ class AudioPlayback extends React.Component {
         this.play();
       }
     }
-
-    if (nextProps.audioData !== curProps.audioData) {
-      if (nextProps.audioData) {
-        this.loadAudio(nextProps.audioData);
-      } else {
-        this.buf = null;
-      }
-    }
   }
 
   render() {

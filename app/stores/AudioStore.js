@@ -6,9 +6,9 @@ class AudioStore extends Store {
   constructor(flux) {
     super(flux);
 
-    const actionIds = flux.getActionIds('audio');
+    const audioActions = flux.getActionIds('audio');
 
-    this.register(actionIds.loadAudio, this.handleLoadAudio);
+    this.register(audioActions.loadAudio, this.handleLoadAudio);
 
     this.state = {
       audioData: null,
@@ -26,7 +26,7 @@ class AudioStore extends Store {
     return buf.duration;
   }
 
-  handleLoadAudio({audioData}) {
+  handleLoadAudio(audioData) {
     this.state.ctx.decodeAudioData(audioData, (data) => {
       this.setState({
         audioData: data

@@ -3,13 +3,15 @@ var path = require('path');
 
 module.exports = {
   entry: {
-    app: "./app/main.js",
+    app: './app/main.js',
     vendor: [
       'react/addons',
       'react-router',
       'flummox',
       'immutable',
-      'lodash'
+      'lodash',
+      'babel-runtime/core-js',
+      'babel-runtime/regenerator'
     ]
   },
 
@@ -23,7 +25,7 @@ module.exports = {
   },
 
   resolveLoader: {
-    root: path.join(__dirname, "node_modules")
+    root: path.join(__dirname, 'node_modules')
   },
 
   plugins: [
@@ -35,12 +37,27 @@ module.exports = {
       {
         test: /\.js$/,
         exclude: /(node_modules\/)/,
-        loader: 'babel-loader'
+        loader: 'babel-loader',
+        query: {
+          'optional': ['es7.asyncFunctions', 'runtime']
+        }
       },
       {
         test: /\.css$/,
         loader: 'style-loader!css-loader'
+      },
+      {
+        test: /(?:\.mp3)/,
+        loader: 'file-loader',
+        query: {
+          name: 'assets/[hash].[ext]'
+        }
+      },
+      {
+        test: /(?:\.json)/,
+        loader: 'json-loader'
       }
+
     ]
   }
 };

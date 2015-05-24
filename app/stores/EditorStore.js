@@ -33,10 +33,10 @@ class EditorStore extends ImmutableStore {
 
     const actionIds = flux.getActionIds('editor');
 
-    this.register(actionIds.toggleNote, this.handleToggleNote);
+    this.register(actionIds.loadSong, this.handleLoadSong);
 
+    this.register(actionIds.toggleNote, this.handleToggleNote);
     this.register(actionIds.changeBPM, this.handleChangeBPM);
-    this.register(actionIds.loadData, this.handleLoadData);
   }
 
 
@@ -48,6 +48,21 @@ class EditorStore extends ImmutableStore {
     return Math.ceil(numBeats / 4);
   }
 
+  /*
+   * Loading
+   */
+
+  handleLoadSong(song) {
+    const data = song.data;
+
+    const noteRecords = data.notes.map((noteProps) => new Note(noteProps));
+    const notes = new List(noteRecords);
+
+    this.setState({
+      notes,
+      bpm: data.bpm
+    });
+  }
 
   /*
    * Adding & removing notes
@@ -94,18 +109,6 @@ class EditorStore extends ImmutableStore {
     const bpm = this.state.bpm;
 
     return JSON.stringify({notes, bpm});
-  }
-
-  handleLoadData(data) {
-    data = JSON.parse(data);
-
-    const noteRecords = data.notes.map((noteProps) => new Note(noteProps));
-    const notes = new List(noteRecords);
-
-    this.setState({
-      notes,
-      bpm: data.bpm
-    });
   }
 }
 

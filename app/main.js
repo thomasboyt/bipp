@@ -1,6 +1,5 @@
 require('normalize.css');
 require('../styles/main.css');
-require('babel-core/polyfill');
 
 import React from 'react';
 import Router from 'react-router';

@@ -1,6 +1,6 @@
 import React from 'react/addons';
 
-class AudioPicker extends React.Component {
+class SaveForm extends React.Component {
   constructor(props) {
     super(props);
 
@@ -15,10 +15,6 @@ class AudioPicker extends React.Component {
     this.setState({dataValue});
   }
 
-  handleLoad() {
-    this.props.flux.getActions('editor').loadData(this.state.dataValue);
-  }
-
   handleDataChange(e) {
     this.setState({
       dataValue: e.target.value
@@ -31,9 +27,6 @@ class AudioPicker extends React.Component {
         <button onClick={() => this.handleSave()}>
           Save
         </button>
-        <button onClick={() => this.handleLoad()}>
-          Load
-        </button>
 
         <label>
           Data&nbsp;
@@ -45,4 +38,4 @@ class AudioPicker extends React.Component {
   }
 }
 
-export default AudioPicker;
+export default SaveForm;

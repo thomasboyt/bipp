@@ -192,8 +192,6 @@ class Editor extends React.Component {
   render() {
     return (
       <div>
-        <AudioPicker flux={this.props.flux} bpm={this.props.bpm} />
-        <br/>
         {this.props.audioData ? this.renderLoaded() : null}
       </div>
     );
@@ -201,6 +199,12 @@ class Editor extends React.Component {
 }
 
 class EditorOuter extends React.Component {
+  componentWillMount() {
+    const idx = this.props.params.songIdx;
+    this.props.flux.getActions('editor').loadSong(idx);
+    this.props.flux.getActions('audio').loadAudio(idx);
+  }
+
   render() {
     return (
       <FluxComponent flux={this.props.flux} connectToStores={{
