@@ -2,7 +2,7 @@ import {Actions} from 'flummox';
 
 const songs = require('../config/songs');
 
-class EditorActions extends Actions {
+class SongActions extends Actions {
   loadSong(idx) {
     return songs[idx];
   }
@@ -16,4 +16,4 @@ class EditorActions extends Actions {
   }
 }
 
-export default EditorActions;
+export default SongActions;

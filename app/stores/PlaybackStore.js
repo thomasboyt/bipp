@@ -11,10 +11,12 @@ class PlaybackStore extends Store {
     this.register(actionIds.exitPlayback, this.handleExitPlayback);
 
     this.state = {
+      notes: null,
+      bpm: null,
+
       inPlayback: false,
       playbackOffset: 0,
-      playbackFps: null,
-      bpm: null
+      playbackFps: null
     };
   }
 

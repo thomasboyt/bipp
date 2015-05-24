@@ -1,7 +1,8 @@
 import React from 'react';
-import ordinal from '../../../util/ordinal';
 import { Range, List } from 'immutable';
-import pureRender from '../../../util/pureRender';
+
+import ordinal from '../../util/ordinal';
+import pureRender from '../../util/pureRender';
 
 const WIDTH = 450;
 const LANE_WIDTH = 60;

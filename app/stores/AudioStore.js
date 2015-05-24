@@ -17,13 +17,7 @@ class AudioStore extends Store {
   }
 
   getLength() {
-    const buf = this.state.audioData;
-
-    if (!buf) {
-      return null;
-    }
-
-    return buf.duration;
+    return this.state.audioData.duration;
   }
 
   handleLoadAudio(audioData) {

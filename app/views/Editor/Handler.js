@@ -5,7 +5,7 @@ import {HotKeys} from 'react-hotkeys';
 import AudioPlayback from './components/AudioPlayback';
 import AudioPicker from './components/AudioPicker';
 import SaveLoadForm from './components/SaveLoadForm';
-import Chart from './components/Chart';
+import Chart from '../lib/Chart';
 
 
 const resolutions = [24, 12, 8, 6, 4, 3];
@@ -150,7 +150,7 @@ class Editor extends React.Component {
 
   getNumMeasures() {
     const len = this.props.flux.getStore('audio').getLength();
-    return this.props.flux.getStore('editor').getNumMeasures(len);
+    return this.props.flux.getStore('song').getNumMeasures(len);
   }
 
   getMaxOffset() {
@@ -158,7 +158,7 @@ class Editor extends React.Component {
   }
 
   handleToggleNote(column) {
-    this.props.flux.getActions('editor').toggleNote(this.state.offset, column);
+    this.props.flux.getActions('song').toggleNote(this.state.offset, column);
   }
 
   handleUpdateScrollResolution(increase) {
@@ -227,7 +227,7 @@ class Editor extends React.Component {
 class EditorOuter extends React.Component {
   componentWillMount() {
     const idx = this.props.params.songIdx;
-    this.props.flux.getActions('editor').loadSong(idx);
+    this.props.flux.getActions('song').loadSong(idx);
     this.props.flux.getActions('audio').loadAudio(idx);
   }
 

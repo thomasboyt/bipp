@@ -22,7 +22,7 @@ const StateRecord = Record({
   bpm: null
 });
 
-class EditorStore extends ImmutableStore {
+class SongStore extends ImmutableStore {
   constructor(flux) {
     super({StateRecord});
 
@@ -31,12 +31,13 @@ class EditorStore extends ImmutableStore {
       bpm: 120
     });
 
-    const actionIds = flux.getActionIds('editor');
 
-    this.register(actionIds.loadSong, this.handleLoadSong);
+    const songActions = flux.getActionIds('song');
 
-    this.register(actionIds.toggleNote, this.handleToggleNote);
-    this.register(actionIds.changeBPM, this.handleChangeBPM);
+    this.register(songActions.loadSong, this.handleLoadSong);
+
+    this.register(songActions.toggleNote, this.handleToggleNote);
+    this.register(songActions.changeBPM, this.handleChangeBPM);
   }
 
 
@@ -112,4 +113,4 @@ class EditorStore extends ImmutableStore {
   }
 }
 
-export default EditorStore;
+export default SongStore;

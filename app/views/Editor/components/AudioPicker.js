@@ -23,7 +23,7 @@ class AudioPicker extends React.Component {
       return;
     }
 
-    this.props.flux.getActions('editor').changeBPM(bpm);
+    this.props.flux.getActions('song').changeBPM(bpm);
   }
 
   render() {

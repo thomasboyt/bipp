@@ -10,7 +10,7 @@ class SaveForm extends React.Component {
   }
 
   handleSave() {
-    const dataValue = this.props.flux.getStore('editor').serializeData();
+    const dataValue = this.props.flux.getStore('song').serializeData();
 
     this.setState({dataValue});
   }
