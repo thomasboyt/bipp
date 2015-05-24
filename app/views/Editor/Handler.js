@@ -192,21 +192,20 @@ class Editor extends React.Component {
 
   renderLoaded() {
     return (
-      <div>
-        <HotKeys handlers={this.getHandlers()} keyMap={this.getKeyMap()}>
-          <div tabIndex="1">
-            {this.renderChart()}
+      <span>
+        <div className="editor">
+          <div className="chart-container">
+            <HotKeys handlers={this.getHandlers()} keyMap={this.getKeyMap()}>
+              {this.renderChart()}
+            </HotKeys>
           </div>
-        </HotKeys>
 
-        <br/>
-
-        <SaveLoadForm flux={this.props.flux} />
-        <span>FPS: {this.props.playbackFps}</span>
+          <SaveLoadForm flux={this.props.flux} />
+        </div>
 
         <AudioPlayback playing={this.props.inPlayback} playbackOffset={this.state.offset}
           audioData={this.props.audioData} bpm={this.props.bpm} ctx={this.props.audioCtx} />
-      </div>
+      </span>
     );
   }
 
@@ -236,8 +235,7 @@ class EditorOuter extends React.Component {
 
         playback: (store) => ({
           inPlayback: store.state.inPlayback,
-          playbackOffset: store.state.playbackOffset,
-          playbackFps: store.state.playbackFps
+          playbackOffset: store.state.playbackOffset
         }),
 
         audio: (store) => ({

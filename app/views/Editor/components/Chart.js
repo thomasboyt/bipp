@@ -3,7 +3,6 @@ import ordinal from '../../../util/ordinal';
 import { Range, List } from 'immutable';
 import pureRender from '../../../util/pureRender';
 
-const VIEWPORT_HEIGHT = 600;
 const WIDTH = 450;
 const LANE_WIDTH = 60;
 const CENTER_LANE_WIDTH = 90;
@@ -110,6 +109,19 @@ InnerChart.propTypes = {
  * It also renders the offset bar, since it constantly moves during playback.
  */
 class Chart extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      containerHeight: 0
+    };
+  }
+
+  componentDidMount() {
+    this.setState({
+      containerHeight: React.findDOMNode(this).parentElement.offsetHeight
+    });
+  }
 
   renderOffsetBar() {
     const noteName = ordinal((24 / this.props.scrollResolution) * 4);
@@ -137,10 +149,10 @@ class Chart extends React.Component {
     const height = this.props.numMeasures * this.props.beatSpacing * 4;
     const offset = this.props.offset * (this.props.beatSpacing / 24);
 
-    const scrollY = -1 * (height - offset - (VIEWPORT_HEIGHT * 0.7));
+    const scrollY = -1 * (height - offset - (this.state.containerHeight * 0.7));
 
     return (
-      <svg width={WIDTH + 100} height={VIEWPORT_HEIGHT}>
+      <svg width={WIDTH + 100} height={this.state.containerHeight}>
         <g transform={`translate(0, ${scrollY})`}>
           <g transform={`translate(0, ${height}) scale(1, -1)`}>
             {this.renderOffsetBar()}

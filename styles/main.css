@@ -1,3 +1,19 @@
-.root {
-  margin: 10px;
+html {
+  box-sizing: border-box;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+.editor {
+  display: flex;
+  flex-flow: column;
+  min-height: 100vh;
+}
+
+.chart-container {
+  flex: 1;
+
+  display: flex;  /* causes 100% height in child */
 }
