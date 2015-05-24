@@ -1,4 +1,4 @@
-import ImmutableStore from './ImmutableStore';
+import ImmutableStore from '../util/ImmutableStore';
 import { Record, List } from 'immutable';
 
 const Note = Record({
