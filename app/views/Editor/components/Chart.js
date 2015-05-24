@@ -115,9 +115,21 @@ class Chart extends React.Component {
     this.state = {
       containerHeight: 0
     };
+
+    this._handleUpdate= this.updateHeight.bind(this);
   }
 
   componentDidMount() {
+    this.updateHeight();
+
+    window.addEventListener('resize', this._handleUpdate);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this._handleUpdate);
+  }
+
+  updateHeight() {
     this.setState({
       containerHeight: React.findDOMNode(this).parentElement.offsetHeight
     });

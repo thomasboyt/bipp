@@ -9,7 +9,7 @@ html {
 .editor {
   display: flex;
   flex-flow: column;
-  min-height: 100vh;
+  height: 100vh;
 }
 
 .chart-container {
