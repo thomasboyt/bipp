@@ -33,6 +33,10 @@ class SaveForm extends React.Component {
           <input type="text" value={this.state.dataValue}
             onChange={(e) => this.handleDataChange(e)}/>
         </label>
+
+        <span>
+          FPS: {this.props.fps}
+        </span>
       </fieldset>
     );
   }

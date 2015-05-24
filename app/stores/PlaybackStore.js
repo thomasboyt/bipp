@@ -10,28 +10,30 @@ class PlaybackStore extends Store {
     this.register(actionIds.enterPlayback, this.handleEnterPlayback);
     this.register(actionIds.exitPlayback, this.handleExitPlayback);
 
+    this.register(actionIds.playNote, this.handlePlayNote);
+
     this.state = {
       notes: null,
       bpm: null,
 
       inPlayback: false,
       playbackOffset: 0,
-      playbackFps: null
+      playbackFps: null,
+
+      startTime: null
     };
   }
 
-  /*
-   * Playback things
-   * TODO: Move some of this to a new store?
-   */
 
-  handleEnterPlayback({offset, bpm}) {
+  handleEnterPlayback({offset, bpm, notes}) {
     this._createPlaybackRunLoop();
 
     this.setState({
+      notes: notes,
       inPlayback: true,
       playbackOffset: offset,
-      bpm: bpm
+      bpm: bpm,
+      startTime: Date.now()
     });
   }
 
@@ -64,19 +66,46 @@ class PlaybackStore extends Store {
     window.requestAnimationFrame(runLoop);
   }
 
-  _updatePlaybackOffset(dt) {
-    const prevOffset = this.state.playbackOffset;
-
+  _getMsPerOffset() {
     const bpm = this.state.bpm;
     const secPerBeat = 60 / bpm;
     const secPerThirtySecond = secPerBeat / 24;
-    const elapsedOffset = (dt / (secPerThirtySecond * 1000));
+    return secPerThirtySecond * 1000;
+  }
+
+  _updatePlaybackOffset(dt) {
+    const prevOffset = this.state.playbackOffset;
+
+    const elapsedOffset = dt / this._getMsPerOffset();
 
     this._avgTick.update(dt);
 
     this.setState({
       playbackOffset: prevOffset + elapsedOffset,
       playbackFps: 1000 / this._avgTick.get()
+    });
+  }
+
+  _findNoteFor(time, column) {
+    // 1. Calculate offset for time
+    // 2. Calculate offset for time-50ms and time+50ms
+    // 3. Return *earliest* note filtered for in that range with matching column
+    return this.state.notes.filter((note) => note.col === column)
+                    .filter((note) => {
+                      const offset = note.offset + note.beat * 24;
+                      const noteTime = offset * this._getMsPerOffset();
+                      return (time + 75 > noteTime && time - 75 < noteTime);
+                    })
+                    .minBy((note) => note.offset);
+  }
+
+
+  handlePlayNote({time, column}) {
+    const elapsed = time - this.state.startTime;
+    const foundNote = this._findNoteFor(elapsed, column);
+
+    this.setState({
+      notes: this.state.notes.filter((note) => foundNote !== note)
     });
   }
 }

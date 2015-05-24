@@ -10,6 +10,16 @@ import Chart from '../lib/Chart';
 
 const resolutions = [24, 12, 8, 6, 4, 3];
 
+const colMap = {
+  's': 0,
+  'd': 1,
+  'f': 2,
+  'space': 3,
+  'j': 4,
+  'k': 5,
+  'l': 6
+};
+
 class Editor extends React.Component {
   constructor(props) {
     super(props);
@@ -24,8 +34,10 @@ class Editor extends React.Component {
   getKeyMap() {
     if (this.props.inPlayback) {
       return {
-        'exitPlayback': ['p', 'esc']
+        'exitPlayback': ['p', 'esc'],
+        'playNote': ['s', 'd', 'f', 'space', 'j', 'k', 'l']
       };
+
     } else {
       return {
         'scrollUp': ['up', 'shift+k'],
@@ -46,9 +58,9 @@ class Editor extends React.Component {
 
   setOffset(nextOffset) {
     if (nextOffset <= this.getMaxOffset() && nextOffset >= 0) {
-      this.setState((state) => ({
+      this.setState({
         offset: nextOffset
-      }));
+      });
     }
   }
 
@@ -111,7 +123,7 @@ class Editor extends React.Component {
       },
 
       enterPlayback: () => {
-        this.props.flux.getActions('playback').enterPlayback(this.state.offset, this.props.bpm);
+        this.props.flux.getActions('playback').enterPlayback(this.state.offset, this.props.bpm, this.getNotes());
       },
 
       exitPlayback: () => {
@@ -119,19 +131,15 @@ class Editor extends React.Component {
       },
 
       toggleNote: (e, key) => {
-        const colMap = {
-          's': 0,
-          'd': 1,
-          'f': 2,
-          'space': 3,
-          'j': 4,
-          'k': 5,
-          'l': 6
-        };
-
         const col = colMap[key];
 
-        this.handleToggleNote(col);
+        this.props.flux.getActions('song').toggleNote(this.state.offset, col);
+      },
+
+      playNote: (e, key) => {
+        const col = colMap[key];
+
+        this.props.flux.getActions('playback').playNote(Date.now(), col);
       }
     };
   }
@@ -141,6 +149,14 @@ class Editor extends React.Component {
       return this.props.playbackOffset;
     } else {
       return this.state.offset;
+    }
+  }
+
+  getNotes() {
+    if (this.props.inPlayback) {
+      return this.props.playbackNotes;
+    } else {
+      return this.props.songNotes;
     }
   }
 
@@ -155,10 +171,6 @@ class Editor extends React.Component {
 
   getMaxOffset() {
     return this.getNumMeasures() * 4 * 24 - 24;
-  }
-
-  handleToggleNote(column) {
-    this.props.flux.getActions('song').toggleNote(this.state.offset, column);
   }
 
   handleUpdateScrollResolution(increase) {
@@ -188,7 +200,7 @@ class Editor extends React.Component {
     return (
       <Chart
         numMeasures={this.getNumMeasures()}
-        notes={this.props.notes}
+        notes={this.getNotes()}
 
         scrollResolution={this.getScrollResolution()}
         offset={this.getOffset()}
@@ -206,7 +218,7 @@ class Editor extends React.Component {
             </HotKeys>
           </div>
 
-          <SaveLoadForm flux={this.props.flux} />
+          <SaveLoadForm flux={this.props.flux} fps={this.props.playbackFps} />
         </div>
 
         <AudioPlayback playing={this.props.inPlayback} playbackOffset={this.state.offset}
@@ -234,14 +246,16 @@ class EditorOuter extends React.Component {
   render() {
     return (
       <FluxComponent flux={this.props.flux} connectToStores={{
-        editor: (store) => ({
-          notes: store.state.notes,
+        song: (store) => ({
+          songNotes: store.state.notes,
           bpm: store.state.bpm
         }),
 
         playback: (store) => ({
           inPlayback: store.state.inPlayback,
-          playbackOffset: store.state.playbackOffset
+          playbackOffset: store.state.playbackOffset,
+          playbackNotes: store.state.notes,
+          playbackFps: store.state.playbackFps
         }),
 
         audio: (store) => ({
