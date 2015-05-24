@@ -1,5 +1,6 @@
 import React from 'react';
 import FluxComponent from 'flummox/component';
+import {HotKeys} from 'react-hotkeys';
 
 import AudioPlayback from './components/AudioPlayback';
 import AudioPicker from './components/AudioPicker';
@@ -20,6 +21,119 @@ class Editor extends React.Component {
     };
   }
 
+  getKeyMap() {
+    if (this.props.inPlayback) {
+      return {
+        'exitPlayback': ['p', 'esc']
+      };
+    } else {
+      return {
+        'scrollUp': ['up', 'shift+k'],
+        'scrollDown': ['down', 'shift+j'],
+        'measureUp': 'pageup',
+        'measureDown': 'pagedown',
+        'zoomOut': '-',
+        'zoomIn': '=',
+        'scrollResDown': 'left',
+        'scrollResUp': 'right',
+        'enterPlayback': 'p',
+        'toggleNote': ['s', 'd', 'f', 'space', 'j', 'k', 'l']
+      };
+    }
+  }
+
+  getHandlers() {
+    return {
+      scrollUp: (e) => {
+        e.preventDefault();
+
+        // TODO: Check for max offset
+
+        this.setState((state) => ({
+          offset: state.offset + this.getScrollResolution()
+        }));
+      },
+
+      scrollDown: (e) => {
+        e.preventDefault();
+
+        const nextOffset = this.state.offset - this.getScrollResolution();
+
+        if (nextOffset >= 0) {
+          this.setState({
+            offset: nextOffset
+          });
+        }
+      },
+
+      measureUp: (e) => {
+        e.preventDefault();
+
+        // TODO: Check for max offset
+
+        this.setState((state) => ({
+          offset: state.offset + (24 * 4)
+        }));
+      },
+
+      measureDown: (e) => {
+        e.preventDefault();
+
+        const nextOffset = this.state.offset - (24 * 4);
+
+        if (nextOffset >= 0) {
+          this.setState({
+            offset: nextOffset
+          });
+        }
+      },
+
+      zoomOut: () => {
+        this.setState({
+          beatSpacing: this.state.beatSpacing - 40
+        });
+      },
+
+      zoomIn: () => {
+        this.setState({
+          beatSpacing: this.state.beatSpacing + 40
+        });
+      },
+
+      scrollResUp: () => {
+        this.handleUpdateScrollResolution(true);
+      },
+
+      scrollResDown: () => {
+        this.handleUpdateScrollResolution(false);
+      },
+
+      enterPlayback: () => {
+        this.props.flux.getActions('playback').enterPlayback(this.state.offset, this.props.bpm);
+      },
+
+      exitPlayback: () => {
+        this.props.flux.getActions('playback').exitPlayback();
+      },
+
+      toggleNote: (e, key) => {
+        const colMap = {
+          's': 0,
+          'd': 1,
+          'f': 2,
+          'space': 3,
+          'j': 4,
+          'k': 5,
+          'l': 6
+        };
+
+        const col = colMap[key];
+
+        this.handleToggleNote(col);
+      }
+    };
+  }
+
   getOffset() {
     if (this.props.inPlayback) {
       return this.props.playbackOffset;
@@ -34,12 +148,6 @@ class Editor extends React.Component {
 
   getNumMeasures() {
     const len = this.props.flux.getStore('audio').getLength();
-
-    if (!len) {
-      // No audio == no measures
-      return null;
-    }
-
     return this.props.flux.getStore('editor').getNumMeasures(len);
   }
 
@@ -70,98 +178,6 @@ class Editor extends React.Component {
     });
   }
 
-  handleKeyPress(e) {
-    e.preventDefault();
-    const PG_UP = 33;
-    const PG_DOWN = 34;
-    const UP_ARROW = 38;
-    const DOWN_ARROW = 40;
-
-    const LEFT_ARROW = 37;
-    const RIGHT_ARROW = 39;
-
-    const MINUS = 189;
-    const EQUAL = 187;
-
-    const ESC_KEY = 27;
-    const P_KEY = 80;
-
-    const toggleNoteMap = {
-      83: 0,  // s
-      68: 1,  // d
-      70: 2,  // f
-      32: 3,  // space
-      74: 4,  // j
-      75: 5,  // k
-      76: 6   // l
-    };
-
-    if (this.props.inPlayback) {
-      if (e.keyCode === ESC_KEY || e.keyCode === P_KEY) {
-        this.props.flux.getActions('playback').exitPlayback();
-      }
-
-    } else {
-      if (e.keyCode === UP_ARROW) {
-        // TODO: Check for max offset
-
-        this.setState((state) => ({
-          offset: state.offset + this.getScrollResolution()
-        }));
-
-      } else if (e.keyCode === DOWN_ARROW) {
-        const nextOffset = this.state.offset - this.getScrollResolution();
-
-        if (nextOffset >= 0) {
-          this.setState({
-            offset: nextOffset
-          });
-        }
-
-      } else if (e.keyCode === PG_UP) {
-        // TODO: Check for max offset
-
-        this.setState((state) => ({
-          offset: state.offset + (24 * 4)
-        }));
-
-      } else if (e.keyCode === PG_DOWN) {
-        const nextOffset = this.state.offset - (24 * 4);
-
-        if (nextOffset >= 0) {
-          this.setState({
-            offset: nextOffset
-          });
-        }
-
-      } else if (e.keyCode === MINUS) {
-        this.setState({
-          beatSpacing: this.state.beatSpacing - 40
-        });
-
-      } else if (e.keyCode === EQUAL) {
-        this.setState({
-          beatSpacing: this.state.beatSpacing + 40
-        });
-
-      } else if (e.keyCode === LEFT_ARROW) {
-        this.handleUpdateScrollResolution(false);
-
-      } else if (e.keyCode === RIGHT_ARROW) {
-        this.handleUpdateScrollResolution(true);
-
-      } else if (e.keyCode === P_KEY) {
-        this.props.flux.getActions('playback').enterPlayback(this.state.offset, this.props.bpm);
-
-      } else if (toggleNoteMap[e.keyCode] !== undefined) {
-        this.handleToggleNote(toggleNoteMap[e.keyCode]);
-
-      } else {
-        console.log(e.keyCode);
-      }
-    }
-  }
-
   renderChart() {
     return (
       <Chart
@@ -177,14 +193,19 @@ class Editor extends React.Component {
   renderLoaded() {
     return (
       <div>
-        <div onKeyDown={(e) => this.handleKeyPress(e)} tabIndex="1">
-          {this.renderChart()}
-        </div>
+        <HotKeys handlers={this.getHandlers()} keyMap={this.getKeyMap()}>
+          <div tabIndex="1">
+            {this.renderChart()}
+          </div>
+        </HotKeys>
+
         <br/>
-        <AudioPlayback playing={this.props.inPlayback} playbackOffset={this.state.offset}
-          audioData={this.props.audioData} bpm={this.props.bpm} ctx={this.props.audioCtx} />
+
         <SaveLoadForm flux={this.props.flux} />
         <span>FPS: {this.props.playbackFps}</span>
+
+        <AudioPlayback playing={this.props.inPlayback} playbackOffset={this.state.offset}
+          audioData={this.props.audioData} bpm={this.props.bpm} ctx={this.props.audioCtx} />
       </div>
     );
   }
