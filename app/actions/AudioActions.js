@@ -1,9 +1,9 @@
 import {Actions} from 'flummox';
 
-class EditorActions extends Actions {
+class AudioActions extends Actions {
   loadAudio(audioData) {
     return {audioData};
   }
 }
 
-export default EditorActions;
+export default AudioActions;

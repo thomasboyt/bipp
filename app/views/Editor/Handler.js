@@ -98,7 +98,7 @@ class Editor extends React.Component {
 
     if (this.props.inPlayback) {
       if (e.keyCode === ESC_KEY || e.keyCode === P_KEY) {
-        this.props.flux.getActions('editor').exitPlayback();
+        this.props.flux.getActions('playback').exitPlayback();
       }
 
     } else {
@@ -151,7 +151,7 @@ class Editor extends React.Component {
         this.handleUpdateScrollResolution(true);
 
       } else if (e.keyCode === P_KEY) {
-        this.props.flux.getActions('editor').enterPlayback(this.state.offset);
+        this.props.flux.getActions('playback').enterPlayback(this.state.offset, this.props.bpm);
 
       } else if (toggleNoteMap[e.keyCode] !== undefined) {
         this.handleToggleNote(toggleNoteMap[e.keyCode]);
@@ -206,12 +206,15 @@ class EditorOuter extends React.Component {
       <FluxComponent flux={this.props.flux} connectToStores={{
         editor: (store) => ({
           notes: store.state.notes,
-          bpm: store.state.bpm,
+          bpm: store.state.bpm
+        }),
 
+        playback: (store) => ({
           inPlayback: store.state.inPlayback,
           playbackOffset: store.state.playbackOffset,
           playbackFps: store.state.playbackFps
         }),
+
         audio: (store) => ({
           audioData: store.state.audioData,
           audioCtx: store.state.ctx

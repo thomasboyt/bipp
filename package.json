@@ -6,6 +6,7 @@
   "author": "",
   "license": "MIT",
   "scripts": {
+    "lint": "node_modules/.bin/eslint app/",
     "dev": "node_modules/.bin/webpack-dev-server"
   },
   "devDependencies": {
