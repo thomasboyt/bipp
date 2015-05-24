@@ -116,7 +116,7 @@ class Chart extends React.Component {
       containerHeight: 0
     };
 
-    this._handleUpdate= this.updateHeight.bind(this);
+    this._handleUpdate = this.updateHeight.bind(this);
   }
 
   componentDidMount() {

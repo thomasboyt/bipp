@@ -32,6 +32,8 @@ class Editor extends React.Component {
         'scrollDown': ['down', 'shift+j'],
         'measureUp': 'pageup',
         'measureDown': 'pagedown',
+        'jumpToStart': 'home',
+        'jumpToEnd': 'end',
         'zoomOut': '-',
         'zoomIn': '=',
         'scrollResDown': 'left',
@@ -42,50 +44,50 @@ class Editor extends React.Component {
     }
   }
 
+  setOffset(nextOffset) {
+    if (nextOffset <= this.getMaxOffset() && nextOffset >= 0) {
+      this.setState((state) => ({
+        offset: nextOffset
+      }));
+    }
+  }
+
   getHandlers() {
     return {
       scrollUp: (e) => {
         e.preventDefault();
 
-        // TODO: Check for max offset
-
-        this.setState((state) => ({
-          offset: state.offset + this.getScrollResolution()
-        }));
+        this.setOffset(this.state.offset + this.getScrollResolution());
       },
 
       scrollDown: (e) => {
         e.preventDefault();
 
-        const nextOffset = this.state.offset - this.getScrollResolution();
-
-        if (nextOffset >= 0) {
-          this.setState({
-            offset: nextOffset
-          });
-        }
+        this.setOffset(this.state.offset - this.getScrollResolution());
       },
 
       measureUp: (e) => {
         e.preventDefault();
 
-        // TODO: Check for max offset
-
-        this.setState((state) => ({
-          offset: state.offset + (24 * 4)
-        }));
+        this.setOffset(this.state.offset + (24 * 4));
       },
 
       measureDown: (e) => {
         e.preventDefault();
 
-        const nextOffset = this.state.offset - (24 * 4);
+        this.setOffset(this.state.offset - (24 * 4));
+      },
 
-        if (nextOffset >= 0) {
-          this.setState({
-            offset: nextOffset
-          });
-        }
+      jumpToStart: (e) => {
+        e.preventDefault();
+
+        this.setOffset(0);
+      },
+
+      jumpToEnd: (e) => {
+        e.preventDefault();
+
+        this.setOffset(this.getMaxOffset());
       },
 
       zoomOut: () => {
@@ -149,6 +151,10 @@ class Editor extends React.Component {
   getNumMeasures() {
     const len = this.props.flux.getStore('audio').getLength();
     return this.props.flux.getStore('editor').getNumMeasures(len);
+  }
+
+  getMaxOffset() {
+    return this.getNumMeasures() * 4 * 24 - 24;
   }
 
   handleToggleNote(column) {
