@@ -4,6 +4,10 @@ import { Range, Iterable } from 'immutable';
 import ordinal from '../../util/ordinal';
 import pureRender from '../../util/pureRender';
 
+// TODO: Make this a url param or something
+// Currently disabled due to jitter bug with offset bar...
+const ENABLE_3D_ACCEL = false;
+
 const WIDTH = 450;
 const LANE_WIDTH = 60;
 const CENTER_LANE_WIDTH = 90;
@@ -176,6 +180,7 @@ class Chart extends React.Component {
     const beat = Math.floor(this.props.offset / 24 / 4) + 1;
     const text = `${noteName}\n ${beat}`;
 
+    // TODO: Setting the `y` of this causes repaints, could a CSS translate work instead?
     const y = this.props.offset * (this.props.beatSpacing / 24);
 
     return (
@@ -198,12 +203,18 @@ class Chart extends React.Component {
 
     const scrollY = -1 * (height - offset - (this.state.containerHeight * 0.7));
 
+    let transform;
+    if (ENABLE_3D_ACCEL) {
+      transform = `translate3d(0, ${scrollY + 10}px, 0) scale3d(1, -1, 1)`;
+    } else {
+      transform = `translate(0, ${scrollY + 10}px) scale(1, -1)`;
+    }
+
     return (
       <div style={{'overflow': 'hidden', 'flex': '1'}}>
-        <div style={{'transform': `translate(0, ${scrollY + 10}px) scale(1, -1)`}}>
+        <div style={{'transform': transform}}>
           <svg width={WIDTH + 100} height={height}>
             {this.renderOffsetBar()}
-
             <InnerChart
               notes={this.props.notes}
               numMeasures={this.props.numMeasures}
