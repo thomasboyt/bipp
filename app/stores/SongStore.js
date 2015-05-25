@@ -14,7 +14,9 @@ const Note = Record({
   offset: 0,
 
   // Column, between 0 and 6, for the note to be placed in
-  col: 0
+  col: 0,
+
+  time: 0
 });
 
 const StateRecord = Record({

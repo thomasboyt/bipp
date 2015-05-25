@@ -1,5 +1,5 @@
 import React from 'react';
-import { Range, List } from 'immutable';
+import { Range, Iterable } from 'immutable';
 
 import ordinal from '../../util/ordinal';
 import pureRender from '../../util/pureRender';
@@ -19,6 +19,72 @@ const colorMap = {
   6: 'orange'
 };
 
+class Note extends React.Component {
+  render() {
+    const note = this.props.note;
+
+    const beatOffset = note.beat * this.props.beatSpacing;
+    const offset = (this.props.beatSpacing / 24) * note.offset;
+    const y = beatOffset + offset - NOTE_HEIGHT / 2;
+
+    const color = colorMap[note.col];
+
+    let x, width;
+    if (note.col < 3) {
+      x = note.col * LANE_WIDTH;
+      width = LANE_WIDTH;
+    } else if (note.col === 3) {
+      x = note.col * LANE_WIDTH;
+      width = CENTER_LANE_WIDTH;
+    } else if (note.col > 3) {
+      x = CENTER_LANE_WIDTH + (note.col - 1) * LANE_WIDTH;
+      width = LANE_WIDTH;
+    }
+
+    return (
+      <rect
+        x={x}
+        y={y}
+        width={width}
+        height={NOTE_HEIGHT}
+        fill={color} />
+    );
+  }
+}
+
+pureRender(Note);
+
+Note.propTypes = {
+  note: React.PropTypes.object.isRequired,
+  beatSpacing: React.PropTypes.number.isRequired
+};
+
+class Measure extends React.Component {
+  render() {
+    const num = this.props.num;
+
+    return (
+      <svg y={num * this.props.beatSpacing * 4} style={{overflow: 'visible'}}>
+        <line x1="0" x2={WIDTH}
+          y1={this.props.beatSpacing * 0} y2={this.props.beatSpacing * 0} stroke="black" />
+        <line x1="0" x2={WIDTH}
+          y1={this.props.beatSpacing * 1} y2={this.props.beatSpacing * 1} stroke="grey" />
+        <line x1="0" x2={WIDTH}
+          y1={this.props.beatSpacing * 2} y2={this.props.beatSpacing * 2} stroke="grey" />
+        <line x1="0" x2={WIDTH}
+          y1={this.props.beatSpacing * 3} y2={this.props.beatSpacing * 3} stroke="grey" />
+      </svg>
+    );
+  }
+}
+
+pureRender(Measure);
+
+Measure.propTypes = {
+  beatSpacing: React.PropTypes.number.isRequired,
+  num: React.PropTypes.number.isRequired
+};
+
 /**
  * This piece is kept separate because it only re-renders if the following props change:
  *
@@ -36,16 +102,7 @@ class InnerChart extends React.Component {
 
     return range.map((num) => {
       return (
-        <svg key={`measure-${num}`} y={num * this.props.beatSpacing * 4} style={{overflow: 'visible'}}>
-          <line x1="0" x2={WIDTH}
-            y1={this.props.beatSpacing * 0} y2={this.props.beatSpacing * 0} stroke="black" />
-          <line x1="0" x2={WIDTH}
-            y1={this.props.beatSpacing * 1} y2={this.props.beatSpacing * 1} stroke="grey" />
-          <line x1="0" x2={WIDTH}
-            y1={this.props.beatSpacing * 2} y2={this.props.beatSpacing * 2} stroke="grey" />
-          <line x1="0" x2={WIDTH}
-            y1={this.props.beatSpacing * 3} y2={this.props.beatSpacing * 3} stroke="grey" />
-        </svg>
+        <Measure key={`measure-${num}`} beatSpacing={this.props.beatSpacing} num={num} />
       );
     });
   }
@@ -54,33 +111,10 @@ class InnerChart extends React.Component {
     const notes = this.props.notes;
 
     return notes.map((note) => {
-      const beatOffset = note.beat * this.props.beatSpacing;
-      const offset = (this.props.beatSpacing / 24) * note.offset;
-      const y = beatOffset + offset - NOTE_HEIGHT / 2;
-
       const key = `note-${note.beat}-${note.offset}-${note.col}`;
 
-      const color = colorMap[note.col];
-
-      let x, width;
-      if (note.col < 3) {
-        x = note.col * LANE_WIDTH;
-        width = LANE_WIDTH;
-      } else if (note.col === 3) {
-        x = note.col * LANE_WIDTH;
-        width = CENTER_LANE_WIDTH;
-      } else if (note.col > 3) {
-        x = CENTER_LANE_WIDTH + (note.col - 1) * LANE_WIDTH;
-        width = LANE_WIDTH;
-      }
-
       return (
-        <rect key={key}
-          x={x}
-          y={y}
-          width={width}
-          height={NOTE_HEIGHT}
-          fill={color} />
+        <Note key={key} beatSpacing={this.props.beatSpacing} note={note} />
       );
     });
   }
@@ -99,7 +133,7 @@ pureRender(InnerChart);
 
 InnerChart.propTypes = {
   numMeasures: React.PropTypes.number.isRequired,
-  notes: React.PropTypes.instanceOf(List).isRequired,
+  notes: React.PropTypes.instanceOf(Iterable).isRequired,
   beatSpacing: React.PropTypes.number.isRequired
 };
 
@@ -182,7 +216,7 @@ class Chart extends React.Component {
 
 Chart.propTypes = {
   numMeasures: React.PropTypes.number.isRequired,
-  notes: React.PropTypes.instanceOf(List).isRequired,
+  notes: React.PropTypes.instanceOf(Iterable).isRequired,
 
   scrollResolution: React.PropTypes.number.isRequired,
   offset: React.PropTypes.number.isRequired,
