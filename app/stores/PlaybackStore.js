@@ -1,5 +1,4 @@
 import { Store } from 'flummox';
-import AvgTick from '../util/AvgTick';
 
 class PlaybackStore extends Store {
   constructor(flux) {
@@ -18,7 +17,6 @@ class PlaybackStore extends Store {
 
       inPlayback: false,
       playbackOffset: 0,
-      playbackFps: null,
 
       startTime: null
     };
@@ -76,7 +74,6 @@ class PlaybackStore extends Store {
       runLoop = () => {};
     };
 
-    this._avgTick = new AvgTick(100);
     window.requestAnimationFrame(runLoop);
   }
 
@@ -85,11 +82,8 @@ class PlaybackStore extends Store {
 
     const elapsedOffset = dt / this.state.msPerOffset;
 
-    this._avgTick.update(dt);
-
     this.setState({
-      playbackOffset: prevOffset + elapsedOffset,
-      playbackFps: 1000 / this._avgTick.get()
+      playbackOffset: prevOffset + elapsedOffset
     });
   }
 

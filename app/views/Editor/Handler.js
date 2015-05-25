@@ -217,7 +217,7 @@ class Editor extends React.Component {
             {this.renderChart()}
           </HotKeys>
 
-          <SaveLoadForm flux={this.props.flux} fps={this.props.playbackFps} />
+          <SaveLoadForm flux={this.props.flux} />
         </div>
 
         <AudioPlayback playing={this.props.inPlayback} playbackOffset={this.state.offset}
@@ -253,8 +253,7 @@ class EditorOuter extends React.Component {
         playback: (store) => ({
           inPlayback: store.state.inPlayback,
           playbackOffset: store.state.playbackOffset,
-          playbackNotes: store.state.notes,
-          playbackFps: store.state.playbackFps
+          playbackNotes: store.state.notes
         }),
 
         audio: (store) => ({
