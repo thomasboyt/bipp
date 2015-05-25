@@ -199,17 +199,18 @@ class Chart extends React.Component {
     const scrollY = -1 * (height - offset - (this.state.containerHeight * 0.7));
 
     return (
-      <svg width={WIDTH + 100} height={this.state.containerHeight}>
-        <g transform={`translate(0, ${scrollY})`}>
-          <g transform={`translate(0, ${height}) scale(1, -1)`}>
+      <div style={{'overflow': 'hidden', 'flex': '1'}}>
+        <div style={{'transform': `translate(0, ${scrollY + 10}px) scale(1, -1)`}}>
+          <svg width={WIDTH + 100} height={height}>
             {this.renderOffsetBar()}
+
             <InnerChart
               notes={this.props.notes}
               numMeasures={this.props.numMeasures}
               beatSpacing={this.props.beatSpacing} />
-          </g>
-        </g>
-      </svg>
+          </svg>
+        </div>
+      </div>
     );
   }
 }

@@ -212,11 +212,10 @@ class Editor extends React.Component {
     return (
       <span>
         <div className="editor">
-          <div className="chart-container">
-            <HotKeys handlers={this.getHandlers()} keyMap={this.getKeyMap()}>
-              {this.renderChart()}
-            </HotKeys>
-          </div>
+          <HotKeys handlers={this.getHandlers()} keyMap={this.getKeyMap()}
+            className="chart-container">
+            {this.renderChart()}
+          </HotKeys>
 
           <SaveLoadForm flux={this.props.flux} fps={this.props.playbackFps} />
         </div>
