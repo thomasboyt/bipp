@@ -38,7 +38,7 @@ class YouTub extends React.Component {
         ref="tub"
         width="560"
         height="315"
-        src="https://www.youtube.com/embed/LO-6ONFllbA?enablejsapi=1&autoplay=0&controls=0&playsinline=1&showinfo=0&modestbranding=1"
+        src="https://www.youtube.com/embed/LO-6ONFllbA?enablejsapi=1&rel=0&autoplay=0&controls=0&playsinline=1&showinfo=0&modestbranding=1"
         frameBorder="0"
         />
     );
