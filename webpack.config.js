@@ -36,6 +36,8 @@ module.exports = {
     new webpack.optimize.CommonsChunkPlugin('vendor', 'vendor.bundle.js')
   ],
 
+  devtool: 'source-map',
+
   module: {
     loaders: [
       {
