@@ -20,6 +20,14 @@ const colMap = {
   'l': 6
 };
 
+const findSmallestResIdx = function(offset) {
+  for (let i = 0; i < resolutions.length; i++) {
+    if (offset % resolutions[i] === 0) {
+      return i;
+    }
+  }
+};
+
 class Editor extends React.Component {
   constructor(props) {
     super(props);
@@ -99,7 +107,17 @@ class Editor extends React.Component {
       jumpToEnd: (e) => {
         e.preventDefault();
 
-        this.setOffset(this.getMaxOffset());
+        const lastOffset = this.getLastNoteOffset();
+
+        if (lastOffset % this.getScrollResolution !== 0) {
+          this.setState({
+            scrollResolutionIdx: findSmallestResIdx(lastOffset)
+          });
+        }
+
+        this.setState({
+          offset: lastOffset
+        });
       },
 
       zoomOut: () => {
@@ -171,6 +189,13 @@ class Editor extends React.Component {
 
   getMaxOffset() {
     return this.getNumMeasures() * 4 * 24 - 24;
+  }
+
+  getLastNoteOffset() {
+    const lastNote = this.props.songNotes.maxBy((note) => note.beat * 24 + note.offset);
+    const lastOffset = lastNote.beat * 24 + lastNote.offset;
+
+    return lastOffset;
   }
 
   handleUpdateScrollResolution(increase) {
