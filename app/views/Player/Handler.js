@@ -87,6 +87,13 @@ class Player extends React.Component {
       <span>
         {this.props.inPlayback ? this.renderPlayfield() : null}
         <YouTub onPlaying={() => this.handleYoutubePlaying()} />
+        <div className="youtub-overlay" />
+
+        <div className="info-overlay">
+          <p>
+            <a href="http://keribaby.pcmusic.info/">music</a> / <a href="https://www.youtube.com/watch?v=LO-6ONFllbA">video</a>
+          </p>
+        </div>
       </span>
     );
   }
