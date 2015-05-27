@@ -9,7 +9,8 @@
     "quotes": [2, "single"],
     "no-underscore-dangle": [0],
     "new-cap": false,
-    "no-shadow": false
+    "no-shadow": false,
+    "comma-dangle": false
   },
   "ecmaFeatures": {
     "jsx": true

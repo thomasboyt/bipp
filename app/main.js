@@ -1,5 +1,4 @@
-require('normalize.css');
-require('../styles/main.css');
+require('../styles/main.less');
 
 import React from 'react';
 import Router from 'react-router';

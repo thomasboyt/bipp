@@ -1,10 +1,4 @@
-html {
-  box-sizing: border-box;
-}
-
-*, *:before, *:after {
-  box-sizing: inherit;
-}
+@import '~bootstrap/less/bootstrap';
 
 .editor {
   display: flex;
@@ -16,4 +10,6 @@ html {
   flex: 1;
 
   display: flex;  /* causes 100% height in child */
+
+  margin: 5px;  /* Add margin so focus outline is visible */
 }

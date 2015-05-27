@@ -3,8 +3,7 @@ import FluxComponent from 'flummox/component';
 import {HotKeys} from 'react-hotkeys';
 
 import AudioPlayback from './components/AudioPlayback';
-import AudioPicker from './components/AudioPicker';
-import SaveLoadForm from './components/SaveLoadForm';
+import EditorControls from './components/EditorControls';
 import Chart from '../lib/Chart';
 
 
@@ -217,7 +216,7 @@ class Editor extends React.Component {
             {this.renderChart()}
           </HotKeys>
 
-          <SaveLoadForm flux={this.props.flux} />
+          <EditorControls flux={this.props.flux} />
         </div>
 
         <AudioPlayback playing={this.props.inPlayback} playbackOffset={this.state.offset}

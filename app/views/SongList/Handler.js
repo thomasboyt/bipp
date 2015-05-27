@@ -16,9 +16,11 @@ class SongList extends React.Component {
 
   render() {
     return (
-      <ul>
-        {this.renderSongs()}
-      </ul>
+      <div>
+        <ul>
+          {this.renderSongs()}
+        </ul>
+      </div>
     );
   }
 }

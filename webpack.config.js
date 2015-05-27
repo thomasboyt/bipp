@@ -5,13 +5,17 @@ module.exports = {
   entry: {
     app: './app/main.js',
     vendor: [
+      'react',
       'react/addons',
       'react-router',
       'flummox',
       'immutable',
       'lodash',
       'babel-runtime/core-js',
-      'babel-runtime/regenerator'
+      'babel-runtime/regenerator',
+      'react-bootstrap',
+      'react-hotkeys',
+      'react-immutable-render-mixin'
     ]
   },
 
@@ -43,8 +47,15 @@ module.exports = {
         }
       },
       {
-        test: /\.css$/,
-        loader: 'style-loader!css-loader'
+        test: /\.less$/,
+        loader: 'style-loader!css-loader!less-loader'
+      },
+      {
+        test: /(?:\.woff$|\.woff2$|\.ttf$|\.svg$|\.eot$)/,
+        loader: 'file-loader',
+        query: {
+          name: '/font/[hash].[ext]'
+        }
       },
       {
         test: /(?:\.mp3)/,
