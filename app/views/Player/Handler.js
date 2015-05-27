@@ -6,8 +6,15 @@ import FluxComponent from 'flummox/component';
 import AudioPlayback from '../lib/AudioPlayback';
 import Chart from '../lib/Chart';
 
+const DISABLE_VIDEO = document.location.hash.indexOf('novid') !== -1;
+
 class YouTub extends React.Component {
   componentDidMount() {
+    if (DISABLE_VIDEO) {
+      this.props.onPlaying();
+      return;
+    }
+
     const tub = this.refs.tub.getDOMNode();
 
     this._player = new YT.Player(tub, {
@@ -32,6 +39,10 @@ class YouTub extends React.Component {
   }
 
   render() {
+    if (DISABLE_VIDEO) {
+      return <iframe className="youtub" />;
+    }
+
     return (
       <iframe
         className="youtub"
