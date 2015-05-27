@@ -13,15 +13,14 @@ const LANE_WIDTH = 60;
 const CENTER_LANE_WIDTH = 90;
 const NOTE_HEIGHT = 20;
 
-const colorMap = {
-  0: 'orange',
-  1: 'blue',
-  2: 'orange',
-  3: 'green',
-  4: 'orange',
-  5: 'blue',
-  6: 'orange'
-};
+// [fill, stroke]
+const color1 = ['white', 'black'];
+const color2 = ['black', 'white'];
+const centerColor = ['red', 'red'];
+
+const colors = [
+  color1, color2, color1, centerColor, color1, color2, color1
+];
 
 class Note extends React.Component {
   render() {
@@ -31,7 +30,7 @@ class Note extends React.Component {
     const offset = (this.props.beatSpacing / 24) * note.offset;
     const y = beatOffset + offset - NOTE_HEIGHT / 2;
 
-    const color = colorMap[note.col];
+    const color = colors[note.col];
 
     let x, width;
     if (note.col < 3) {
@@ -51,7 +50,8 @@ class Note extends React.Component {
         y={y}
         width={width}
         height={NOTE_HEIGHT}
-        fill={color} />
+        fill={color[0]}
+        stroke={color[1]} />
     );
   }
 }
