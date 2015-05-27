@@ -204,6 +204,7 @@ class Editor extends React.Component {
         beatSpacing={this.state.beatSpacing}
 
         showMeasures
+        showOffsetText
         scrollResolution={this.getScrollResolution()}
         numMeasures={this.getNumMeasures()} />
     );

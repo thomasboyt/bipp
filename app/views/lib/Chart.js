@@ -126,7 +126,7 @@ class InnerChart extends React.Component {
   render() {
     return (
       <g>
-        {this.showMeasures ? this.renderMeasures() : null}
+        {this.props.showMeasures ? this.renderMeasures() : null}
         {this.renderNotes()}
       </g>
     );
@@ -198,7 +198,7 @@ class Chart extends React.Component {
         <rect x="0" y={y - NOTE_HEIGHT / 2} width={WIDTH} height={NOTE_HEIGHT}
           fill="#4A90E2"/>
 
-        {this.showOffsetText ? this.renderOffsetText(y) : null}
+        {this.props.showOffsetText ? this.renderOffsetText(y) : null}
       </g>
     );
   }
@@ -216,10 +216,17 @@ class Chart extends React.Component {
       transform = `translate(0, ${scrollY + 10}px) scale(1, -1)`;
     }
 
+    let width;
+    if (this.props.showOffsetText) {
+      width = WIDTH + 100;
+    } else {
+      width = WIDTH;
+    }
+
     return (
       <div style={{'overflow': 'hidden', 'flex': '1'}}>
         <div style={{'transform': transform}}>
-          <svg width={WIDTH + 100} height={height} className="chart">
+          <svg width={width} height={height} className="chart">
             {this.renderOffsetBar()}
             <InnerChart
               notes={this.props.notes}
