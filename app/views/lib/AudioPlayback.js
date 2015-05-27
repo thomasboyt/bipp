@@ -5,6 +5,10 @@ class AudioPlayback extends React.Component {
     this.volumeNode = this.props.ctx.createGain();
     this.volumeNode.connect(this.props.ctx.destination);
     this.volumeNode.gain.value = 0.5;
+
+    if (this.props.playing) {
+      this.play();
+    }
   }
 
   componentWillUnmount() {

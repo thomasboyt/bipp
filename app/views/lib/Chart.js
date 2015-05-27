@@ -126,7 +126,7 @@ class InnerChart extends React.Component {
   render() {
     return (
       <g>
-        {this.renderMeasures()}
+        {this.showMeasures ? this.renderMeasures() : null}
         {this.renderNotes()}
       </g>
     );
@@ -174,12 +174,22 @@ class Chart extends React.Component {
     });
   }
 
-  renderOffsetBar() {
+  renderOffsetText(y) {
     const noteName = ordinal((24 / this.props.scrollResolution) * 4);
-
     const beat = Math.floor(this.props.offset / 24 / 4) + 1;
+
     const text = `${noteName}\n ${beat}`;
 
+    return (
+      <text x={WIDTH + 10} y={-y} transform={`scale(1, -1)`}
+        style={{fontFamily: 'Helvetica, sans-serif', fontSize: '16px',
+                dominantBaseline: 'central'}}>
+        {text}
+      </text>
+    );
+  }
+
+  renderOffsetBar() {
     // TODO: Setting the `y` of this causes repaints, could a CSS translate work instead?
     const y = this.props.offset * (this.props.beatSpacing / 24);
 
@@ -188,11 +198,7 @@ class Chart extends React.Component {
         <rect x="0" y={y - NOTE_HEIGHT / 2} width={WIDTH} height={NOTE_HEIGHT}
           fill="#4A90E2"/>
 
-        <text x={WIDTH + 10} y={-y} transform={`scale(1, -1)`}
-          style={{fontFamily: 'Helvetica, sans-serif', fontSize: '16px',
-                  dominantBaseline: 'central'}}>
-          {text}
-        </text>
+        {this.showOffsetText ? this.renderOffsetText(y) : null}
       </g>
     );
   }
@@ -213,12 +219,13 @@ class Chart extends React.Component {
     return (
       <div style={{'overflow': 'hidden', 'flex': '1'}}>
         <div style={{'transform': transform}}>
-          <svg width={WIDTH + 100} height={height}>
+          <svg width={WIDTH + 100} height={height} className="chart">
             {this.renderOffsetBar()}
             <InnerChart
               notes={this.props.notes}
               numMeasures={this.props.numMeasures}
-              beatSpacing={this.props.beatSpacing} />
+              beatSpacing={this.props.beatSpacing}
+              showMeasures={this.props.showMeasures} />
           </svg>
         </div>
       </div>

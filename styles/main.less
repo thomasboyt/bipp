@@ -1,6 +1,6 @@
 @import '~bootstrap/less/bootstrap';
 
-.editor {
+.editor, .player {
   display: flex;
   flex-flow: column;
   height: 100vh;
@@ -8,8 +8,22 @@
 
 .chart-container {
   flex: 1;
-
   display: flex;  /* causes 100% height in child */
-
   margin: 5px;  /* Add margin so focus outline is visible */
+}
+
+.player {
+  svg.chart {
+    display: block;
+    background: rgba(0, 0, 0, .5);
+    margin: 0 auto;
+  }
+}
+
+.youtub {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  z-index: -5;
+  top: 0;
 }

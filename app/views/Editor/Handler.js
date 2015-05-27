@@ -2,9 +2,10 @@ import React from 'react';
 import FluxComponent from 'flummox/component';
 import {HotKeys} from 'react-hotkeys';
 
-import AudioPlayback from './components/AudioPlayback';
-import EditorControls from './components/EditorControls';
+import AudioPlayback from '../lib/AudioPlayback';
 import Chart from '../lib/Chart';
+
+import EditorControls from './components/EditorControls';
 
 
 const resolutions = [24, 12, 8, 6, 4, 3];
@@ -198,12 +199,13 @@ class Editor extends React.Component {
   renderChart() {
     return (
       <Chart
-        numMeasures={this.getNumMeasures()}
         notes={this.getNotes()}
-
-        scrollResolution={this.getScrollResolution()}
         offset={this.getOffset()}
-        beatSpacing={this.state.beatSpacing} />
+        beatSpacing={this.state.beatSpacing}
+
+        showMeasures
+        scrollResolution={this.getScrollResolution()}
+        numMeasures={this.getNumMeasures()} />
     );
   }
 

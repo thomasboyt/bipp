@@ -20,6 +20,7 @@ const Note = Record({
 });
 
 const StateRecord = Record({
+  loaded: false,
   notes: null,
   bpm: null
 });
@@ -29,8 +30,9 @@ class SongStore extends ImmutableStore {
     super({StateRecord});
 
     this.state = new StateRecord({
+      loaded: false,
       notes: new List([]),
-      bpm: 120
+      bpm: null
     });
 
 
@@ -63,7 +65,8 @@ class SongStore extends ImmutableStore {
 
     this.setState({
       notes,
-      bpm: data.bpm
+      bpm: data.bpm,
+      loaded: true
     });
   }
 
