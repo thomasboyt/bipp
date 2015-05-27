@@ -40,7 +40,7 @@ class YouTub extends React.Component {
 
   render() {
     if (DISABLE_VIDEO) {
-      return <iframe className="youtub" />;
+      return <iframe className="youtub" frameBorder="0" />;
     }
 
     return (
@@ -112,29 +112,25 @@ class Player extends React.Component {
         notes={this.props.playbackNotes}
         offset={this.props.playbackOffset}
         offsetPositionYPercent={0.9}
-        beatSpacing={120}
+        beatSpacing={160}
         numMeasures={numMeasures} />
     );
   }
 
-  renderPlayfield() {
+  renderAudio() {
     return (
-      <span>
-        <div className="player">
-          <div className="chart-container">
-            {this.renderChart()}
-          </div>
-        </div>
-        <AudioPlayback playing={this.props.inPlayback} playbackOffset={0}
+      <AudioPlayback playing={this.props.inPlayback} playbackOffset={0}
           audioData={this.props.audioData} bpm={this.props.bpm} ctx={this.props.audioCtx} />
-      </span>
     );
   }
 
   renderLoaded() {
     return (
-      <span>
-        {this.props.inPlayback ? this.renderPlayfield() : null}
+      <div className="playfield">
+        {/* PURPOSELY KEPT SEPARATE for styling sanity */}
+        {this.props.inPlayback ? this.renderChart() : null}
+        {this.props.inPlayback ? this.renderAudio() : null}
+
         <YouTub onPlaying={() => this.handleYoutubePlaying()} />
         <div className="youtub-overlay" />
 
@@ -143,13 +139,13 @@ class Player extends React.Component {
             <a href="http://keribaby.pcmusic.info/">music</a> / <a href="https://www.youtube.com/watch?v=LO-6ONFllbA">video</a>
           </p>
         </div>
-      </span>
+      </div>
     );
   }
 
   render() {
     return (
-      <div tabIndex="1" onKeyDown={(e) => this.handleKeyDown(e)} onKeyUp={(e) => this.handleKeyUp(e)}>
+      <div  className="player-container" tabIndex="1" onKeyDown={(e) => this.handleKeyDown(e)} onKeyUp={(e) => this.handleKeyUp(e)}>
         {this.isLoaded() ? this.renderLoaded() : null}
       </div>
     );

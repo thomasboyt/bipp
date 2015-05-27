@@ -1,31 +1,55 @@
 @import '~bootstrap/less/bootstrap';
 
-.editor, .player {
+.editor {
   display: flex;
   flex-flow: column;
   height: 100vh;
-}
 
-.chart-container {
-  flex: 1;
-  display: flex;  /* causes 100% height in child */
-  margin: 5px;  /* Add margin so focus outline is visible */
-}
+  .chart-container {
+    flex: 1;
+    display: flex;  /* causes 100% height in child */
+    margin: 5px;  /* Add margin so focus outline is visible */
+  }
 
-.player {
-  svg.chart {
-    display: block;
-    background: rgba(0, 0, 0, .5);
-    margin: 0 auto;
+  .chart-overflower {
+    flex: 1;  // ????
   }
 }
 
-.youtub {
-  width: 100%;
-  height: 100%;
-  position: fixed;
-  z-index: -5;
-  top: 0;
+@playfield-height: 720px;
+
+.player-container {
+  display: flex;
+  flex-flow: row;
+  height: 100vh;
+  align-items: center;
+
+  background: black;
+
+  .playfield {
+    flex: 1;
+    height: @playfield-height;
+    position: relative;
+
+    .chart-overflower {
+      width: 450px;  // TODO: Setting this is lame
+      max-height: @playfield-height;
+      background: rgba(0, 0, 0, .5);
+      margin: 0 auto;
+      z-index: 3;
+      position: relative;
+    }
+
+    .youtub {
+      position: absolute;
+      z-index: 1;
+
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+  }
 }
 
 /* prevent clicking on youtub */
@@ -33,7 +57,7 @@
   width: 100%;
   height: 100%;
   position: fixed;
-  z-index: -4;
+  z-index: 1;
   top: 0;
 }
 

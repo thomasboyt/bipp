@@ -224,7 +224,7 @@ class Chart extends React.Component {
     }
 
     return (
-      <div style={{'overflow': 'hidden', 'flex': '1'}}>
+      <div className="chart-overflower" style={{'overflow': 'hidden'}}>
         <div style={{'transform': transform}}>
           <svg width={width} height={height} className="chart">
             {this.renderOffsetBar()}
