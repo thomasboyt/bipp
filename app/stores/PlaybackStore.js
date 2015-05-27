@@ -9,7 +9,8 @@ const initialState = {
 
   startTime: null,
   initialOffsetTime: null,
-  msPerOffset: null
+  msPerOffset: null,
+  judgement: null
 };
 
 // ripped off from In the Groove http://r21freak.com/phpbb3/viewtopic.php?p=326033#p326033
