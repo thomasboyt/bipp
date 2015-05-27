@@ -56,9 +56,46 @@ class YouTub extends React.Component {
   }
 }
 
+const colMap = {
+  '83': 0,
+  '68': 1,
+  '70': 2,
+  '32': 3,
+  '74': 4,
+  '75': 5,
+  '76': 6
+};
+
 class Player extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this._keysDown = new Set();
+  }
+
+  componentDidMount() {
+    React.findDOMNode(this).focus();
+  }
+
   isLoaded() {
     return this.props.audioLoaded && this.props.songLoaded;
+  }
+
+  handleKeyDown(e) {
+    const col = colMap[e.keyCode];
+
+    if (col !== undefined) {
+      if (!this._keysDown.has(e.keyCode)) {
+        this.props.flux.getActions('playback').playNote(e.timeStamp, col);
+        this._keysDown.add(e.keyCode);
+      }
+    }
+  }
+
+  handleKeyUp(e) {
+    if (this._keysDown.has(e.keyCode)) {
+      this._keysDown.delete(e.keyCode);
+    }
   }
 
   handleYoutubePlaying() {
@@ -111,7 +148,7 @@ class Player extends React.Component {
 
   render() {
     return (
-      <div>
+      <div tabIndex="1" onKeyDown={(e) => this.handleKeyDown(e)} onKeyUp={(e) => this.handleKeyUp(e)}>
         {this.isLoaded() ? this.renderLoaded() : null}
       </div>
     );
