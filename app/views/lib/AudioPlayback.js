@@ -1,10 +1,17 @@
 import React from 'react/addons';
 
+const MUTE = document.location.hash.indexOf('mute') !== -1;
+
 class AudioPlayback extends React.Component {
   componentWillMount() {
     this.volumeNode = this.props.ctx.createGain();
     this.volumeNode.connect(this.props.ctx.destination);
-    this.volumeNode.gain.value = 0.5;
+
+    if (MUTE) {
+      this.volumeNode.gain.value = 0;
+    } else {
+      this.volumeNode.gain.value = 0.5;
+    }
 
     if (this.props.playing) {
       this.play();
