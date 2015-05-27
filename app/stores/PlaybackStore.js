@@ -12,19 +12,24 @@ const initialState = {
   msPerOffset: null
 };
 
+// ripped off from In the Groove http://r21freak.com/phpbb3/viewtopic.php?p=326033#p326033
 const judgements = [
   [21.5, 'Fantastic'],
   [43, 'Excellent'],
-  [102, 'Good'],
+  [102, 'Great'],
   [135, 'Decent'],
   [180, 'Way Off']
 ];
 
+const missedJudgement = 'Miss';
+
 const maxJudgementThreshold = judgements[4][0];
 
 const judgementFor = function(diff) {
-  diff = Math.abs(diff);
-  return judgements.filter((j) => diff < j[0])[0];
+  const absDiff = Math.abs(diff);
+  const label = judgements.filter((j) => absDiff < j[0])[0][1];
+  const sign = diff < 0 ? '-' : '+';
+  return `${label} ${sign}`;
 };
 
 class PlaybackStore extends Store {
@@ -96,6 +101,7 @@ class PlaybackStore extends Store {
       prev = now;
 
       this._updatePlaybackOffset(dt);
+      this._removeMissedNotes();
 
       window.requestAnimationFrame(runLoop);
     };
@@ -115,6 +121,19 @@ class PlaybackStore extends Store {
     this.setState({
       playbackOffset: prevOffset + elapsedOffset
     });
+  }
+
+  _removeMissedNotes() {
+    const elapsed = Date.now() - this.state.startTime + this.state.initialOffsetTime;
+
+    const missedNotes = this.state.notes.filter((note) => elapsed > note.time + maxJudgementThreshold);
+
+    if (missedNotes.count() > 0) {
+      this.setState({
+        notes: this.state.notes.subtract(missedNotes),
+        judgement: missedJudgement
+      });
+    }
   }
 
 
@@ -142,7 +161,7 @@ class PlaybackStore extends Store {
 
     this.setState({
       notes: this.state.notes.remove(note),
-      judgement: judgementFor(elapsed - note.time)[1]
+      judgement: judgementFor(elapsed - note.time)
     });
   }
 }
