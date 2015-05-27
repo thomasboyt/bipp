@@ -207,7 +207,7 @@ class Chart extends React.Component {
     const height = this.props.numMeasures * this.props.beatSpacing * 4;
     const offset = this.props.offset * (this.props.beatSpacing / 24);
 
-    const scrollY = -1 * (height - offset - (this.state.containerHeight * 0.7));
+    const scrollY = -1 * (height - offset - (this.state.containerHeight * this.props.offsetPositionYPercent));
 
     let transform;
     if (ENABLE_3D_ACCEL) {
@@ -246,7 +246,8 @@ Chart.propTypes = {
 
   scrollResolution: React.PropTypes.number.isRequired,
   offset: React.PropTypes.number.isRequired,
-  beatSpacing: React.PropTypes.number.isRequired
+  beatSpacing: React.PropTypes.number.isRequired,
+  offsetPositionYPercent: React.PropTypes.number.isRequired
 };
 
 export default Chart;

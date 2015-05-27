@@ -111,6 +111,7 @@ class Player extends React.Component {
       <Chart
         notes={this.props.playbackNotes}
         offset={this.props.playbackOffset}
+        offsetPositionYPercent={0.9}
         beatSpacing={120}
         numMeasures={numMeasures} />
     );

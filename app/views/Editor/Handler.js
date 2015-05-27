@@ -231,7 +231,8 @@ class Editor extends React.Component {
         showMeasures
         showOffsetText
         scrollResolution={this.getScrollResolution()}
-        numMeasures={this.getNumMeasures()} />
+        numMeasures={this.getNumMeasures()}
+        offsetPositionYPercent={0.7} />
     );
   }
 
