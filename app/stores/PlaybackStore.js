@@ -1,5 +1,17 @@
 import { Store } from 'flummox';
 
+const initialState = {
+  notes: null,
+  bpm: null,
+
+  inPlayback: false,
+  playbackOffset: null,
+
+  startTime: null,
+  initialOffsetTime: null,
+  msPerOffset: null
+};
+
 class PlaybackStore extends Store {
   constructor(flux) {
     super(flux);
@@ -11,15 +23,15 @@ class PlaybackStore extends Store {
 
     this.register(actionIds.playNote, this.handlePlayNote);
 
-    this.state = {
-      notes: null,
-      bpm: null,
+    this.state = initialState;
+  }
 
-      inPlayback: false,
-      playbackOffset: 0,
+  reset() {
+    if (this.state.inPlayback) {
+      this._stopPlaybackRunLoop();
+    }
 
-      startTime: null
-    };
+    this.setState(initialState);
   }
 
   _getMsPerOffset(bpm) {
@@ -43,10 +55,10 @@ class PlaybackStore extends Store {
 
     this.setState({
       notes,
+      bpm,
       inPlayback: true,
       initialOffsetTime: offset * msPerOffset,
       playbackOffset: offset,
-      bpm,
       startTime: Date.now(),
       msPerOffset
     });

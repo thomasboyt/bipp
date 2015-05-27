@@ -7,25 +7,8 @@ class AudioPlayback extends React.Component {
     this.volumeNode.gain.value = 0.5;
   }
 
-  play() {
-    const src = this.props.ctx.createBufferSource();
-    src.connect(this.volumeNode);
-    src.buffer = this.props.audioData;
-
-    // playbackOffset is in 1/24th beats, convert to # of beats
-    const beatOffset = this.props.playbackOffset / 24;
-
-    // convert # of beats offset to seconds
-    const secPerBeat = 60 / this.props.bpm;
-    const offsetSec = secPerBeat * beatOffset;
-
-    src.start(0, offsetSec);
-
-    this.src = src;
-  }
-
-  stop() {
-    this.src.stop();
+  componentWillUnmount() {
+    this.stop();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -37,6 +20,27 @@ class AudioPlayback extends React.Component {
       } else {
         this.play();
       }
+    }
+  }
+
+  play() {
+    this.src = this.props.ctx.createBufferSource();
+    this.src.buffer = this.props.audioData;
+    this.src.connect(this.volumeNode);
+
+    // playbackOffset is in 1/24th beats, convert to # of beats
+    const beatOffset = this.props.playbackOffset / 24;
+
+    // convert # of beats offset to seconds
+    const secPerBeat = 60 / this.props.bpm;
+    const offsetSec = secPerBeat * beatOffset;
+
+    this.src.start(0, offsetSec);
+  }
+
+  stop() {
+    if (this.src) {
+      this.src.stop();
     }
   }
 

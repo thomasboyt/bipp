@@ -241,6 +241,10 @@ class EditorOuter extends React.Component {
     this.props.flux.getActions('audio').loadAudio(idx);
   }
 
+  componentWillUnmount() {
+    this.props.flux.getStore('playback').reset();
+  }
+
   render() {
     return (
       <FluxComponent flux={this.props.flux} connectToStores={{
