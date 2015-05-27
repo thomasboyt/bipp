@@ -12,6 +12,21 @@ const initialState = {
   msPerOffset: null
 };
 
+const judgements = [
+  [21.5, 'Fantastic'],
+  [43, 'Excellent'],
+  [102, 'Good'],
+  [135, 'Decent'],
+  [180, 'Way Off']
+];
+
+const maxJudgementThreshold = judgements[4][0];
+
+const judgementFor = function(diff) {
+  diff = Math.abs(diff);
+  return judgements.filter((j) => diff < j[0])[0];
+};
+
 class PlaybackStore extends Store {
   constructor(flux) {
     super(flux);
@@ -112,7 +127,7 @@ class PlaybackStore extends Store {
         return false;
       }
 
-      return (time + 75 > note.time && time - 75 < note.time);
+      return (time + maxJudgementThreshold > note.time && time - maxJudgementThreshold < note.time);
 
     }).minBy((note) => note.offset);
   }
@@ -121,8 +136,13 @@ class PlaybackStore extends Store {
     const elapsed = time - this.state.startTime + this.state.initialOffsetTime;
     const note = this._findNoteFor(elapsed, column);
 
+    if (!note) {
+      return;
+    }
+
     this.setState({
-      notes: this.state.notes.remove(note)
+      notes: this.state.notes.remove(note),
+      judgement: judgementFor(elapsed - note.time)[1]
     });
   }
 }

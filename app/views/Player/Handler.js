@@ -6,7 +6,7 @@ import FluxComponent from 'flummox/component';
 import AudioPlayback from '../lib/AudioPlayback';
 import Chart from '../lib/Chart';
 
-const DISABLE_VIDEO = document.location.hash.indexOf('novid') !== -1;
+const DISABLE_VIDEO = document.location.hash.indexOf('vid') === -1;
 
 class YouTub extends React.Component {
   componentDidMount() {
@@ -117,6 +117,14 @@ class Player extends React.Component {
     );
   }
 
+  renderJudgement() {
+    return (
+      <div className="judge">
+        {this.props.judgement}
+      </div>
+    );
+  }
+
   renderAudio() {
     return (
       <AudioPlayback playing={this.props.inPlayback} playbackOffset={0}
@@ -129,6 +137,7 @@ class Player extends React.Component {
       <div className="playfield">
         {/* PURPOSELY KEPT SEPARATE for styling sanity */}
         {this.props.inPlayback ? this.renderChart() : null}
+        {this.props.inPlayback ? this.renderJudgement() : null}
         {this.props.inPlayback ? this.renderAudio() : null}
 
         <YouTub onPlaying={() => this.handleYoutubePlaying()} />
@@ -175,7 +184,8 @@ class PlayerOuter extends React.Component {
         playback: (store) => ({
           inPlayback: store.state.inPlayback,
           playbackOffset: store.state.playbackOffset,
-          playbackNotes: store.state.notes
+          playbackNotes: store.state.notes,
+          judgement: store.state.judgement
         }),
 
         audio: (store) => ({
