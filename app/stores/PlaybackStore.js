@@ -39,13 +39,16 @@ class PlaybackStore extends Store {
 
     notes = notes.toSet();
 
+    const msPerOffset = this._getMsPerOffset(bpm);
+
     this.setState({
-      notes: notes,
+      notes,
       inPlayback: true,
+      initialOffsetTime: offset * msPerOffset,
       playbackOffset: offset,
-      bpm: bpm,
+      bpm,
       startTime: Date.now(),
-      msPerOffset: this._getMsPerOffset(bpm)
+      msPerOffset
     });
   }
 
@@ -103,7 +106,7 @@ class PlaybackStore extends Store {
   }
 
   handlePlayNote({time, column}) {
-    const elapsed = time - this.state.startTime;
+    const elapsed = time - this.state.startTime + this.state.initialOffsetTime;
     const note = this._findNoteFor(elapsed, column);
 
     this.setState({
