@@ -27,10 +27,16 @@ const missedJudgement = 'Miss';
 const maxJudgementThreshold = judgements[4][0];
 
 const judgementFor = function(diff) {
-  const absDiff = Math.abs(diff);
-  const label = judgements.filter((j) => absDiff < j[0])[0][1];
-  const sign = diff < 0 ? '-' : '+';
-  return `${label} ${sign}`;
+  return `${diff.toFixed(2)}`;
+
+  // const absDiff = Math.abs(diff);
+  // const label = judgements.filter((j) => absDiff < j[0])[0][1];
+  //
+  // - : you hit the note before it was supposed to be played (too early)
+  // + : you hit the note after it was supposed to be played (too late)
+  // const sign = diff < 0 ? '-' : '+';
+
+  // return `${label} ${sign}`;
 };
 
 class PlaybackStore extends Store {
