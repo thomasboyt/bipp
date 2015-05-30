@@ -4,5 +4,6 @@ export default [{
   'artist': 'A. G. Cook',
 
   'data': require('../../songs/keri-baby/keri.json'),
-  'musicUrl': require('../../songs/keri-baby/keri.mp3')
+  'musicUrl': require('../../songs/keri-baby/keri.mp3'),
+  'youtubeId': 'Kc0vPo7hFKk'
 }];

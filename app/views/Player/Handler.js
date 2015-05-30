@@ -6,15 +6,10 @@ import FluxComponent from 'flummox/component';
 import AudioPlayback from '../lib/AudioPlayback';
 import Chart from '../lib/Chart';
 
-const DISABLE_VIDEO = document.location.hash.indexOf('vid') === -1;
+const ENABLE_YT_PLAYBACK = document.location.hash.indexOf('enableyt') !== -1;
 
 class YouTub extends React.Component {
   componentDidMount() {
-    if (DISABLE_VIDEO) {
-      this.props.onPlaying();
-      return;
-    }
-
     const tub = this.refs.tub.getDOMNode();
 
     this._player = new YT.Player(tub, {
@@ -28,8 +23,10 @@ class YouTub extends React.Component {
   onPlayerReady(evt) {
     this._player = evt.target;
 
-    this._player.mute();
+    this._player.setVolume(50);
     this._player.playVideo();
+
+    window._player = this._player;
   }
 
   onStateChange(evt) {
@@ -39,9 +36,14 @@ class YouTub extends React.Component {
   }
 
   render() {
-    if (DISABLE_VIDEO) {
-      return <iframe className="youtub" frameBorder="0" />;
-    }
+    let url = `https://www.youtube.com/embed/${this.props.youtubeId}`;
+    url += '?enablejsapi=1';
+    url += '&rel=0';
+    url += '&autoplay=0';
+    url += '&controls=0';
+    url += '&playsinline=1';
+    url += '&showinfo=0';
+    url += '&modestbranding=1';
 
     return (
       <iframe
@@ -49,7 +51,7 @@ class YouTub extends React.Component {
         ref="tub"
         width="560"
         height="315"
-        src="https://www.youtube.com/embed/LO-6ONFllbA?enablejsapi=1&rel=0&autoplay=0&controls=0&playsinline=1&showinfo=0&modestbranding=1"
+        src={url}
         frameBorder="0"
         />
     );
@@ -77,6 +79,12 @@ class Player extends React.Component {
     React.findDOMNode(this).focus();
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.audioLoaded && nextProps.songLoaded && !nextProps.inPlayback && !this.props.inPlayback) {
+      this.props.flux.getActions('playback').enterPlayback(0, this.props.bpm, this.props.songNotes);
+    }
+  }
+
   isLoaded() {
     return this.props.audioLoaded && this.props.songLoaded;
   }
@@ -99,7 +107,9 @@ class Player extends React.Component {
   }
 
   handleYoutubePlaying() {
-    this.props.flux.getActions('playback').enterPlayback(0, this.props.bpm, this.props.songNotes);
+    if (!this.props.inPlayback) {
+      this.props.flux.getActions('playback').enterPlayback(0, this.props.bpm, this.props.songNotes);
+    }
   }
 
   renderChart() {
@@ -126,21 +136,25 @@ class Player extends React.Component {
   }
 
   renderAudio() {
-    return (
-      <AudioPlayback playing={this.props.inPlayback} playbackOffset={0}
+    if (ENABLE_YT_PLAYBACK) {
+      return (
+        <YouTub onPlaying={() => this.handleYoutubePlaying()} youtubeId={this.props.songInfo.get('youtubeId')} />
+      );
+    } else {
+      return (
+        <AudioPlayback playing={this.props.inPlayback} playbackOffset={0}
           audioData={this.props.audioData} bpm={this.props.bpm} ctx={this.props.audioCtx} />
-    );
+      );
+    }
   }
 
   renderLoaded() {
     return (
       <div className="playfield">
-        {/* PURPOSELY KEPT SEPARATE for styling sanity */}
         {this.props.inPlayback ? this.renderChart() : null}
         {this.props.inPlayback ? this.renderJudgement() : null}
-        {this.props.inPlayback ? this.renderAudio() : null}
+        {this.renderAudio()}
 
-        <YouTub onPlaying={() => this.handleYoutubePlaying()} />
         <div className="youtub-overlay" />
 
         <div className="info-overlay">
@@ -154,7 +168,7 @@ class Player extends React.Component {
 
   render() {
     return (
-      <div  className="player-container" tabIndex="1" onKeyDown={(e) => this.handleKeyDown(e)} onKeyUp={(e) => this.handleKeyUp(e)}>
+      <div className="player-container" tabIndex="1" onKeyDown={(e) => this.handleKeyDown(e)} onKeyUp={(e) => this.handleKeyUp(e)}>
         {this.isLoaded() ? this.renderLoaded() : null}
       </div>
     );
@@ -178,7 +192,8 @@ class PlayerOuter extends React.Component {
         song: (store) => ({
           songNotes: store.state.notes,
           bpm: store.state.bpm,
-          songLoaded: store.state.loaded
+          songLoaded: store.state.loaded,
+          songInfo: store.state.songInfo
         }),
 
         playback: (store) => ({

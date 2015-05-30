@@ -22,7 +22,8 @@ const Note = Record({
 const StateRecord = Record({
   loaded: false,
   notes: null,
-  bpm: null
+  bpm: null,
+  songInfo: null
 });
 
 class SongStore extends ImmutableStore {
@@ -62,11 +63,15 @@ class SongStore extends ImmutableStore {
 
     const noteRecords = data.notes.map((noteProps) => new Note(noteProps));
     const notes = new List(noteRecords);
-
     this.setState({
       notes,
       bpm: data.bpm,
-      loaded: true
+      loaded: true,
+      songInfo: {
+        title: song.title,
+        artist: song.artist,
+        youtubeId: song.youtubeId
+      }
     });
   }
 
