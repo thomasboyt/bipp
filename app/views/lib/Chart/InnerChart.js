@@ -1,6 +1,6 @@
 import React from 'react';
 import pureRender from '../../../util/pureRender';
-import { Iterable } from 'immutable';
+import { Iterable, Range } from 'immutable';
 
 import Measure from './Measure';
 import Note from './Note';
