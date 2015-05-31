@@ -100,6 +100,7 @@ class Chart extends React.Component {
               showMeasures={this.props.showMeasures} />
           </svg>
         </div>
+
       </div>
     );
   }

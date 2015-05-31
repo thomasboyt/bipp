@@ -10,7 +10,9 @@ const initialState = {
   startTime: null,
   initialOffsetTime: null,
   msPerOffset: null,
-  judgement: null
+  judgement: null,
+
+  playbackRate: 1
 };
 
 // ripped off from In the Groove http://r21freak.com/phpbb3/viewtopic.php?p=326033#p326033
@@ -49,6 +51,7 @@ class PlaybackStore extends Store {
     this.register(actionIds.exitPlayback, this.handleExitPlayback);
 
     this.register(actionIds.playNote, this.handlePlayNote);
+    this.register(actionIds.updateRate, this.handleUpdateRate);
 
     this.state = initialState;
   }
@@ -68,6 +71,10 @@ class PlaybackStore extends Store {
   }
 
   handleEnterPlayback({offset, bpm, notes}) {
+    const playbackRate = this.state.playbackRate;
+
+    bpm = bpm * playbackRate;
+
     this._createPlaybackRunLoop();
 
     notes = notes.map((note) => {
@@ -169,6 +176,12 @@ class PlaybackStore extends Store {
     this.setState({
       notes: this.state.notes.remove(note),
       judgement: judgementFor(elapsed - note.time)
+    });
+  }
+
+  handleUpdateRate(rate) {
+    this.setState({
+      playbackRate: parseFloat(rate)
     });
   }
 }

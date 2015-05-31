@@ -2,6 +2,7 @@ import React from 'react/addons';
 import {Button, Well} from 'react-bootstrap';
 import Overlay from '../../lib/Overlay';
 import SaveModal from './SaveModal';
+import BlurInput from '../../../../vendor/BlurInput';
 
 class EditorControls extends React.Component {
   constructor(props) {
@@ -28,6 +29,10 @@ class EditorControls extends React.Component {
     });
   }
 
+  handlePlaybackRateChange(val) {
+    this.props.flux.getActions('playback').updateRate(val);
+  }
+
   render() {
     return (
       <Overlay openModal={this.state.openModal}>
@@ -35,6 +40,12 @@ class EditorControls extends React.Component {
           <Button onClick={() => this.handleSave()}>
             Save
           </Button>
+
+          <label>
+            Playback Rate
+            <BlurInput className="input form-control" value={this.props.playbackRate.toString()}
+              onChange={(e) => this.handlePlaybackRateChange(e)} />
+          </label>
         </Well>
       </Overlay>
     );

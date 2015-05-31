@@ -245,11 +245,12 @@ class Editor extends React.Component {
             {this.renderChart()}
           </HotKeys>
 
-          <EditorControls flux={this.props.flux} />
+          <EditorControls flux={this.props.flux} playbackRate={this.props.playbackRate} />
         </div>
 
         <AudioPlayback playing={this.props.inPlayback} playbackOffset={this.state.offset}
-          audioData={this.props.audioData} bpm={this.props.bpm} ctx={this.props.audioCtx} />
+          audioData={this.props.audioData} bpm={this.props.bpm} ctx={this.props.audioCtx}
+          playbackRate={this.props.playbackRate} />
       </span>
     );
   }
@@ -285,7 +286,8 @@ class EditorOuter extends React.Component {
         playback: (store) => ({
           inPlayback: store.state.inPlayback,
           playbackOffset: store.state.playbackOffset,
-          playbackNotes: store.state.notes
+          playbackNotes: store.state.notes,
+          playbackRate: store.state.playbackRate
         }),
 
         audio: (store) => ({

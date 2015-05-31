@@ -12,6 +12,10 @@ class PlaybackActions extends Actions {
   playNote(time, column) {
     return {time, column};
   }
+
+  updateRate(rate) {
+    return rate;
+  }
 }
 
 export default PlaybackActions;
