@@ -118,7 +118,7 @@ Chart.propTypes = {
   numMeasures: React.PropTypes.number.isRequired,
   notes: React.PropTypes.instanceOf(Iterable).isRequired,
 
-  scrollResolution: React.PropTypes.number.isRequired,
+  scrollResolution: React.PropTypes.number,
   offset: React.PropTypes.number.isRequired,
   beatSpacing: React.PropTypes.number.isRequired,
   offsetPositionYPercent: React.PropTypes.number.isRequired
