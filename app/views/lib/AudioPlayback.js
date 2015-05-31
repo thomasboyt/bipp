@@ -39,9 +39,19 @@ class AudioPlayback extends React.Component {
     this.src.buffer = this.props.audioData;
     this.src.connect(this.volumeNode);
 
-    // playbackOffset is in 1/24th beats, convert to # of beats
-    const beatOffset = this.props.playbackOffset / 24;
+    let offsetSec;
+    if (props.playbackOffset !== undefined) {
+      // playbackOffset is in 1/24th beats, convert to # of beats
+      const beatOffset = props.playbackOffset / 24;
 
+      // convert # of beats offset to seconds
+      const secPerBeat = 60 / this.props.bpm;
+      offsetSec = secPerBeat * beatOffset;
+
+    } else if (props.playbackOffsetMs !== undefined) {
+      offsetSec = props.playbackOffsetMs / 1000;
+      console.log(offsetSec);
+    }
 
     this.src.playbackRate.value = props.playbackRate || 1;
 

@@ -140,9 +140,10 @@ class Player extends React.Component {
       return (
         <YouTub onPlaying={() => this.handleYoutubePlaying()} youtubeId={this.props.songInfo.get('youtubeId')} />
       );
+
     } else {
       return (
-        <AudioPlayback playing={this.props.inPlayback} playbackOffset={0}
+        <AudioPlayback playing={this.props.inPlayback} playbackOffsetMs={Date.now() - this.props.startTime}
           audioData={this.props.audioData} bpm={this.props.bpm} ctx={this.props.audioCtx} />
       );
     }
@@ -200,7 +201,8 @@ class PlayerOuter extends React.Component {
           inPlayback: store.state.inPlayback,
           playbackOffset: store.state.playbackOffset,
           playbackNotes: store.state.notes,
-          judgement: store.state.judgement
+          judgement: store.state.judgement,
+          startTime: store.state.startTime
         }),
 
         audio: (store) => ({
