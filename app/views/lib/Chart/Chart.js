@@ -46,7 +46,7 @@ class Chart extends React.Component {
     const text = `${noteName}\n ${beat}`;
 
     return (
-      <text x={WIDTH + 10} y={-y} transform={`scale(1, -1)`}
+      <text x={WIDTH + 10} y={y}
         style={{fontFamily: 'Helvetica, sans-serif', fontSize: '16px',
                 dominantBaseline: 'central'}}>
         {text}
@@ -56,11 +56,11 @@ class Chart extends React.Component {
 
   renderOffsetBar() {
     // TODO: Setting the `y` of this causes repaints, could a CSS translate work instead?
-    const y = this.props.offset * (this.props.beatSpacing / 24);
+    const y = this.state.containerHeight * this.props.offsetPositionYPercent;
 
     return (
       <g>
-        <rect x="0" y={y - NOTE_HEIGHT / 2} width={WIDTH} height={NOTE_HEIGHT}
+        <rect x="0" y={y + NOTE_HEIGHT / 4} width={WIDTH} height={NOTE_HEIGHT}
           fill="#4A90E2"/>
 
         {this.props.showOffsetText ? this.renderOffsetText(y) : null}
@@ -89,10 +89,18 @@ class Chart extends React.Component {
     }
 
     return (
-      <div className="chart-overflower" style={{'overflow': 'hidden'}}>
-        <div style={{'transform': transform}}>
+      <div className="chart-overflower" style={{'overflow': 'hidden', 'position': 'relative'}}>
+
+        <svg width={width} height={this.state.containerHeight}
+          className="offset-bar" style={{position: 'absolute', top: 0, left: 0}}>
+          {this.renderOffsetBar()}
+        </svg>
+
+        <div style={{
+          'position': 'absolute', 'top': 0, 'left': 0,
+          'transform': transform, 'willChange': 'transform'
+        }}>
           <svg width={width} height={height} className="chart">
-            {this.renderOffsetBar()}
             <InnerChart
               notes={this.props.notes}
               numMeasures={this.props.numMeasures}
