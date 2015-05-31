@@ -50,7 +50,6 @@ class AudioPlayback extends React.Component {
 
     } else if (props.playbackOffsetMs !== undefined) {
       offsetSec = props.playbackOffsetMs / 1000;
-      console.log(offsetSec);
     }
 
     this.src.playbackRate.value = props.playbackRate || 1;

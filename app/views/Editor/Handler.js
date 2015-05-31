@@ -267,7 +267,8 @@ class Editor extends React.Component {
 class EditorOuter extends React.Component {
   componentWillMount() {
     const idx = this.props.params.songIdx;
-    this.props.flux.getActions('song').loadSong(idx);
+    const difficulty = this.props.params.difficulty;
+    this.props.flux.getActions('song').loadSong(idx, difficulty);
     this.props.flux.getActions('audio').loadAudio(idx);
   }
 

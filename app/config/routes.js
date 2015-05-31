@@ -11,11 +11,11 @@ module.exports = (
       handler={require('../views/SongList/Handler')} />
 
     <Route name="Editor"
-      path="/edit/:songIdx"
+      path="/edit/:songIdx/:difficulty"
       handler={require('../views/Editor/Handler')} />
 
     <Route name="Player"
-      path="/play/:songIdx"
+      path="/play/:songIdx/:difficulty"
       handler={require('../views/Player/Handler')} />
 
   </Route>

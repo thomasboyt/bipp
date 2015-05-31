@@ -58,14 +58,14 @@ class SongStore extends ImmutableStore {
    * Loading
    */
 
-  handleLoadSong(song) {
-    const data = song.data;
+  handleLoadSong({song, difficulty}) {
+    const chart = song.data[difficulty];
 
-    const noteRecords = data.notes.map((noteProps) => new Note(noteProps));
+    const noteRecords = chart.notes.map((noteProps) => new Note(noteProps));
     const notes = new List(noteRecords);
     this.setState({
       notes,
-      bpm: data.bpm,
+      bpm: chart.bpm,
       loaded: true,
       songInfo: {
         title: song.title,
