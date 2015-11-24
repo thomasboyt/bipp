@@ -1,4 +1,4 @@
-import React from 'react/addons';
+import React from 'react';
 import {Button, Well} from 'react-bootstrap';
 import Overlay from '../../lib/Overlay';
 import SaveModal from './SaveModal';

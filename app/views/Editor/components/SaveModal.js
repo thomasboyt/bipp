@@ -1,4 +1,4 @@
-import React from 'react/addons';
+import React from 'react';
 import {Button, Modal} from 'react-bootstrap';
 
 class SaveModal extends React.Component {

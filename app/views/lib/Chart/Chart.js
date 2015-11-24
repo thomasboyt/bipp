@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import { Iterable } from 'immutable';
 import InnerChart from './InnerChart';
 
@@ -35,7 +36,7 @@ class Chart extends React.Component {
 
   updateHeight() {
     this.setState({
-      containerHeight: React.findDOMNode(this).parentElement.offsetHeight
+      containerHeight: ReactDOM.findDOMNode(this).parentElement.offsetHeight
     });
   }
 

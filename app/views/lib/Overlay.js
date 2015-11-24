@@ -1,4 +1,4 @@
-import React from 'react/addons';
+import React from 'react';
 import {OverlayMixin} from 'react-bootstrap';
 
 const Overlay = React.createClass({

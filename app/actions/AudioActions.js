@@ -1,14 +1,22 @@
-import {Actions} from 'flummox';
+import audioCtx from '../audioContext';
+
+import {
+  LOAD_AUDIO,
+} from '../ActionTypes';
 
 const songs = require('../config/songs');
 
-class AudioActions extends Actions {
-  async loadAudio(songIdx) {
+export function loadAudio(songIdx) {
+  return async function(dispatch) {
     const url = songs[songIdx].musicUrl;
     const resp = await window.fetch(url);
     const data = await resp.arrayBuffer();
-    return data;
-  }
-}
 
-export default AudioActions;
+    audioCtx.decodeAudioData(data, (audioData) => {
+      dispatch({
+        type: LOAD_AUDIO,
+        audioData,
+      });
+    });
+  };
+}

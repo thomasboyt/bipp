@@ -1,21 +1,43 @@
-import {Actions} from 'flummox';
+import {
+  RESET_PLAYBACK,
+  ENTER_PLAYBACK,
+  EXIT_PLAYBACK,
+  PLAY_NOTE,
+  SET_RATE,
+} from '../ActionTypes';
 
-class PlaybackActions extends Actions {
-  enterPlayback(offset, bpm, notes) {
-    return {offset, bpm, notes};
-  }
-
-  exitPlayback() {
-    return {};
-  }
-
-  playNote(time, column) {
-    return {time, column};
-  }
-
-  updateRate(rate) {
-    return rate;
-  }
+export function enterPlayback(offset, bpm, notes) {
+  return {
+    type: ENTER_PLAYBACK,
+    offset,
+    bpm,
+    notes,
+  };
 }
 
-export default PlaybackActions;
+export function exitPlayback() {
+  return {
+    type: EXIT_PLAYBACK,
+  };
+}
+
+export function resetPlayback() {
+  return {
+    type: RESET_PLAYBACK,
+  };
+}
+
+export function playNote(time, column) {
+  return {
+    type: PLAY_NOTE,
+    time,
+    column
+  };
+}
+
+export function updateRate(rate) {
+  return {
+    type: SET_RATE,
+    rate
+  };
+}

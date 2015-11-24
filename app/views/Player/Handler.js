@@ -1,10 +1,12 @@
 /* global YT */
 
 import React from 'react';
-import FluxComponent from 'flummox/component';
+import ReactDOM from 'react-dom';
+import { connect } from 'react-redux';
 
 import AudioPlayback from '../lib/AudioPlayback';
 import Chart from '../lib/Chart';
+import audioCtx from '../../audioContext';
 
 const ENABLE_YT_PLAYBACK = document.location.hash.indexOf('enableyt') !== -1;
 
@@ -76,7 +78,7 @@ class Player extends React.Component {
   }
 
   componentDidMount() {
-    React.findDOMNode(this).focus();
+    ReactDOM.findDOMNode(this).focus();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -144,7 +146,7 @@ class Player extends React.Component {
     } else {
       return (
         <AudioPlayback playing={this.props.inPlayback} playbackOffsetMs={Date.now() - this.props.startTime}
-          audioData={this.props.audioData} bpm={this.props.bpm} ctx={this.props.audioCtx} />
+          audioData={this.props.audioData} bpm={this.props.bpm} ctx={audioCtx} />
       );
     }
   }
@@ -190,32 +192,27 @@ class PlayerOuter extends React.Component {
 
   render() {
     return (
-      <FluxComponent flux={this.props.flux} connectToStores={{
-        song: (store) => ({
-          songNotes: store.state.notes,
-          bpm: store.state.bpm,
-          songLoaded: store.state.loaded,
-          songInfo: store.state.songInfo
-        }),
-
-        playback: (store) => ({
-          inPlayback: store.state.inPlayback,
-          playbackOffset: store.state.playbackOffset,
-          playbackNotes: store.state.notes,
-          judgement: store.state.judgement,
-          startTime: store.state.startTime
-        }),
-
-        audio: (store) => ({
-          audioLoaded: !!store.state.audioData,
-          audioData: store.state.audioData,
-          audioCtx: store.state.ctx
-        })
-      }}>
-        <Player />
-      </FluxComponent>
+      <Player />
     );
   }
 }
 
-export default PlayerOuter;
+function select(state) {
+  return {
+    songNotes: state.chart.notes,
+    bpm: state.chart.bpm,
+    songLoaded: state.chart.loaded,
+    songInfo: state.chart.songInfo,
+
+    inPlayback: state.playback.inPlayback,
+    playbackOffset: state.playback.playbackOffset,
+    playbackNotes: state.playback.notes,
+    judgement: state.playback.judgement,
+    startTime: state.playback.startTime,
+
+    audioLoaded: !!state.audio.audioData,
+    audioData: state.audio.audioData,
+  };
+}
+
+export default connect(select)(PlayerOuter);

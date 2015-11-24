@@ -6,9 +6,8 @@ module.exports = {
     app: './app/main.js',
     vendor: [
       'react',
-      'react/addons',
       'react-router',
-      'flummox',
+      'redux',
       'immutable',
       'lodash',
       'babel-runtime/core-js',

@@ -1,11 +1,29 @@
 import React from 'react';
-import FluxComponent from 'flummox/component';
 import {HotKeys} from 'react-hotkeys';
+import { connect } from 'react-redux';
 
 import AudioPlayback from '../lib/AudioPlayback';
 import Chart from '../lib/Chart';
 
 import EditorControls from './components/EditorControls';
+
+import audioCtx from '../../audioContext';
+
+import {
+  resetPlayback,
+  enterPlayback,
+  exitPlayback,
+  playNote,
+} from '../../actions/PlaybackActions';
+
+import {
+  toggleNote,
+  loadSong,
+} from '../../actions/ChartActions';
+
+import {
+  loadAudio,
+} from '../../actions/AudioActions';
 
 
 const resolutions = [24, 12, 8, 6, 4, 3];
@@ -141,23 +159,23 @@ class Editor extends React.Component {
       },
 
       enterPlayback: () => {
-        this.props.flux.getActions('playback').enterPlayback(this.state.offset, this.props.bpm, this.getNotes());
+        this.props.dispatch(enterPlayback(this.state.offset, this.props.bpm, this.getNotes()));
       },
 
       exitPlayback: () => {
-        this.props.flux.getActions('playback').exitPlayback();
+        this.props.dispatch(exitPlayback());
       },
 
       toggleNote: (e, key) => {
         const col = colMap[key];
 
-        this.props.flux.getActions('song').toggleNote(this.state.offset, col);
+        this.props.dispatch(toggleNote(this.state.offset, col));
       },
 
       playNote: (e, key) => {
         const col = colMap[key];
 
-        this.props.flux.getActions('playback').playNote(Date.now(), col);
+        this.props.dispatch(playNote(Date.now(), col));
       }
     };
   }
@@ -183,8 +201,8 @@ class Editor extends React.Component {
   }
 
   getNumMeasures() {
-    const len = this.props.flux.getStore('audio').getLength();
-    return this.props.flux.getStore('song').getNumMeasures(len);
+    const numBeats = Math.ceil(this.props.bpm / (60 / this.props.audioData.duration));
+    return Math.ceil(numBeats / 4);
   }
 
   getMaxOffset() {
@@ -249,7 +267,7 @@ class Editor extends React.Component {
         </div>
 
         <AudioPlayback playing={this.props.inPlayback} playbackOffset={this.state.offset}
-          audioData={this.props.audioData} bpm={this.props.bpm} ctx={this.props.audioCtx}
+          audioData={this.props.audioData} bpm={this.props.bpm} ctx={audioCtx}
           playbackRate={this.props.playbackRate} />
       </span>
     );
@@ -268,38 +286,33 @@ class EditorOuter extends React.Component {
   componentWillMount() {
     const idx = this.props.params.songIdx;
     const difficulty = this.props.params.difficulty;
-    this.props.flux.getActions('song').loadSong(idx, difficulty);
-    this.props.flux.getActions('audio').loadAudio(idx);
+    this.props.dispatch(loadSong(idx, difficulty));
+    this.props.dispatch(loadAudio(idx));
   }
 
   componentWillUnmount() {
-    this.props.flux.getStore('playback').reset();
+    this.props.dispatch(resetPlayback());
   }
 
   render() {
     return (
-      <FluxComponent flux={this.props.flux} connectToStores={{
-        song: (store) => ({
-          songNotes: store.state.notes,
-          bpm: store.state.bpm
-        }),
-
-        playback: (store) => ({
-          inPlayback: store.state.inPlayback,
-          playbackOffset: store.state.playbackOffset,
-          playbackNotes: store.state.notes,
-          playbackRate: store.state.playbackRate
-        }),
-
-        audio: (store) => ({
-          audioData: store.state.audioData,
-          audioCtx: store.state.ctx
-        })
-      }}>
-        <Editor />
-      </FluxComponent>
+      <Editor {...this.props} />
     );
   }
 }
 
-export default EditorOuter;
+function select(state) {
+  return {
+    songNotes: state.chart.notes,
+    bpm: state.chart.bpm,
+
+    inPlayback: state.playback.inPlayback,
+    playbackOffset: state.playback.playbackOffset,
+    playbackNotes: state.playback.notes,
+    playbackRate: state.playback.playbackRate,
+
+    audioData: state.audio.audioData,
+  };
+}
+
+export default connect(select)(EditorOuter);

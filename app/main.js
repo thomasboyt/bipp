@@ -1,21 +1,24 @@
 require('../styles/main.less');
 
 import React from 'react';
+import ReactDOM from 'react-dom';
 import Router from 'react-router';
 
 import routes from './config/routes';
-import flux from './flux';
+import {Provider} from 'react-redux';
+
+import createStore from './store';
 
 const router = Router.create({
   routes: routes
 });
 
-import FluxComponent from 'flummox/component';
+const store = createStore();
 
 router.run((Handler, state) => {
-  React.render((
-    <FluxComponent flux={flux}>
+  ReactDOM.render((
+    <Provider store={store}>
       <Handler params={state.params} query={state.query} />
-    </FluxComponent>
+    </Provider>
   ), document.getElementById('container'));
 });

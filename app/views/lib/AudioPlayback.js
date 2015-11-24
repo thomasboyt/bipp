@@ -1,4 +1,4 @@
-import React from 'react/addons';
+import React from 'react';
 
 const MUTE = document.location.hash.indexOf('mute') !== -1;
 
