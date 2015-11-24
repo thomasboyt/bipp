@@ -1,8 +1,14 @@
 import React from 'react';
+import { connect } from 'react-redux';
+
 import {Button, Well} from 'react-bootstrap';
 import Overlay from '../../lib/Overlay';
 import SaveModal from './SaveModal';
 import BlurInput from '../../../../vendor/BlurInput';
+
+import {
+  updateRate
+} from '../../../actions/PlaybackActions';
 
 class EditorControls extends React.Component {
   constructor(props) {
@@ -30,7 +36,7 @@ class EditorControls extends React.Component {
   }
 
   handlePlaybackRateChange(val) {
-    this.props.flux.getActions('playback').updateRate(val);
+    this.props.dispatch(updateRate(val));
   }
 
   render() {
@@ -52,4 +58,4 @@ class EditorControls extends React.Component {
   }
 }
 
-export default EditorControls;
+export default connect()(EditorControls);

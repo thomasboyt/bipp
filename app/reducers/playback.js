@@ -52,20 +52,83 @@ const judgementFor = function(diff) {
   // return `${label} ${sign}`;
 };
 
+function getMsPerOffset(bpm) {
+  const secPerBeat = 60 / bpm;
+  const secPerThirtySecond = secPerBeat / 24;
+  return secPerThirtySecond * 1000;
+}
+
+function findNoteFor(notes, time, column) {
+  // 1. Calculate offset for time
+  // 2. Calculate offset for time-50ms and time+50ms
+  // 3. Return *earliest* note filtered for in that range with matching column
+  return notes.filter((note) => {
+    if (note.col !== column) {
+      return false;
+    }
+
+    return (time + maxJudgementThreshold > note.time && time - maxJudgementThreshold < note.time);
+
+  }).minBy((note) => note.offset);
+}
+
 const playbackReducer = createImmutableReducer(initialState, {
   [RESET_PLAYBACK]: function(action, state) {
+    if (state.inPlayback) {
+      // TODO: Stop runloop
+    }
+
+    return initialState;
   },
 
   [ENTER_PLAYBACK]: function({offset, bpm, notes}, state) {
+    const playbackRate = state.playbackRate;
+
+    bpm = bpm * playbackRate;
+
+    // TODO: Start runloop
+
+    const msPerOffset = getMsPerOffset(bpm);
+
+    notes = notes.map((note) => {
+      const totalOffset = note.offset + note.beat * 24;
+      const time = totalOffset * msPerOffset;
+      return note.set('time', time);
+    });
+
+    notes = notes.toSet();
+
+    return state
+      .set('notes', notes)
+      .set('bpm', bpm)
+      .set('inPlayback', true)
+      .set('initialOffsetTime', offset * msPerOffset)
+      .set('playbackOffset', offset)
+      .set('startTime', Date.now())
+      .set('msPerOffset', msPerOffset);
   },
 
   [EXIT_PLAYBACK]: function(action, state) {
+    // TODO: Stop runloop
+
+    return state.set('inPlayback', false);
   },
 
   [PLAY_NOTE]: function({time, column}, state) {
+    const elapsed = time - state.startTime + state.initialOffsetTime;
+    const note = findNoteFor(state.notes, elapsed, column);
+
+    if (!note) {
+      return state;
+    }
+
+    return state
+      .update('notes', (notes) => notes.remove(note))
+      .set('judgement', judgementFor(elapsed - note.time));
   },
 
   [SET_RATE]: function({rate}, state) {
+    return state.set('playbackRate', parseFloat(rate));
   },
 });
 
