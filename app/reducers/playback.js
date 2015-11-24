@@ -7,6 +7,7 @@ import {
   EXIT_PLAYBACK,
   PLAY_NOTE,
   SET_RATE,
+  PLAYBACK_TICK,
 } from '../ActionTypes';
 
 const State = new Record({
@@ -72,12 +73,28 @@ function findNoteFor(notes, time, column) {
   }).minBy((note) => note.offset);
 }
 
-const playbackReducer = createImmutableReducer(initialState, {
-  [RESET_PLAYBACK]: function(action, state) {
-    if (state.inPlayback) {
-      // TODO: Stop runloop
-    }
+function updatePlaybackOffset(state, dt) {
+  const deltaOffset = dt / state.msPerOffset;
 
+  return state.update('playbackOffset', (offset) => offset + deltaOffset);
+}
+
+function sweepMissedNotes(state) {
+  const elapsed = Date.now() - state.startTime + state.initialOffsetTime;
+
+  const missedNotes = state.notes.filter((note) => elapsed > note.time + maxJudgementThreshold);
+
+  if (missedNotes.count() > 0) {
+    return state
+      .update('notes', (notes) => notes.subtract(missedNotes))
+      .set('judgement', missedJudgement);
+  } else {
+    return state;
+  }
+}
+
+const playbackReducer = createImmutableReducer(initialState, {
+  [RESET_PLAYBACK]: function() {
     return initialState;
   },
 
@@ -85,8 +102,6 @@ const playbackReducer = createImmutableReducer(initialState, {
     const playbackRate = state.playbackRate;
 
     bpm = bpm * playbackRate;
-
-    // TODO: Start runloop
 
     const msPerOffset = getMsPerOffset(bpm);
 
@@ -129,6 +144,11 @@ const playbackReducer = createImmutableReducer(initialState, {
 
   [SET_RATE]: function({rate}, state) {
     return state.set('playbackRate', parseFloat(rate));
+  },
+
+  [PLAYBACK_TICK]: function({dt}, state) {
+    const nextState = updatePlaybackOffset(state, dt);
+    return sweepMissedNotes(nextState);
   },
 });
 
