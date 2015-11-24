@@ -9,7 +9,7 @@ export default [
     },
 
     'musicUrl': require('../../songs/keri-baby/keri.mp3'),
-    'youtubeId': 'Kc0vPo7hFKk'
+    'youtubeId': 'NoJfEv4eqzs'
   },
   {
     'title': 'Click',

@@ -104,7 +104,7 @@ class Player extends React.Component {
   renderAudio() {
     if (ENABLE_YT_PLAYBACK) {
       return (
-        <YouTube onPlaying={() => this.handleYoutubePlaying()} youtubeId={this.props.songInfo.get('youtubeId')} />
+        <YouTube onPlaying={() => this.handleYoutubePlaying()} youtubeId={this.props.songInfo.youtubeId} />
       );
 
     } else {
