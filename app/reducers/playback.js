@@ -15,7 +15,7 @@ const State = new Record({
   bpm: null,
 
   inPlayback: false,
-  playbackOffset: null,
+  playbackOffset: 0,
 
   startTime: null,
   initialOffsetTime: null,

@@ -1,5 +1,3 @@
-/* global YT */
-
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
@@ -8,57 +6,23 @@ import AudioPlayback from '../lib/AudioPlayback';
 import Chart from '../lib/Chart';
 import audioCtx from '../../audioContext';
 
+import YouTube from './YouTube';
+
+import {
+  enterPlayback,
+  resetPlayback,
+  playNote,
+} from '../../actions/PlaybackActions';
+
+import {
+  loadSong,
+} from '../../actions/ChartActions';
+
+import {
+  loadAudio,
+} from '../../actions/AudioActions';
+
 const ENABLE_YT_PLAYBACK = document.location.hash.indexOf('enableyt') !== -1;
-
-class YouTub extends React.Component {
-  componentDidMount() {
-    const tub = this.refs.tub.getDOMNode();
-
-    this._player = new YT.Player(tub, {
-      events: {
-        onReady: (e) => this.onPlayerReady(e),
-        onStateChange: (e) => this.onStateChange(e)
-      }
-    });
-  }
-
-  onPlayerReady(evt) {
-    this._player = evt.target;
-
-    this._player.setVolume(50);
-    this._player.playVideo();
-
-    window._player = this._player;
-  }
-
-  onStateChange(evt) {
-    if (evt.data === YT.PlayerState.PLAYING) {
-      this.props.onPlaying();
-    }
-  }
-
-  render() {
-    let url = `https://www.youtube.com/embed/${this.props.youtubeId}`;
-    url += '?enablejsapi=1';
-    url += '&rel=0';
-    url += '&autoplay=0';
-    url += '&controls=0';
-    url += '&playsinline=1';
-    url += '&showinfo=0';
-    url += '&modestbranding=1';
-
-    return (
-      <iframe
-        className="youtub"
-        ref="tub"
-        width="560"
-        height="315"
-        src={url}
-        frameBorder="0"
-        />
-    );
-  }
-}
 
 const colMap = {
   '83': 0,
@@ -83,7 +47,7 @@ class Player extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.audioLoaded && nextProps.songLoaded && !nextProps.inPlayback && !this.props.inPlayback) {
-      this.props.flux.getActions('playback').enterPlayback(0, this.props.bpm, this.props.songNotes);
+      this.props.dispatch(enterPlayback(0, this.props.bpm, this.props.songNotes));
     }
   }
 
@@ -96,7 +60,7 @@ class Player extends React.Component {
 
     if (col !== undefined) {
       if (!this._keysDown.has(e.keyCode)) {
-        this.props.flux.getActions('playback').playNote(e.timeStamp, col);
+        this.props.dispatch(playNote(e.timeStamp, col));
         this._keysDown.add(e.keyCode);
       }
     }
@@ -110,7 +74,7 @@ class Player extends React.Component {
 
   handleYoutubePlaying() {
     if (!this.props.inPlayback) {
-      this.props.flux.getActions('playback').enterPlayback(0, this.props.bpm, this.props.songNotes);
+     this.props.dispatch(enterPlayback(0, this.props.bpm, this.props.songNotes));
     }
   }
 
@@ -140,7 +104,7 @@ class Player extends React.Component {
   renderAudio() {
     if (ENABLE_YT_PLAYBACK) {
       return (
-        <YouTub onPlaying={() => this.handleYoutubePlaying()} youtubeId={this.props.songInfo.get('youtubeId')} />
+        <YouTube onPlaying={() => this.handleYoutubePlaying()} youtubeId={this.props.songInfo.get('youtubeId')} />
       );
 
     } else {
@@ -182,17 +146,17 @@ class PlayerOuter extends React.Component {
   componentWillMount() {
     const idx = this.props.params.songIdx;
     const difficulty = this.props.params.difficulty;
-    this.props.flux.getActions('song').loadSong(idx, difficulty);
-    this.props.flux.getActions('audio').loadAudio(idx);
+    this.props.dispatch(loadSong(idx, difficulty));
+    this.props.dispatch(loadAudio(idx));
   }
 
   componentWillUnmount() {
-    this.props.flux.getStore('playback').reset();
+    this.props.dispatch(resetPlayback());
   }
 
   render() {
     return (
-      <Player />
+      <Player {...this.props} />
     );
   }
 }
