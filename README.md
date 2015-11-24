@@ -1,4 +1,4 @@
-# Loud Places
+# Bipp
 
 [![Stories in Ready](https://badge.waffle.io/thomasboyt/loud-places.svg?label=ready&title=Ready)](http://waffle.io/thomasboyt/loud-places)
 

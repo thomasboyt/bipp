@@ -8,9 +8,9 @@
     "strict": 0,
     "quotes": [2, "single"],
     "no-underscore-dangle": [0],
-    "new-cap": false,
-    "no-shadow": false,
-    "comma-dangle": false,
+    "new-cap": 0,
+    "no-shadow": 0,
+    "comma-dangle": 0,
 
     // react stuff
     "react/jsx-boolean-value": 1,
