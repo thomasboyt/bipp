@@ -10,6 +10,13 @@ import {
   updateRate
 } from '../../../actions/PlaybackActions';
 
+
+function serializeData(chartData) {
+  const {notes, bpm} = chartData;
+
+  return JSON.stringify({notes, bpm});
+}
+
 class EditorControls extends React.Component {
   constructor(props) {
     super(props);
@@ -24,7 +31,7 @@ class EditorControls extends React.Component {
   }
 
   handleSave() {
-    const serialized = this.props.flux.getStore('song').serializeData();
+    const serialized = serializeData(this.props.chartData);
 
     const modal = (
       <SaveModal data={serialized} onClose={() => this.requestCloseModal()} />
@@ -58,4 +65,10 @@ class EditorControls extends React.Component {
   }
 }
 
-export default connect()(EditorControls);
+function select(state) {
+  return {
+    chartData: state.chart
+  };
+}
+
+export default connect(select)(EditorControls);
