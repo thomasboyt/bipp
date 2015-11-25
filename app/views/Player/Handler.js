@@ -120,7 +120,8 @@ class Player extends React.Component {
 
     } else {
       return (
-        <AudioPlayback playing={this.props.inPlayback} playbackOffsetMs={Date.now() - this.props.startTime}
+        <AudioPlayback playing={this.props.inPlayback}
+          playbackOffset={this.props.playbackOffset}
           audioData={this.props.audioData} bpm={this.props.bpm} ctx={audioCtx} />
       );
     }
@@ -164,7 +165,6 @@ function select(state) {
     playbackOffset: state.playback.playbackOffset,
     playbackNotes: state.playback.notes,
     judgement: state.playback.judgement,
-    startTime: state.playback.startTime,
 
     audioLoaded: !!state.audio.audioData,
     audioData: state.audio.audioData,

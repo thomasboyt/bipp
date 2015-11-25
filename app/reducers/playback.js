@@ -10,6 +10,20 @@ import {
   PLAYBACK_TICK,
 } from '../ActionTypes';
 
+/*
+ * Constants
+ */
+
+import {judgements, missedJudgement} from '../config/constants';
+
+const maxJudgementThreshold = judgements[judgements.length - 1][0];
+
+const OFFSET_PADDING = 24 * 4;  // One measure
+
+/*
+ * Initial state
+ */
+
 const State = new Record({
   notes: null,
   bpm: null,
@@ -27,20 +41,11 @@ const State = new Record({
 
 const initialState = new State();
 
+/*
+ * Utility methods
+ */
 
-const judgements = [
-  [21.5, 'Fantastic'],
-  [43, 'Excellent'],
-  [102, 'Great'],
-  [135, 'Decent'],
-  [180, 'Way Off']
-];
-
-const missedJudgement = 'Miss';
-
-const maxJudgementThreshold = judgements[4][0];
-
-const judgementFor = function(diff) {
+function judgementFor(diff) {
   return `${diff.toFixed(2)}`;
 
   // const absDiff = Math.abs(diff);
@@ -93,6 +98,10 @@ function sweepMissedNotes(state) {
   }
 }
 
+/*
+ * Reducer
+ */
+
 const playbackReducer = createImmutableReducer(initialState, {
   [RESET_PLAYBACK]: function() {
     return initialState;
@@ -104,6 +113,8 @@ const playbackReducer = createImmutableReducer(initialState, {
     bpm = bpm * playbackRate;
 
     const msPerOffset = getMsPerOffset(bpm);
+
+    const offsetWithStartPadding = offset - OFFSET_PADDING;
 
     notes = notes.map((note) => {
       const totalOffset = note.offset + note.beat * 24;
@@ -117,8 +128,8 @@ const playbackReducer = createImmutableReducer(initialState, {
       .set('notes', notes)
       .set('bpm', bpm)
       .set('inPlayback', true)
-      .set('initialOffsetTime', offset * msPerOffset)
-      .set('playbackOffset', offset)
+      .set('initialOffsetTime', offsetWithStartPadding * msPerOffset)
+      .set('playbackOffset', offsetWithStartPadding)
       .set('startTime', Date.now())
       .set('msPerOffset', msPerOffset);
   },

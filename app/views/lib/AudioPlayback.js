@@ -54,7 +54,13 @@ class AudioPlayback extends React.Component {
 
     this.src.playbackRate.value = props.playbackRate || 1;
 
-    this.src.start(0, offsetSec);
+    // Allow for offsetSec < 0, meaning a delay should be added before playback begins
+    if (offsetSec < 0) {
+      const delaySec = Math.abs(offsetSec);
+      this.src.start(props.ctx.currentTime + delaySec, 0);
+    } else {
+      this.src.start(0, offsetSec);
+    }
   }
 
   stop() {

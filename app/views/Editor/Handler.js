@@ -277,7 +277,7 @@ class Editor extends React.Component {
           <EditorControls flux={this.props.flux} playbackRate={this.props.playbackRate} />
         </div>
 
-        <AudioPlayback playing={this.props.inPlayback} playbackOffset={this.state.offset}
+        <AudioPlayback playing={this.props.inPlayback} playbackOffset={this.props.playbackOffset}
           audioData={this.props.audioData} bpm={this.props.bpm} ctx={audioCtx}
           playbackRate={this.props.playbackRate} />
       </span>
