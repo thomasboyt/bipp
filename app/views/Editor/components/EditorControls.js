@@ -14,7 +14,9 @@ import {
 function serializeData(chartData) {
   const {notes, bpm} = chartData;
 
-  return JSON.stringify({notes, bpm});
+  const serialized = JSON.stringify({notes, bpm});
+
+  return serialized;
 }
 
 class EditorControls extends React.Component {
@@ -48,19 +50,19 @@ class EditorControls extends React.Component {
 
   render() {
     return (
-      <Overlay openModal={this.state.openModal}>
-        <Well style={{marginBottom: 0}}>
-          <Button onClick={() => this.handleSave()}>
-            Save
-          </Button>
+      <Well style={{marginBottom: 0}}>
+        <Button onClick={() => this.handleSave()}>
+          Save
+        </Button>
 
-          <label>
-            Playback Rate
-            <BlurInput className="input form-control" value={this.props.playbackRate.toString()}
-              onChange={(e) => this.handlePlaybackRateChange(e)} />
-          </label>
-        </Well>
-      </Overlay>
+        <label>
+          Playback Rate
+          <BlurInput className="input form-control" value={this.props.playbackRate.toString()}
+            onChange={(e) => this.handlePlaybackRateChange(e)} />
+        </label>
+
+        {this.state.openModal}
+      </Well>
     );
   }
 }

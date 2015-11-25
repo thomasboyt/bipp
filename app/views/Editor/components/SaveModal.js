@@ -5,7 +5,7 @@ class SaveModal extends React.Component {
 
   // Select all data text on click
   handleClickData() {
-    const el = this.refs.data.getDOMNode();
+    const el = this.refs.data;
 
     const selection = window.getSelection();
     const range = document.createRange();
@@ -16,20 +16,25 @@ class SaveModal extends React.Component {
 
   render() {
     return (
-      <Modal title="Save" onRequestHide={this.props.onClose}>
-        <div className="modal-body">
+      <Modal show title="Save" onHide={this.props.onClose}>
+        <Modal.Header>
+          <Modal.Title>
+            Save
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
           <p>
             (click to select)
           </p>
           <pre style={{'height': '300px'}} onClick={() => this.handleClickData()} ref="data">
             {this.props.data}
           </pre>
-        </div>
-        <div className='modal-footer'>
+        </Modal.Body>
+        <Modal.Footer>
           <Button onClick={this.props.onClose}>
             Close
           </Button>
-        </div>
+        </Modal.Footer>
       </Modal>
     );
   }
