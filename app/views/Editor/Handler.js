@@ -57,6 +57,17 @@ class Editor extends React.Component {
     };
   }
 
+  componentWillMount() {
+    const idx = this.props.params.songIdx;
+    const difficulty = this.props.params.difficulty;
+    this.props.dispatch(loadSong(idx, difficulty));
+    this.props.dispatch(loadAudio(idx));
+  }
+
+  componentWillUnmount() {
+    this.props.dispatch(resetPlayback());
+  }
+
   getKeyMap() {
     if (this.props.inPlayback) {
       return {
@@ -282,25 +293,6 @@ class Editor extends React.Component {
   }
 }
 
-class EditorOuter extends React.Component {
-  componentWillMount() {
-    const idx = this.props.params.songIdx;
-    const difficulty = this.props.params.difficulty;
-    this.props.dispatch(loadSong(idx, difficulty));
-    this.props.dispatch(loadAudio(idx));
-  }
-
-  componentWillUnmount() {
-    this.props.dispatch(resetPlayback());
-  }
-
-  render() {
-    return (
-      <Editor {...this.props} />
-    );
-  }
-}
-
 function select(state) {
   return {
     songNotes: state.chart.notes,
@@ -315,4 +307,4 @@ function select(state) {
   };
 }
 
-export default connect(select)(EditorOuter);
+export default connect(select)(Editor);

@@ -41,6 +41,17 @@ class Player extends React.Component {
     this._keysDown = new Set();
   }
 
+  componentWillMount() {
+    const idx = this.props.params.songIdx;
+    const difficulty = this.props.params.difficulty;
+    this.props.dispatch(loadSong(idx, difficulty));
+    this.props.dispatch(loadAudio(idx));
+  }
+
+  componentWillUnmount() {
+    this.props.dispatch(resetPlayback());
+  }
+
   componentDidMount() {
     ReactDOM.findDOMNode(this).focus();
   }
@@ -142,25 +153,6 @@ class Player extends React.Component {
   }
 }
 
-class PlayerOuter extends React.Component {
-  componentWillMount() {
-    const idx = this.props.params.songIdx;
-    const difficulty = this.props.params.difficulty;
-    this.props.dispatch(loadSong(idx, difficulty));
-    this.props.dispatch(loadAudio(idx));
-  }
-
-  componentWillUnmount() {
-    this.props.dispatch(resetPlayback());
-  }
-
-  render() {
-    return (
-      <Player {...this.props} />
-    );
-  }
-}
-
 function select(state) {
   return {
     songNotes: state.chart.notes,
@@ -179,4 +171,4 @@ function select(state) {
   };
 }
 
-export default connect(select)(PlayerOuter);
+export default connect(select)(Player);
