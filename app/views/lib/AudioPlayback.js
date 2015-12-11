@@ -1,6 +1,6 @@
 import React from 'react';
 
-const MUTE = document.location.hash.indexOf('mute') !== -1;
+const MUTE = document.location.search.indexOf('mute') !== -1;
 
 class AudioPlayback extends React.Component {
   componentWillMount() {

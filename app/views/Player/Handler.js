@@ -22,7 +22,7 @@ import {
   loadAudio,
 } from '../../actions/AudioActions';
 
-const ENABLE_YT_PLAYBACK = document.location.hash.indexOf('enableyt') !== -1;
+const ENABLE_YT_PLAYBACK = document.location.search.indexOf('enableyt') !== -1;
 
 const colMap = {
   '83': 0,
