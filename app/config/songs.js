@@ -1,12 +1,9 @@
-export default [
-  {
-    'title': 'Click',
-    'artist': 'Metronomer',
+// This loads every file matching `../../songs/*/index.js`
 
-    'data': {
-      'easy': require('../../songs/click/click.json'),
-    },
+const req = require.context('../../songs', true, /\/index.js$/);
 
-    'musicUrl': require('../../songs/click/click.mp3')
-  }
-];
+const songs = req.keys().map((key) => {
+  return req(key).default;
+});
+
+export default songs;
