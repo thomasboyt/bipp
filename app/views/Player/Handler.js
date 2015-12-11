@@ -34,9 +34,17 @@ const colMap = {
   '76': 6
 };
 
+const STATE_LOADING = 'loading';
+const STATE_LOADED = 'loaded';
+const STATE_PLAYING = 'playing';
+
 class Player extends React.Component {
   constructor(props) {
     super(props);
+
+    this.state = {
+      beatSpacing: 160,
+    };
 
     this._keysDown = new Set();
   }
@@ -56,23 +64,45 @@ class Player extends React.Component {
     ReactDOM.findDOMNode(this).focus();
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.audioLoaded && nextProps.songLoaded && !nextProps.inPlayback && !this.props.inPlayback) {
-      this.props.dispatch(enterPlayback(0, this.props.bpm, this.props.songNotes));
+  getState() {
+    if (this.props.inPlayback) {
+      return STATE_PLAYING;
+    } else if (this.props.audioLoaded && this.props.songLoaded) {
+      return STATE_LOADED;
+    } else {
+      return STATE_LOADING;
     }
   }
 
-  isLoaded() {
-    return this.props.audioLoaded && this.props.songLoaded;
-  }
-
   handleKeyDown(e) {
-    const col = colMap[e.keyCode];
+    if (this.getState() === STATE_PLAYING) {
+      const col = colMap[e.keyCode];
 
-    if (col !== undefined) {
-      if (!this._keysDown.has(e.keyCode)) {
-        this.props.dispatch(playNote(e.timeStamp, col));
-        this._keysDown.add(e.keyCode);
+      if (col !== undefined) {
+        if (!this._keysDown.has(e.keyCode)) {
+          this.props.dispatch(playNote(e.timeStamp, col));
+          this._keysDown.add(e.keyCode);
+        }
+      }
+
+    } else if (this.getState() === STATE_LOADED) {
+      // TODO: Use react-hotkeys for this
+
+      if (e.keyCode === 32) {
+        // space
+        this.props.dispatch(enterPlayback(0, this.props.bpm, this.props.songNotes));
+
+      } else if (e.keyCode === 189) {
+        // -
+        this.setState({
+          beatSpacing: this.state.beatSpacing - 80
+        });
+
+      } else if (e.keyCode === 187) {
+        // =
+        this.setState({
+          beatSpacing: this.state.beatSpacing + 80
+        });
       }
     }
   }
@@ -99,7 +129,7 @@ class Player extends React.Component {
         notes={this.props.playbackNotes}
         offset={this.props.playbackOffset}
         offsetPositionYPercent={0.9}
-        beatSpacing={160}
+        beatSpacing={this.state.beatSpacing}
         numMeasures={numMeasures} />
     );
   }
@@ -127,7 +157,7 @@ class Player extends React.Component {
     }
   }
 
-  renderLoaded() {
+  renderPlaying() {
     return (
       <div className="playfield">
         {this.props.inPlayback ? this.renderChart() : null}
@@ -137,18 +167,53 @@ class Player extends React.Component {
         <div className="youtub-overlay" />
 
         <div className="info-overlay">
-          <p>
-            <a href="http://keribaby.pcmusic.info/">music</a> / <a href="https://www.youtube.com/watch?v=LO-6ONFllbA">video</a>
-          </p>
+          <p />
         </div>
       </div>
     );
   }
 
-  render() {
+  renderLoaded() {
+    const spd = this.state.beatSpacing / 160;
     return (
-      <div className="player-container" tabIndex="1" onKeyDown={(e) => this.handleKeyDown(e)} onKeyUp={(e) => this.handleKeyUp(e)}>
-        {this.isLoaded() ? this.renderLoaded() : null}
+      <div className="help-text-container">
+        <p>
+          Press space to play
+        </p>
+        <p>
+          Speed: {spd}x<br/>
+          (use -/= keys to adjust)
+        </p>
+      </div>
+    );
+  }
+
+  renderLoading() {
+    return (
+      <div className="help-text-container">
+        <p>
+          Loading...
+        </p>
+      </div>
+    );
+  }
+
+  render() {
+    let outlet;
+
+    if (this.getState() === STATE_LOADING) {
+      outlet = this.renderLoading();
+    } else if (this.getState() === STATE_LOADED) {
+      outlet = this.renderLoaded();
+    } else if (this.getState() === STATE_PLAYING) {
+      outlet = this.renderPlaying();
+    }
+
+    return (
+      <div className="player-container" tabIndex="1"
+        onKeyDown={(e) => this.handleKeyDown(e)}
+        onKeyUp={(e) => this.handleKeyUp(e)}>
+        {outlet}
       </div>
     );
   }

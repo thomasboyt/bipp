@@ -14,7 +14,7 @@ class AudioPlayback extends React.Component {
     }
 
     if (this.props.playing) {
-      this.play();
+      this.play(this.props);
     }
   }
 
