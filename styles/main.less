@@ -1,5 +1,10 @@
 @import '~bootstrap/less/bootstrap';
 
+@font-face {
+  font-family: "Determination Mono";
+  src: url("../assets/DeterminationMonoWeb.woff") format("woff");
+}
+
 .editor {
   display: flex;
   flex-flow: column;
@@ -29,6 +34,10 @@
   cursor: default;
 
   .help-text-container {
+    font-family: "Determination Mono";
+    font-size: 32px;
+    -webkit-font-smoothing: none;
+
     flex: 1;
     text-align: center;
     align-self: center;

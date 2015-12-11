@@ -22,3 +22,7 @@ left/right keys - select movement resolution
 pgup/pgdown - move up and down by measure
 plus/minus - increase/decrease space between beats (think speed multipliers)
 ```
+
+### Credits
+
+[Determination Mono font by Harry Wakamatsu](https://www.behance.net/gallery/31268855/Determination-Better-Undertale-Font)
