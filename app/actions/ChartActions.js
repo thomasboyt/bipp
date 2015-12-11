@@ -4,7 +4,7 @@ import {
   CHANGE_BPM,
 } from '../ActionTypes';
 
-const songs = require('../config/songs');
+import songs from '../config/songs';
 
 export function loadSong(idx, difficulty) {
   return {

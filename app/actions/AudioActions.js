@@ -4,7 +4,7 @@ import {
   LOAD_AUDIO,
 } from '../ActionTypes';
 
-const songs = require('../config/songs');
+import songs from '../config/songs';
 
 export function loadAudio(songIdx) {
   return async function(dispatch) {

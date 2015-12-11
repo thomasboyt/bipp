@@ -1,26 +1,16 @@
 var webpack = require('webpack');
 var path = require('path');
 
+var createGlobChunk = require('./webpack-glob-chunk');
+
 module.exports = {
   entry: {
     app: './app/main.js',
-    vendor: [
-      'react',
-      'react-router',
-      'redux',
-      'immutable',
-      'lodash',
-      'babel-runtime/core-js',
-      'babel-runtime/regenerator',
-      'react-bootstrap',
-      'react-hotkeys',
-      'react-immutable-render-mixin'
-    ]
   },
 
   output: {
     path: 'build/',
-    filename: 'bundle.js'
+    filename: '[name].bundle.js'
   },
 
   resolve: {
@@ -32,7 +22,23 @@ module.exports = {
   },
 
   plugins: [
-    new webpack.optimize.CommonsChunkPlugin('vendor', 'vendor.bundle.js')
+    createGlobChunk({
+      name: 'vendor',
+
+      patterns: [
+        './node_modules/**/*.js',
+        './vendor/**/*.js'
+      ]
+    })
+
+    // XXX: this doesn't work yet and I don't know why not :(
+    // createGlobChunk({
+    //   name: 'data',
+    //
+    //   patterns: [
+    //     './songs#<{(||)}>#*'
+    //   ],
+    // })
   ],
 
   devtool: 'source-map',
@@ -44,7 +50,8 @@ module.exports = {
         exclude: /(node_modules\/)/,
         loader: 'babel-loader',
         query: {
-          'optional': ['es7.asyncFunctions', 'runtime']
+          presets: ['react', 'es2015'],
+          plugins: ['syntax-async-functions', 'transform-object-rest-spread', 'transform-regenerator']
         }
       },
       {
@@ -62,7 +69,7 @@ module.exports = {
         test: /(?:\.mp3)/,
         loader: 'file-loader',
         query: {
-          name: 'assets/[hash].[ext]'
+          name: '/assets/[hash].[ext]'
         }
       },
       {
@@ -71,5 +78,9 @@ module.exports = {
       }
 
     ]
-  }
+  },
+
+  devServer: {
+    historyApiFallback: true,
+  },
 };

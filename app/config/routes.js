@@ -3,20 +3,20 @@ import {Route} from 'react-router';
 
 import App from '../views/App';
 
-module.exports = (
+export default (
   <Route handler={App}>
 
-    <Route name="SongList"
+    <Route
       path="/"
-      handler={require('../views/SongList/Handler')} />
+      component={require('../views/SongList/Handler').default} />
 
-    <Route name="Editor"
+    <Route
       path="/edit/:songIdx/:difficulty"
-      handler={require('../views/Editor/Handler')} />
+      component={require('../views/Editor/Handler').default} />
 
-    <Route name="Player"
+    <Route
       path="/play/:songIdx/:difficulty"
-      handler={require('../views/Player/Handler')} />
+      component={require('../views/Player/Handler').default} />
 
   </Route>
 );

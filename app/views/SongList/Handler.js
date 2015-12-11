@@ -2,7 +2,7 @@ import React from 'react';
 import {Link} from 'react-router';
 import _ from 'lodash';
 
-const songs = require('../../config/songs');
+import songs from '../../config/songs';
 
 class SongList extends React.Component {
   renderDifficulties(song, idx) {
@@ -10,8 +10,8 @@ class SongList extends React.Component {
       return (
         <li key={key}>
           {key}{': '}
-          <Link to="Player" params={{songIdx: idx, difficulty: key}}>Play</Link>{' / '}
-          <Link to="Editor" params={{songIdx: idx, difficulty: key}}>Edit</Link>
+          <Link to={`/play/${idx}/${key}`}>Play</Link>{' / '}
+          <Link to={`/edit/${idx}/${key}`}>Edit</Link>
         </li>
       );
     });
