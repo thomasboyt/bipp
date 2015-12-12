@@ -13,14 +13,6 @@ module.exports = {
     filename: '[name].bundle.js'
   },
 
-  resolve: {
-    root: path.resolve('./node_modules')
-  },
-
-  resolveLoader: {
-    root: path.join(__dirname, 'node_modules')
-  },
-
   plugins: [
     createGlobChunk({
       name: 'vendor',
@@ -29,7 +21,14 @@ module.exports = {
         './node_modules/**/*.js',
         './vendor/**/*.js'
       ]
-    })
+    }),
+
+    // React production build that removes runtime debug warnings
+    // new webpack.DefinePlugin({
+    //   'process.env': {
+    //     NODE_ENV: '"production"'
+    //   }
+    // })
 
     // XXX: this doesn't work yet and I don't know why not :(
     // createGlobChunk({
