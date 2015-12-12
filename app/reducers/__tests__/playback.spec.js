@@ -3,8 +3,9 @@ import expect from 'expect';
 import reducer from '../playback';
 
 describe('playback reducer', () => {
-  it('returns the initial state', () => {
-    const state = reducer(undefined, {});
-    expect(state).toExist();
+
+  describe('playing notes', () => {
+    it('prioritizes the first note in the column in a fast sequence', () => {
+    });
   });
 });

@@ -10,7 +10,7 @@ class AudioPlayback extends React.Component {
     if (MUTE) {
       this.volumeNode.gain.value = 0;
     } else {
-      this.volumeNode.gain.value = 0.5;
+      this.volumeNode.gain.value = 0.25;
     }
 
     if (this.props.playing) {

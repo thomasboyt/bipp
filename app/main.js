@@ -1,10 +1,6 @@
-// XXX: I've currently disabled this and I'm just using regenerator-runtime for dev because using
-// the polyfilled promise library breaks stack traces:
-// import 'babel-polyfill';
-
-import 'babel-regenerator-runtime';
-
 require('../styles/main.less');
+
+import './polyfill';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
