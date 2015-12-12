@@ -6,12 +6,13 @@ import {
   SET_RATE,
 } from '../ActionTypes';
 
-export function enterPlayback(offset, bpm, notes) {
+export function enterPlayback(offset, bpm, notes, beatSpacing) {
   return {
     type: ENTER_PLAYBACK,
     offset,
     bpm,
     notes,
+    beatSpacing,
   };
 }
 

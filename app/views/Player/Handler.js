@@ -2,16 +2,13 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 
-import AudioPlayback from '../lib/AudioPlayback';
-import Chart from '../lib/Chart';
-import audioCtx from '../../audioContext';
-
-import YouTube from './YouTube';
+import Loading from './states/Loading';
+import Loaded from './states/Loaded';
+import Playing from './states/Playing';
+import Done from './states/Done';
 
 import {
-  enterPlayback,
   resetPlayback,
-  playNote,
 } from '../../actions/PlaybackActions';
 
 import {
@@ -22,17 +19,6 @@ import {
   loadAudio,
 } from '../../actions/AudioActions';
 
-const ENABLE_YT_PLAYBACK = document.location.search.indexOf('enableyt') !== -1;
-
-const colMap = {
-  '83': 0,
-  '68': 1,
-  '70': 2,
-  '32': 3,
-  '74': 4,
-  '75': 5,
-  '76': 6
-};
 
 const STATE_LOADING = 'loading';
 const STATE_LOADED = 'loaded';
@@ -44,11 +30,8 @@ class Player extends React.Component {
     super(props);
 
     this.state = {
-      beatSpacing: 160,
       didPlayback: false,
     };
-
-    this._keysDown = new Set();
   }
 
   componentWillMount() {
@@ -66,6 +49,14 @@ class Player extends React.Component {
     ReactDOM.findDOMNode(this).focus();
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.inPlayback && !this.props.inPlayback) {
+      this.setState({
+        didPlayback: true
+      });
+    }
+  }
+
   getState() {
     // TODO: Replace this with a proper state machine so we can easily go from playing -> done -> playing...
     if (this.props.inPlayback) {
@@ -79,195 +70,30 @@ class Player extends React.Component {
     }
   }
 
-  handleKeyDown(e) {
-    if (this.getState() === STATE_PLAYING) {
-      const col = colMap[e.keyCode];
-
-      if (col !== undefined) {
-        if (!this._keysDown.has(e.keyCode)) {
-          this.props.dispatch(playNote(e.timeStamp, col));
-          this._keysDown.add(e.keyCode);
-        }
-      }
-
-    } else if (this.getState() === STATE_LOADED) {
-      // TODO: Use react-hotkeys for this
-
-      if (e.keyCode === 32) {
-        // space
-        this.props.dispatch(enterPlayback(0, this.props.bpm, this.props.songNotes));
-
-        this.setState({
-          didPlayback: true,
-        });
-
-      } else if (e.keyCode === 189) {
-        // -
-        this.setState({
-          beatSpacing: this.state.beatSpacing - 80
-        });
-
-      } else if (e.keyCode === 187) {
-        // =
-        this.setState({
-          beatSpacing: this.state.beatSpacing + 80
-        });
-      }
-    }
-  }
-
-  handleKeyUp(e) {
-    if (this._keysDown.has(e.keyCode)) {
-      this._keysDown.delete(e.keyCode);
-    }
-  }
-
-  handleYoutubePlaying() {
-    if (!this.props.inPlayback) {
-     this.props.dispatch(enterPlayback(0, this.props.bpm, this.props.songNotes));
-    }
-  }
-
-  renderChart() {
-    const lastNote = this.props.songNotes.maxBy((note) => note.beat * 24 + note.offset);
-    const lastOffset = lastNote.beat * 24 + lastNote.offset;
-    const numMeasures = Math.ceil(lastOffset / (24 * 4));
-
-    return (
-      <Chart
-        notes={this.props.playbackNotes}
-        offset={this.props.playbackOffset}
-        offsetPositionYPercent={0.9}
-        beatSpacing={this.state.beatSpacing}
-        numMeasures={numMeasures} />
-    );
-  }
-
-  renderJudgement() {
-    return (
-      <div className="judge">
-        {this.props.judgement}
-      </div>
-    );
-  }
-
-  renderAudio() {
-    if (ENABLE_YT_PLAYBACK) {
-      return (
-        <YouTube onPlaying={() => this.handleYoutubePlaying()} youtubeId={this.props.songInfo.youtubeId} />
-      );
-
-    } else {
-      return (
-        <AudioPlayback playing={this.props.inPlayback}
-          playbackOffset={this.props.playbackOffset}
-          audioData={this.props.audioData} bpm={this.props.bpm} ctx={audioCtx} />
-      );
-    }
-  }
-
-  renderPlaying() {
-    return (
-      <div className="playfield">
-        {this.props.inPlayback ? this.renderChart() : null}
-        {this.props.inPlayback ? this.renderJudgement() : null}
-        {this.renderAudio()}
-
-        <div className="youtub-overlay" />
-
-        <div className="info-overlay">
-          <p />
-        </div>
-      </div>
-    );
-  }
-
-  renderLoaded() {
-    const spd = this.state.beatSpacing / 160;
-    return (
-      <div className="help-text-container">
-        <p>
-          Press space to play
-        </p>
-        <p>
-          Speed: {spd}x<br/>
-          (use -/= keys to adjust)
-        </p>
-      </div>
-    );
-  }
-
-  renderLoading() {
-    return (
-      <div className="help-text-container">
-        <p>
-          Loading...
-        </p>
-      </div>
-    );
-  }
-
-  renderJudgements() {
-    return this.props.judgements.map((v, k) => {
-      return (
-        <tr key={k}>
-          <td>{k}</td>
-          <td>{v}</td>
-        </tr>
-      );
-    }).valueSeq().toJS();
-  }
-
-  renderDone() {
-    return (
-      <div className="help-text-container">
-        <table>
-          <tbody>
-            {this.renderJudgements()}
-          </tbody>
-        </table>
-      </div>
-    );
-  }
-
   render() {
     let outlet;
 
     if (this.getState() === STATE_LOADING) {
-      outlet = this.renderLoading();
+      outlet = <Loading />;
     } else if (this.getState() === STATE_LOADED) {
-      outlet = this.renderLoaded();
+      outlet = <Loaded />;
     } else if (this.getState() === STATE_PLAYING) {
-      outlet = this.renderPlaying();
+      outlet = <Playing />;
     } else if (this.getState() === STATE_DONE) {
-      outlet = this.renderDone();
+      outlet = <Done />;
     }
 
-    return (
-      <div className="player-container" tabIndex="1"
-        onKeyDown={(e) => this.handleKeyDown(e)}
-        onKeyUp={(e) => this.handleKeyUp(e)}>
-        {outlet}
-      </div>
-    );
+    return outlet;
   }
 }
 
 function select(state) {
   return {
-    songNotes: state.chart.notes,
-    bpm: state.chart.bpm,
     songLoaded: state.chart.loaded,
-    songInfo: state.chart.songInfo,
 
     inPlayback: state.playback.inPlayback,
-    playbackOffset: state.playback.playbackOffset,
-    playbackNotes: state.playback.notes,
-    judgement: state.playback.judgement,
-    judgements: state.playback.judgements,
 
     audioLoaded: !!state.audio.audioData,
-    audioData: state.audio.audioData,
   };
 }
 

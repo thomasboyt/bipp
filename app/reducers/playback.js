@@ -35,6 +35,7 @@ const State = new Record({
   initialOffsetTime: null,
   msPerOffset: null,
   maxOffset: null,
+  beatSpacing: null,
 
   judgement: null,
   judgements: null,
@@ -117,7 +118,7 @@ const playbackReducer = createImmutableReducer(initialState, {
     return initialState;
   },
 
-  [ENTER_PLAYBACK]: function({offset, bpm, notes}, state) {
+  [ENTER_PLAYBACK]: function({offset, bpm, notes, beatSpacing}, state) {
     const playbackRate = state.playbackRate;
 
     bpm = bpm * playbackRate;
@@ -147,6 +148,7 @@ const playbackReducer = createImmutableReducer(initialState, {
       .set('maxOffset', maxOffset)
       .set('startTime', Date.now())
       .set('msPerOffset', msPerOffset)
+      .set('beatSpacing', beatSpacing)
       .set('judgements', getJudgementsMap());
   },
 
