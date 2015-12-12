@@ -2,7 +2,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import {Button, Well} from 'react-bootstrap';
-import Overlay from '../../lib/Overlay';
 import SaveModal from './SaveModal';
 import BlurInput from '../../../../vendor/BlurInput';
 
