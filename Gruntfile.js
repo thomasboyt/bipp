@@ -11,12 +11,7 @@ module.exports = function(grunt) {
     },
 
     webpack: {
-      options: require('./webpack.config'),
-      production: {
-        plugins: [
-          new webpack.optimize.UglifyJsPlugin()
-        ]
-      }
+      production: require('./webpack.production')
     },
 
     sftp: {

@@ -44,7 +44,8 @@
     "mocha": "^2.3.4",
     "style-loader": "^0.12.2",
     "webpack": "^1.12.9",
-    "webpack-dev-server": "^1.14.0"
+    "webpack-dev-server": "^1.14.0",
+    "webpack-merge": "^0.3.2"
   },
   "dependencies": {
     "babel-polyfill": "^6.3.14",

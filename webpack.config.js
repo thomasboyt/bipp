@@ -23,13 +23,6 @@ module.exports = {
       ]
     }),
 
-    // React production build that removes runtime debug warnings
-    // new webpack.DefinePlugin({
-    //   'process.env': {
-    //     NODE_ENV: '"production"'
-    //   }
-    // })
-
     // XXX: this doesn't work yet and I don't know why not :(
     // createGlobChunk({
     //   name: 'data',
