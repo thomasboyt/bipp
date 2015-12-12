@@ -4,9 +4,9 @@ import pureRender from '../../../util/pureRender';
 import {LANE_WIDTH, CENTER_LANE_WIDTH, NOTE_HEIGHT} from './constants';
 
 // [fill, stroke]
-const color1 = ['white', 'black'];
-const color2 = ['black', 'white'];
-const centerColor = ['red', 'red'];
+const color1 = ['rgb(255,0,255)', 'black'];
+const color2 = ['white', 'black'];
+const centerColor = ['red', 'black'];
 
 const colors = [
   color1, color2, color1, centerColor, color1, color2, color1
