@@ -37,6 +37,7 @@ const colMap = {
 const STATE_LOADING = 'loading';
 const STATE_LOADED = 'loaded';
 const STATE_PLAYING = 'playing';
+const STATE_DONE = 'done';
 
 class Player extends React.Component {
   constructor(props) {
@@ -44,6 +45,7 @@ class Player extends React.Component {
 
     this.state = {
       beatSpacing: 160,
+      didPlayback: false,
     };
 
     this._keysDown = new Set();
@@ -65,8 +67,11 @@ class Player extends React.Component {
   }
 
   getState() {
+    // TODO: Replace this with a proper state machine so we can easily go from playing -> done -> playing...
     if (this.props.inPlayback) {
       return STATE_PLAYING;
+    } else if (this.state.didPlayback) {
+      return STATE_DONE;
     } else if (this.props.audioLoaded && this.props.songLoaded) {
       return STATE_LOADED;
     } else {
@@ -91,6 +96,10 @@ class Player extends React.Component {
       if (e.keyCode === 32) {
         // space
         this.props.dispatch(enterPlayback(0, this.props.bpm, this.props.songNotes));
+
+        this.setState({
+          didPlayback: true,
+        });
 
       } else if (e.keyCode === 189) {
         // -
@@ -198,6 +207,29 @@ class Player extends React.Component {
     );
   }
 
+  renderJudgements() {
+    return this.props.judgements.map((v, k) => {
+      return (
+        <tr key={k}>
+          <td>{k}</td>
+          <td>{v}</td>
+        </tr>
+      );
+    }).valueSeq().toJS();
+  }
+
+  renderDone() {
+    return (
+      <div className="help-text-container">
+        <table>
+          <tbody>
+            {this.renderJudgements()}
+          </tbody>
+        </table>
+      </div>
+    );
+  }
+
   render() {
     let outlet;
 
@@ -207,6 +239,8 @@ class Player extends React.Component {
       outlet = this.renderLoaded();
     } else if (this.getState() === STATE_PLAYING) {
       outlet = this.renderPlaying();
+    } else if (this.getState() === STATE_DONE) {
+      outlet = this.renderDone();
     }
 
     return (
@@ -230,6 +264,7 @@ function select(state) {
     playbackOffset: state.playback.playbackOffset,
     playbackNotes: state.playback.notes,
     judgement: state.playback.judgement,
+    judgements: state.playback.judgements,
 
     audioLoaded: !!state.audio.audioData,
     audioData: state.audio.audioData,

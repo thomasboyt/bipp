@@ -22,7 +22,9 @@ const Note = Record({
   // Column, between 0 and 6, for the note to be placed in
   col: 0,
 
-  time: 0
+  // Calculated at playback time, not saved
+  time: 0,
+  totalOffset: 0,
 });
 
 const StateRecord = Record({

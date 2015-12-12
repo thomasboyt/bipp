@@ -1,5 +1,5 @@
 import createImmutableReducer from '../util/immutableReducer';
-import { Record } from 'immutable';
+import { Record, Map as IMap } from 'immutable';
 
 import {
   RESET_PLAYBACK,
@@ -34,7 +34,10 @@ const State = new Record({
   startTime: null,
   initialOffsetTime: null,
   msPerOffset: null,
+  maxOffset: null,
+
   judgement: null,
+  judgements: null,
 
   playbackRate: 1
 });
@@ -46,17 +49,23 @@ const initialState = new State();
  */
 
 function judgementFor(diff) {
-  return `${diff.toFixed(2)}`;
+  const absDiff = Math.abs(diff);
+  const label = judgements.filter((j) => absDiff < j[0])[0][1];
 
-  // const absDiff = Math.abs(diff);
-  // const label = judgements.filter((j) => absDiff < j[0])[0][1];
-  //
   // - : you hit the note before it was supposed to be played (too early)
   // + : you hit the note after it was supposed to be played (too late)
-  // const sign = diff < 0 ? '-' : '+';
+  const sign = diff < 0 ? '-' : '+';
 
-  // return `${label} ${sign}`;
-};
+  return {
+    displayText: `${label} ${sign}`,
+    type: label,
+  };
+}
+
+function getJudgementsMap() {
+  const types = judgements.map((judgement) => judgement[1]).concat(missedJudgement);
+  return new IMap(types.map((type) => [type, 0]))
+}
 
 function getMsPerOffset(bpm) {
   const secPerBeat = 60 / bpm;
@@ -75,7 +84,7 @@ function findNoteFor(notes, time, column) {
 
     return (time + maxJudgementThreshold > note.time && time - maxJudgementThreshold < note.time);
 
-  }).minBy((note) => note.offset);
+  }).minBy((note) => note.totalOffset);
 }
 
 function updatePlaybackOffset(state, dt) {
@@ -92,7 +101,8 @@ function sweepMissedNotes(state) {
   if (missedNotes.count() > 0) {
     return state
       .update('notes', (notes) => notes.subtract(missedNotes))
-      .set('judgement', missedJudgement);
+      .set('judgement', missedJudgement)
+      .updateIn(['judgements', missedJudgement], (count) => count + missedNotes.count());
   } else {
     return state;
   }
@@ -119,10 +129,14 @@ const playbackReducer = createImmutableReducer(initialState, {
     notes = notes.map((note) => {
       const totalOffset = note.offset + note.beat * 24;
       const time = totalOffset * msPerOffset;
-      return note.set('time', time);
+
+      return note.set('time', time)
+                 .set('totalOffset', totalOffset);
     });
 
     notes = notes.toSet();
+
+    const maxOffset = notes.maxBy((note) => note.totalOffset).totalOffset + OFFSET_PADDING;
 
     return state
       .set('notes', notes)
@@ -130,13 +144,13 @@ const playbackReducer = createImmutableReducer(initialState, {
       .set('inPlayback', true)
       .set('initialOffsetTime', offsetWithStartPadding * msPerOffset)
       .set('playbackOffset', offsetWithStartPadding)
+      .set('maxOffset', maxOffset)
       .set('startTime', Date.now())
-      .set('msPerOffset', msPerOffset);
+      .set('msPerOffset', msPerOffset)
+      .set('judgements', getJudgementsMap());
   },
 
   [EXIT_PLAYBACK]: function(action, state) {
-    // TODO: Stop runloop
-
     return state.set('inPlayback', false);
   },
 
@@ -148,9 +162,12 @@ const playbackReducer = createImmutableReducer(initialState, {
       return state;
     }
 
+    const judgement = judgementFor(elapsed - note.time);
+
     return state
       .update('notes', (notes) => notes.remove(note))
-      .set('judgement', judgementFor(elapsed - note.time));
+      .set('judgement', judgement.displayText)
+      .updateIn(['judgements', judgement.type], (count) => count + 1);
   },
 
   [SET_RATE]: function({rate}, state) {
@@ -158,8 +175,13 @@ const playbackReducer = createImmutableReducer(initialState, {
   },
 
   [PLAYBACK_TICK]: function({dt}, state) {
-    const nextState = updatePlaybackOffset(state, dt);
-    return sweepMissedNotes(nextState);
+    const nextState = sweepMissedNotes(updatePlaybackOffset(state, dt));
+
+    if (nextState.playbackOffset > nextState.maxOffset) {
+      return state.set('inPlayback', false);
+    }
+
+    return nextState;
   },
 });
 
