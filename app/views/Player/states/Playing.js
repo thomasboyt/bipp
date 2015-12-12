@@ -51,7 +51,7 @@ const Playing = React.createClass({
 
     if (col !== undefined) {
       if (!this._keysDown.has(e.keyCode)) {
-        this.props.dispatch(playNote((new Date()).valueOf(), col));
+        this.props.dispatch(playNote(Date.now(), col));
         this._keysDown.add(e.keyCode);
       }
     }

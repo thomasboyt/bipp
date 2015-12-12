@@ -7,5 +7,7 @@ export default {
     'short': require('./short.json'),
   },
 
+  hidden: true,
+
   'musicUrl': require('./click.mp3')
 };
