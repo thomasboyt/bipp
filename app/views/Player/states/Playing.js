@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 
 import AudioPlayback from '../../lib/AudioPlayback';
 import Chart from '../../lib/Chart';
+import CanvasChart from '../../lib/CanvasChart';
 import audioCtx from '../../../audioContext';
 
 import YouTube from '../YouTube';
@@ -13,6 +14,7 @@ import {
 } from '../../../actions/PlaybackActions';
 
 const ENABLE_YT_PLAYBACK = document.location.search.indexOf('enableyt') !== -1;
+const ENABLE_CANVAS_PLAYBACK = document.location.search.indexOf('canvas') !== -1;
 
 const colMap = {
   '83': 0,
@@ -68,8 +70,10 @@ const Playing = React.createClass({
     const lastOffset = lastNote.beat * 24 + lastNote.offset;
     const numMeasures = Math.ceil(lastOffset / (24 * 4));
 
+    const ChartComponent = ENABLE_CANVAS_PLAYBACK ? CanvasChart : Chart;
+
     return (
-      <Chart
+      <ChartComponent
         notes={this.props.playbackNotes}
         offset={this.props.playbackOffset}
         offsetPositionYPercent={0.9}

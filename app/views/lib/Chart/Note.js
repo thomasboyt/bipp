@@ -1,16 +1,7 @@
 import React from 'react';
 import pureRender from '../../../util/pureRender';
 
-import {LANE_WIDTH, CENTER_LANE_WIDTH, NOTE_HEIGHT} from './constants';
-
-// [fill, stroke]
-const color1 = ['rgb(255,0,255)', 'black'];
-const color2 = ['white', 'black'];
-const centerColor = ['red', 'black'];
-
-const colors = [
-  color1, color2, color1, centerColor, color1, color2, color1
-];
+import {LANE_WIDTH, CENTER_LANE_WIDTH, NOTE_HEIGHT, colors} from './constants';
 
 class Note extends React.Component {
   render() {
