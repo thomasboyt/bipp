@@ -3,7 +3,7 @@ var webpack = require('webpack');
 var defaultConfig = require('./webpack.config');
 
 var webpackConfig = {
-  devtool: 'inline-dev-tool',
+  devtool: 'inline-source-map',
 
   module: defaultConfig.module,
 
