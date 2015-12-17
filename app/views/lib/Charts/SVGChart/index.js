@@ -5,7 +5,8 @@ import InnerChart from './InnerChart';
 
 import ordinal from '../../../../util/ordinal';
 
-import {ENABLE_3D_ACCEL, WIDTH, NOTE_HEIGHT} from '../constants';
+import {WIDTH, NOTE_HEIGHT} from '../constants';
+import {ENABLE_3D_ACCEL} from '../../../../config/flags';
 
 
 /**

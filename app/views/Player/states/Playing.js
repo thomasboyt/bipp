@@ -13,8 +13,10 @@ import {
   playNote,
 } from '../../../actions/PlaybackActions';
 
-const ENABLE_YT_PLAYBACK = document.location.search.indexOf('enableyt') !== -1;
-const ENABLE_CANVAS_PLAYBACK = document.location.search.indexOf('canvas') !== -1;
+import {
+  ENABLE_YT_PLAYBACK,
+  ENABLE_CANVAS_PLAYBACK,
+} from '../../../config/flags';
 
 const colMap = {
   '83': 0,

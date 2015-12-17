@@ -1,6 +1,6 @@
 import React from 'react';
 
-const MUTE = document.location.search.indexOf('mute') !== -1;
+import {MUTE} from '../../config/flags';
 
 class AudioPlayback extends React.Component {
   componentWillMount() {
