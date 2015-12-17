@@ -3,7 +3,8 @@ import {HotKeys} from 'react-hotkeys';
 import { connect } from 'react-redux';
 
 import AudioPlayback from '../lib/AudioPlayback';
-import Chart from '../lib/Charts/SVGChart';
+import SVGChart from '../lib/Charts/SVGChart';
+import CanvasChart from '../lib/Charts/CanvasChart';
 
 import EditorControls from './components/EditorControls';
 
@@ -25,6 +26,9 @@ import {
   loadAudio,
 } from '../../actions/AudioActions';
 
+import {
+  ENABLE_CANVAS_PLAYBACK,
+} from '../../config/flags';
 
 const resolutions = [24, 12, 8, 6, 4, 3];
 
@@ -248,8 +252,10 @@ class Editor extends React.Component {
   }
 
   renderChart() {
+    const ChartComponent = ENABLE_CANVAS_PLAYBACK ? CanvasChart : SVGChart;
+
     return (
-      <Chart
+      <ChartComponent
         notes={this.getNotes()}
         offset={this.getOffset()}
         beatSpacing={this.state.beatSpacing}

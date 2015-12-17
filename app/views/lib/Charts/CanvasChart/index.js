@@ -78,7 +78,10 @@ export function renderChart(ctx, {notes, offset, offsetPositionYPercent, beatSpa
 
 const CanvasChart = React.createClass({
   propTypes: {
-    notes: React.PropTypes.instanceOf(I.Set).isRequired,
+    notes: React.PropTypes.oneOfType([
+      React.PropTypes.instanceOf(I.Set),
+      React.PropTypes.instanceOf(I.List)
+    ]).isRequired,
 
     offset: React.PropTypes.number.isRequired,
     offsetPositionYPercent: React.PropTypes.number.isRequired,

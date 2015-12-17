@@ -7,6 +7,7 @@ import {
 import songs from '../config/songs';
 
 export function loadAudio(songIdx) {
+  // TODO: this should really have some kind of error handling
   return async function(dispatch) {
     const url = songs[songIdx].musicUrl;
     const resp = await window.fetch(url);
