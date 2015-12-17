@@ -7,9 +7,8 @@ class Note extends React.Component {
   render() {
     const note = this.props.note;
 
-    const beatOffset = note.beat * this.props.beatSpacing;
-    const offset = (this.props.beatSpacing / 24) * note.offset;
-    const y = beatOffset + offset - NOTE_HEIGHT / 2;
+    const offset = (this.props.beatSpacing / 24) * note.totalOffset;
+    const y = offset - NOTE_HEIGHT / 2;
 
     const color = colors[note.col];
 

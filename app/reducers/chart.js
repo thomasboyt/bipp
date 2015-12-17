@@ -8,23 +8,19 @@ import {
 } from '../ActionTypes';
 
 export const Note = Record({
-  // Beat the note starts at (add offset)
-  beat: 0,
-
   // Offset, in "24ths", from the start of the beat
   // e.g.: 0 is a 4th
   //       12 is an 8th
   //       8 and 16 are triplets ("12ths")
   //       6 and 18 are 16ths
   //       3 is a 32nd...
-  offset: 0,
+  totalOffset: 0,
 
   // Column, between 0 and 6, for the note to be placed in
   col: 0,
 
   // Calculated at playback time, not saved
   time: 0,
-  totalOffset: 0,
 });
 
 const StateRecord = Record({
@@ -58,18 +54,14 @@ const chartReducer = createImmutableReducer(initialState, {
   },
 
   [TOGGLE_NOTE]: function({offset, column}, state) {
-    const beat = Math.floor(offset / 24);
-    const offsetInBeat = offset % 24;
-
     const entry = state.notes.findEntry((note) => {
-      return note.beat === beat && note.offset === offsetInBeat && note.col === column;
+      return note.totalOffset === offset && note.col === column;
     });
 
     if (!entry) {
       const note = new Note({
-        beat: beat,
-        offset: offsetInBeat,
-        col: column
+        col: column,
+        totalOffset: offset,
       });
 
       return state.updateIn(['notes'], (notes) => notes.push(note));

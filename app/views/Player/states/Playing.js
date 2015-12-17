@@ -68,8 +68,7 @@ const Playing = React.createClass({
   },
 
   renderChart() {
-    const lastNote = this.props.songNotes.maxBy((note) => note.beat * 24 + note.offset);
-    const lastOffset = lastNote.beat * 24 + lastNote.offset;
+    const lastOffset = this.props.songNotes.maxBy((note) => note.totalOffset).totalOffset;
     const numMeasures = Math.ceil(lastOffset / (24 * 4));
 
     const ChartComponent = ENABLE_CANVAS_PLAYBACK ? CanvasChart : SVGChart;

@@ -221,10 +221,7 @@ class Editor extends React.Component {
   }
 
   getLastNoteOffset() {
-    const lastNote = this.props.songNotes.maxBy((note) => note.beat * 24 + note.offset);
-    const lastOffset = lastNote.beat * 24 + lastNote.offset;
-
-    return lastOffset;
+    return this.props.songNotes.maxBy((note) => note.totalOffset).totalOffset;
   }
 
   handleUpdateScrollResolution(increase) {

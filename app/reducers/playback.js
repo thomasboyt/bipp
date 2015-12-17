@@ -128,11 +128,9 @@ const playbackReducer = createImmutableReducer(initialState, {
     const offsetWithStartPadding = offset - OFFSET_PADDING;
 
     notes = notes.map((note) => {
-      const totalOffset = note.offset + note.beat * 24;
-      const time = totalOffset * msPerOffset;
+      const time = note.totalOffset * msPerOffset;
 
-      return note.set('time', time)
-                 .set('totalOffset', totalOffset);
+      return note.set('time', time);
     });
 
     notes = notes.toSet();

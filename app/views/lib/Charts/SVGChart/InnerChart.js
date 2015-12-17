@@ -31,7 +31,7 @@ class InnerChart extends React.Component {
     const notes = this.props.notes;
 
     return notes.map((note) => {
-      const key = `note-${note.beat}-${note.offset}-${note.col}`;
+      const key = `note-${note.totalOffset}-${note.col}`;
 
       return (
         <Note key={key} beatSpacing={this.props.beatSpacing} note={note} />

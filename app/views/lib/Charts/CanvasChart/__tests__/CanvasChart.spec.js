@@ -28,8 +28,6 @@ describe('<CanvasChart>', () => {
     const offset = 20 * 24 + 12;
 
     const note = new Note({
-      beat: 20,
-      offset: 12,
       col: 0,
       totalOffset: offset,
     });
