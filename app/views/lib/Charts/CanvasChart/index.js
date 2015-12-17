@@ -56,15 +56,12 @@ export function renderChart(ctx, {notes, offset, offsetPositionYPercent, beatSpa
 
   renderOffsetBar(ctx, {offsetBarY, viewportWidth});
 
-  /*
-   * Goal: *find notes that need to be rendered*
-   * Filter out notes with offset over calculated value calculated from maximum Y
-   * (don't need to go under because they'll be removed)
-   */
-  const maximumY = offsetY + viewportHeight;
+  const minimumY = offsetY - offsetBarY - (NOTE_HEIGHT / 2);
+  const maximumY = offsetY + (viewportHeight - offsetBarY) + (NOTE_HEIGHT / 2);
+  const minimumOffset = minimumY / (beatSpacing / 24);
   const maximumOffset = maximumY / (beatSpacing / 24);
 
-  const notesToRender = notes.filter((note) => note.totalOffset < maximumOffset);
+  const notesToRender = notes.filter((note) => minimumOffset < note.totalOffset && note.totalOffset < maximumOffset);
 
   renderNotes(ctx, {
     notes: notesToRender,
