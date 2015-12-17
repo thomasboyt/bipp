@@ -3,7 +3,7 @@ import I from 'immutable';
 
 import RenderedCanvas from './RenderedCanvas';
 
-import {LANE_WIDTH, CENTER_LANE_WIDTH, NOTE_HEIGHT, colors, WIDTH} from '../Chart/constants';
+import {LANE_WIDTH, CENTER_LANE_WIDTH, NOTE_HEIGHT, colors, WIDTH} from '../constants';
 
 export {WIDTH};
 export const HEIGHT = 720;

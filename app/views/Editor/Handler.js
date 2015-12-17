@@ -3,7 +3,7 @@ import {HotKeys} from 'react-hotkeys';
 import { connect } from 'react-redux';
 
 import AudioPlayback from '../lib/AudioPlayback';
-import Chart from '../lib/Chart';
+import Chart from '../lib/Charts/SVGChart';
 
 import EditorControls from './components/EditorControls';
 

@@ -1,8 +1,8 @@
 import expect from 'expect';
 import I from 'immutable';
 
-import {Note} from '../../../../reducers/chart';
-import {NOTE_HEIGHT} from '../../Chart/constants';
+import {Note} from '../../../../../reducers/chart';
+import {NOTE_HEIGHT} from '../..//constants';
 
 import {
   WIDTH,

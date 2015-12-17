@@ -1,7 +1,7 @@
 import React from 'react';
-import pureRender from '../../../util/pureRender';
+import pureRender from '../../../../util/pureRender';
 
-import {LANE_WIDTH, CENTER_LANE_WIDTH, NOTE_HEIGHT, colors} from './constants';
+import {LANE_WIDTH, CENTER_LANE_WIDTH, NOTE_HEIGHT, colors} from '../constants';
 
 class Note extends React.Component {
   render() {

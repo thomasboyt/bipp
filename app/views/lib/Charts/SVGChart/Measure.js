@@ -1,7 +1,7 @@
 import React from 'react';
-import pureRender from '../../../util/pureRender';
+import pureRender from '../../../../util/pureRender';
 
-import {WIDTH} from './constants';
+import {WIDTH} from '../constants';
 
 class Measure extends React.Component {
   render() {

@@ -3,8 +3,8 @@ import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 
 import AudioPlayback from '../../lib/AudioPlayback';
-import Chart from '../../lib/Chart';
-import CanvasChart from '../../lib/CanvasChart';
+import SVGChart from '../../lib/Charts/SVGChart';
+import CanvasChart from '../../lib/Charts/CanvasChart';
 import audioCtx from '../../../audioContext';
 
 import YouTube from '../YouTube';
@@ -70,7 +70,7 @@ const Playing = React.createClass({
     const lastOffset = lastNote.beat * 24 + lastNote.offset;
     const numMeasures = Math.ceil(lastOffset / (24 * 4));
 
-    const ChartComponent = ENABLE_CANVAS_PLAYBACK ? CanvasChart : Chart;
+    const ChartComponent = ENABLE_CANVAS_PLAYBACK ? CanvasChart : SVGChart;
 
     return (
       <ChartComponent
