@@ -7,7 +7,7 @@ import {
   CHANGE_BPM,
 } from '../ActionTypes';
 
-const Note = Record({
+export const Note = Record({
   // Beat the note starts at (add offset)
   beat: 0,
 

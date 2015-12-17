@@ -3,14 +3,17 @@ import I from 'immutable';
 
 import RenderedCanvas from './RenderedCanvas';
 
-import {LANE_WIDTH, CENTER_LANE_WIDTH, NOTE_HEIGHT, colors} from '../Chart/constants';
+import {LANE_WIDTH, CENTER_LANE_WIDTH, NOTE_HEIGHT, colors, WIDTH} from '../Chart/constants';
+
+export {WIDTH};
+export const HEIGHT = 720;
 
 function renderOffsetBar(ctx, {offsetBarY, viewportWidth}) {
   ctx.fillStyle = '#4A90E2';
   ctx.fillRect(0, offsetBarY - (NOTE_HEIGHT / 2), viewportWidth, NOTE_HEIGHT);
 }
 
-function renderNote(ctx, note, y) {
+function renderNote(ctx, {note, y}) {
   let x, width;
   if (note.col < 3) {
     x = note.col * LANE_WIDTH;
@@ -30,7 +33,17 @@ function renderNote(ctx, note, y) {
   ctx.strokeRect(x, y, width, NOTE_HEIGHT);
 }
 
-function renderChart(ctx, {notes, offset, offsetPositionYPercent, beatSpacing, measures}) {
+export function renderNotes(ctx, {notes, offset, beatSpacing, offsetBarY}) {
+  notes.forEach((note) => {
+    const noteOffset = note.totalOffset - offset;
+
+    const y = ((beatSpacing / 24) * noteOffset) - (NOTE_HEIGHT / 2) + offsetBarY;
+
+    renderNote(ctx, {note, y});
+  });
+}
+
+export function renderChart(ctx, {notes, offset, offsetPositionYPercent, beatSpacing, measures}) {
   const viewportHeight = ctx.canvas.height;
   const viewportWidth = ctx.canvas.width;
 
@@ -53,12 +66,11 @@ function renderChart(ctx, {notes, offset, offsetPositionYPercent, beatSpacing, m
 
   const notesToRender = notes.filter((note) => note.totalOffset < maximumOffset);
 
-  notesToRender.forEach((note) => {
-    const noteOffset = note.totalOffset - offset;
-
-    const y = ((beatSpacing / 24) * noteOffset) - (NOTE_HEIGHT / 2) + offsetBarY;
-
-    renderNote(ctx, note, y);
+  renderNotes(ctx, {
+    notes: notesToRender,
+    offset,
+    offsetBarY,
+    beatSpacing,
   });
 
   // TODO: Render measures
@@ -78,7 +90,7 @@ const CanvasChart = React.createClass({
     return (
       <div className="chart-overflower">
         <RenderedCanvas render={renderChart} params={this.props}
-          height="720" width="450" style={{transform: 'scale(1, -1)'}} />
+          height={HEIGHT} width={WIDTH} style={{transform: 'scale(1, -1)'}} />
       </div>
     );
   }
