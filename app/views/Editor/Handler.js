@@ -30,6 +30,10 @@ import {
   ENABLE_CANVAS_PLAYBACK,
 } from '../../config/flags';
 
+import {
+  editorColors
+} from '../../config/constants';
+
 const resolutions = [24, 12, 8, 6, 4, 3];
 
 const colMap = {
@@ -265,7 +269,8 @@ class Editor extends React.Component {
         scrollResolution={this.getScrollResolution()}
         numMeasures={this.getNumMeasures()}
         offsetPositionYPercent={0.7}
-        fps={this.props.fps} />
+        fps={this.props.fps}
+        colors={editorColors} />
     );
   }
 

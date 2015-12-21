@@ -6,48 +6,80 @@ import ordinal from '../../../../util/ordinal';
 
 import RenderedCanvas from './RenderedCanvas';
 
-import {LANE_WIDTH, CENTER_LANE_WIDTH, NOTE_HEIGHT, colors, WIDTH} from '../constants';
+import {LANE_WIDTH, CENTER_LANE_WIDTH, NOTE_HEIGHT, WIDTH} from '../constants';
 import {SHOW_FPS} from '../../../../config/flags';
 
 export {WIDTH};
 export const HEIGHT = 720;
 
-function renderOffsetBar(ctx, {offsetBarY}) {
-  ctx.fillStyle = '#4A90E2';
+function renderOffsetBar(ctx, {offsetBarY, colors}) {
+  ctx.fillStyle = colors.offsetBarFillStyle;
   ctx.fillRect(0, offsetBarY - (NOTE_HEIGHT / 2), WIDTH, NOTE_HEIGHT);
 }
 
-function renderNote(ctx, {note, y}) {
-  let x, width;
-  if (note.col < 3) {
-    x = note.col * LANE_WIDTH;
-    width = LANE_WIDTH;
-  } else if (note.col === 3) {
-    x = note.col * LANE_WIDTH;
-    width = CENTER_LANE_WIDTH;
-  } else if (note.col > 3) {
-    x = CENTER_LANE_WIDTH + (note.col - 1) * LANE_WIDTH;
-    width = LANE_WIDTH;
+function getColumnWidth(col) {
+  if (col === 3) {
+    return CENTER_LANE_WIDTH;
   }
 
-  ctx.fillStyle = colors[note.col][0];
-  ctx.strokeStyle = colors[note.col][1];
+  return LANE_WIDTH;
+}
+
+function getColumnX(col) {
+  if (col <= 3) {
+    return col * LANE_WIDTH;
+  }
+
+  return CENTER_LANE_WIDTH + (col - 1) * LANE_WIDTH;
+}
+
+function renderNote(ctx, {colors, note, y}) {
+  const x = getColumnX(note.col);
+  const width = getColumnWidth(note.col);
+
+  ctx.fillStyle = colors.noteColors[note.col][0];
+  ctx.strokeStyle = colors.noteColors[note.col][1];
 
   ctx.fillRect(x, y, width, NOTE_HEIGHT);
   ctx.strokeRect(x, y, width, NOTE_HEIGHT);
 }
 
-export function renderNotes(ctx, {notes, offset, beatSpacing, offsetBarY}) {
+export function renderNotes(ctx, {colors, notes, offset, beatSpacing, offsetBarY}) {
   notes.forEach((note) => {
     const noteOffset = note.totalOffset - offset;
 
     const y = ((beatSpacing / 24) * noteOffset) - (NOTE_HEIGHT / 2) + offsetBarY;
 
-    renderNote(ctx, {note, y});
+    renderNote(ctx, {colors, note, y});
   });
 }
 
-function renderBeatLine(ctx, {y, wholeNote}) {
+function renderColumns(ctx, {colors, /*offsetBarY*/}) {
+  for (let col = 1; col < 7; col += 1) {
+    const x = getColumnX(col);
+
+    // TODO: light up gradients when key is pressed down?
+    // const width = getColumnWidth(col);
+    // const gradient = ctx.createLinearGradient(0, 0, 0, HEIGHT);
+    //
+    // gradient.addColorStop(0, colors[col][0]);
+    // gradient.addColorStop(offsetBarY / HEIGHT, colors[col][0]);
+    // gradient.addColorStop(1, 'rgba(0,0,0,0)');
+    //
+    // ctx.fillStyle = gradient;
+    // ctx.fillRect(x, 0, width, HEIGHT);
+
+    ctx.strokeStyle = colors.separatorStyle;
+    ctx.lineWidth = 2;
+
+    ctx.beginPath();
+    ctx.moveTo(x, 0);
+    ctx.lineTo(x, HEIGHT);
+    ctx.stroke();
+  }
+}
+
+function renderBeatLine(ctx, {colors, y, wholeNote}) {
   ctx.save();
 
   if (wholeNote) {
@@ -56,7 +88,7 @@ function renderBeatLine(ctx, {y, wholeNote}) {
     ctx.lineWidth = 1;
   }
 
-  ctx.strokeStyle = 'black';
+  ctx.strokeStyle = colors.beatLineStyle;
   ctx.beginPath();
   ctx.moveTo(0, y);
   ctx.lineTo(WIDTH, y);
@@ -65,7 +97,7 @@ function renderBeatLine(ctx, {y, wholeNote}) {
   ctx.restore();
 }
 
-function renderMeasures(ctx, {offset, offsetBarY, beatSpacing, minimumOffset, maximumOffset}) {
+function renderMeasures(ctx, {colors, offset, offsetBarY, beatSpacing, minimumOffset, maximumOffset}) {
   const beatOffsets = _.range(Math.floor(minimumOffset), Math.ceil(maximumOffset))
     .filter((val) => val % 24 === 0 && val >= 0);
 
@@ -74,7 +106,7 @@ function renderMeasures(ctx, {offset, offsetBarY, beatSpacing, minimumOffset, ma
 
     const y = ((beatSpacing / 24) * offsetDiff) + offsetBarY;
 
-    renderBeatLine(ctx, {y, wholeNote: beatOffset % 96 === 0});
+    renderBeatLine(ctx, {colors, y, wholeNote: beatOffset % 96 === 0});
   });
 }
 
@@ -97,7 +129,7 @@ function renderFPS(ctx, {fps}) {
   ctx.fillText(Math.round(fps), WIDTH - 5, 20);
 }
 
-export function renderChart(ctx, {notes, offset, offsetPositionYPercent, beatSpacing,
+export function renderChart(ctx, {colors, notes, offset, offsetPositionYPercent, beatSpacing,
                             showMeasures, showOffsetText, scrollResolution, fps}) {
   ctx.save();
   ctx.translate(0, HEIGHT);
@@ -107,7 +139,9 @@ export function renderChart(ctx, {notes, offset, offsetPositionYPercent, beatSpa
 
   const offsetBarY = (1 - offsetPositionYPercent) * HEIGHT;
 
-  renderOffsetBar(ctx, {offsetBarY, WIDTH});
+  renderColumns(ctx, {offsetBarY, colors});
+
+  renderOffsetBar(ctx, {offsetBarY, WIDTH, colors});
 
   const minimumY = offsetY - offsetBarY - (NOTE_HEIGHT / 2);
   const maximumY = offsetY + (HEIGHT - offsetBarY) + (NOTE_HEIGHT / 2);
@@ -117,7 +151,7 @@ export function renderChart(ctx, {notes, offset, offsetPositionYPercent, beatSpa
   const notesToRender = notes.filter((note) => minimumOffset < note.totalOffset && note.totalOffset < maximumOffset);
 
   if (showMeasures) {
-    renderMeasures(ctx, {offset, offsetBarY, beatSpacing, minimumOffset, maximumOffset});
+    renderMeasures(ctx, {offset, offsetBarY, beatSpacing, minimumOffset, maximumOffset, colors});
   }
 
   renderNotes(ctx, {
@@ -125,6 +159,7 @@ export function renderChart(ctx, {notes, offset, offsetPositionYPercent, beatSpa
     offset,
     offsetBarY,
     beatSpacing,
+    colors,
   });
 
   ctx.restore();
@@ -156,6 +191,7 @@ const CanvasChart = React.createClass({
     scrollResolution: React.PropTypes.number,
 
     fps: React.PropTypes.number.isRequired,
+    colors: React.PropTypes.object.isRequired,
   },
 
   render() {

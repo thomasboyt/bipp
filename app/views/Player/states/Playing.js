@@ -18,6 +18,10 @@ import {
   ENABLE_CANVAS_PLAYBACK,
 } from '../../../config/flags';
 
+import {
+  playerColors,
+} from '../../../config/constants';
+
 const colMap = {
   '83': 0,
   '68': 1,
@@ -80,7 +84,8 @@ const Playing = React.createClass({
         offsetPositionYPercent={0.9}
         beatSpacing={this.props.beatSpacing}
         numMeasures={numMeasures}
-        fps={this.props.fps} />
+        fps={this.props.fps}
+        colors={playerColors} />
     );
   },
 
