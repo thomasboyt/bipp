@@ -34,3 +34,5 @@ export const ENABLE_CANVAS_PLAYBACK = getFlag('canvas', types.bool, false);
 export const ENABLE_3D_ACCEL = getFlag('enable3daccel', types.bool, false);
 
 export const MUTE = getFlag('mute', types.bool, false);
+
+export const SHOW_FPS = getFlag('fps', types.bool, false);

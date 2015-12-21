@@ -79,7 +79,8 @@ const Playing = React.createClass({
         offset={this.props.playbackOffset}
         offsetPositionYPercent={0.9}
         beatSpacing={this.props.beatSpacing}
-        numMeasures={numMeasures} />
+        numMeasures={numMeasures}
+        fps={this.props.fps} />
     );
   },
 
@@ -140,6 +141,8 @@ function select(state) {
     playbackOffset: state.playback.playbackOffset,
     judgement: state.playback.judgement,
     beatSpacing: state.playback.beatSpacing,
+
+    fps: state.fps,
   };
 }
 

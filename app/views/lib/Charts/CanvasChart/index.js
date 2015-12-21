@@ -7,6 +7,7 @@ import ordinal from '../../../../util/ordinal';
 import RenderedCanvas from './RenderedCanvas';
 
 import {LANE_WIDTH, CENTER_LANE_WIDTH, NOTE_HEIGHT, colors, WIDTH} from '../constants';
+import {SHOW_FPS} from '../../../../config/flags';
 
 export {WIDTH};
 export const HEIGHT = 720;
@@ -89,8 +90,15 @@ function renderOffsetText(ctx, {offset, offsetBarY, scrollResolution}) {
   ctx.fillText(beat, WIDTH + 50, HEIGHT - offsetBarY + 20 - 5);
 }
 
+function renderFPS(ctx, {fps}) {
+  ctx.textAlign = 'right';
+  ctx.fillStyle = 'green';
+  ctx.font = '16px Helvetica';
+  ctx.fillText(Math.round(fps), WIDTH - 5, 20);
+}
+
 export function renderChart(ctx, {notes, offset, offsetPositionYPercent, beatSpacing,
-                            showMeasures, showOffsetText, scrollResolution}) {
+                            showMeasures, showOffsetText, scrollResolution, fps}) {
   ctx.save();
   ctx.translate(0, HEIGHT);
   ctx.scale(1, -1);
@@ -124,6 +132,10 @@ export function renderChart(ctx, {notes, offset, offsetPositionYPercent, beatSpa
   if (showOffsetText) {
     renderOffsetText(ctx, {offset, offsetBarY, scrollResolution});
   }
+
+  if (SHOW_FPS) {
+    renderFPS(ctx, {fps});
+  }
 }
 
 const CanvasChart = React.createClass({
@@ -142,6 +154,8 @@ const CanvasChart = React.createClass({
     showMeasures: React.PropTypes.bool,
     showOffsetText: React.PropTypes.bool,
     scrollResolution: React.PropTypes.number,
+
+    fps: React.PropTypes.number.isRequired,
   },
 
   render() {

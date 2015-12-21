@@ -264,7 +264,8 @@ class Editor extends React.Component {
         showOffsetText
         scrollResolution={this.getScrollResolution()}
         numMeasures={this.getNumMeasures()}
-        offsetPositionYPercent={0.7} />
+        offsetPositionYPercent={0.7}
+        fps={this.props.fps} />
     );
   }
 
@@ -307,6 +308,8 @@ function select(state) {
     playbackRate: state.playback.playbackRate,
 
     audioData: state.audio.audioData,
+
+    fps: state.fps,
   };
 }
 
