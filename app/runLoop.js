@@ -1,16 +1,12 @@
 import {
-  PLAYBACK_TICK,
+  TICK,
 } from './ActionTypes';
 
 class RunLoop {
-  constructor(store) {
-    this.store = store;
-    this.inPlayback = false;
+  constructor() {
+    this.store = null;
+    this._listeners = [];
 
-    this.store.subscribe(this.maybeUpdatePlayback.bind(this));
-  }
-
-  start() {
     let prev = Date.now();
 
     let runLoop = () => {
@@ -19,9 +15,11 @@ class RunLoop {
       prev = now;
 
       this.store.dispatch({
-        type: PLAYBACK_TICK,
+        type: TICK,
         dt,
       });
+
+      this._listeners.forEach((listener) => listener());
 
       window.requestAnimationFrame(runLoop);
     };
@@ -31,29 +29,27 @@ class RunLoop {
     };
 
     window.requestAnimationFrame(runLoop);
-
-    this.inPlayback = true;
   }
 
-  stop() {
-    this.unsetPlaybackRunLoop();
-
-    this.inPlayback = false;
+  setStore(store) {
+    this.store = store;
   }
 
-  maybeUpdatePlayback() {
-    const state = this.store.getState();
+  subscribe(listener) {
+    this._listeners.push(listener);
+  }
 
-    if (!state.playback.inPlayback && this.inPlayback) {
-      this.stop();
-    } else if (state.playback.inPlayback && !this.inPlayback) {
-      this.start();
+  unsubscribe(listener) {
+    const idx = this._listeners.indexOf(listener);
+
+    if (idx === -1) {
+      throw new Error('tried to unsubscribe listener that wasn\'t subscribed');
     }
+
+    this._listeners.splice(idx, 1);
   }
 }
 
-function createPlaybackRunLoop(...args) {
-  return new RunLoop(...args);
-}
+const runLoop = new RunLoop();
 
-export default createPlaybackRunLoop;
+export default runLoop;

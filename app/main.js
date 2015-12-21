@@ -9,11 +9,10 @@ import {Provider} from 'react-redux';
 
 import createStore from './store';
 
-import createPlaybackRunLoop from './runLoop';
+import runLoop from './runLoop';
 
 const store = createStore();
-
-createPlaybackRunLoop(store);
+runLoop.setStore(store);
 
 // Set up router
 import routes from './config/routes';

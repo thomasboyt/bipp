@@ -12,4 +12,4 @@ export const EXIT_PLAYBACK = 'EXIT_PLAYBACK';
 export const PLAY_NOTE = 'PLAY_NOTE';
 export const SET_RATE = 'SET_RATE';
 
-export const PLAYBACK_TICK = 'PLAYBACK_TICK';
+export const TICK = 'TICK';

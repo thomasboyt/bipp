@@ -7,7 +7,7 @@ import {
   EXIT_PLAYBACK,
   PLAY_NOTE,
   SET_RATE,
-  PLAYBACK_TICK,
+  TICK,
 } from '../ActionTypes';
 
 /*
@@ -174,7 +174,11 @@ const playbackReducer = createImmutableReducer(initialState, {
     return state.set('playbackRate', parseFloat(rate));
   },
 
-  [PLAYBACK_TICK]: function({dt}, state) {
+  [TICK]: function({dt}, state) {
+    if (!state.inPlayback) {
+      return state;
+    }
+
     const nextState = sweepMissedNotes(updatePlaybackOffset(state, dt));
 
     if (nextState.playbackOffset > nextState.maxOffset) {

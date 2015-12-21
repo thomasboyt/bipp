@@ -1,6 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+import runLoop from '../../../../runLoop';
+
 const RenderedCanvas = React.createClass({
   propTypes: {
     render: React.PropTypes.func.isRequired,
@@ -11,10 +13,12 @@ const RenderedCanvas = React.createClass({
     this._canvas = ReactDOM.findDOMNode(this);
     this._ctx = this._canvas.getContext('2d');
     this.renderCanvas();
+
+    runLoop.subscribe(this.renderCanvas);
   },
 
-  componentDidUpdate() {
-    this.renderCanvas();
+  componentWillUnmount() {
+    runLoop.unsubscribe(this.renderCanvas);
   },
 
   renderCanvas() {
