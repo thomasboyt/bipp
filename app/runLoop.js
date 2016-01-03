@@ -7,28 +7,24 @@ class RunLoop {
     this.store = null;
     this._listeners = [];
 
-    let prev = Date.now();
+    this._lastTickMs = Date.now();
 
-    let runLoop = () => {
-      const now = Date.now();
-      const dt = now - prev;
-      prev = now;
+    window.requestAnimationFrame(this._runLoop.bind(this));
+  }
 
-      this.store.dispatch({
-        type: TICK,
-        dt,
-      });
+  _runLoop() {
+    const now = Date.now();
+    const dt = now - this._lastTickMs;
+    this._lastTickMs = now;
 
-      this._listeners.forEach((listener) => listener());
+    this.store.dispatch({
+      type: TICK,
+      dt,
+    });
 
-      window.requestAnimationFrame(runLoop);
-    };
+    this._listeners.forEach((listener) => listener());
 
-    this.unsetPlaybackRunLoop = () => {
-      runLoop = () => {};
-    };
-
-    window.requestAnimationFrame(runLoop);
+    window.requestAnimationFrame(this._runLoop.bind(this));
   }
 
   setStore(store) {
