@@ -1,8 +1,26 @@
 language: node_js
 node_js:
   - "4"
+
+# ensure we're using the container-based infrastructure
+# see https://docs.travis-ci.com/user/workers/container-based-infrastructure/#Routing-your-build-to-container-based-infrastructure
+sudo: false
+
+# enable firefox
 before_script:
   - export DISPLAY=:99.0
   - sh -e /etc/init.d/xvfb start
+
 script:
   - npm run-script ci
+
+# enable native dependencies for node 4.x
+# see https://docs.travis-ci.com/user/languages/javascript-with-nodejs#Node.js-v4-(or-io.js-v3)-compiler-requirements
+env:
+  - CXX=g++-4.8
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - g++-4.8
