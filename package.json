@@ -9,8 +9,9 @@
     "test": "karma start --single-run",
     "karma": "karma start",
     "lint": "eslint app/",
+    "ci": "karma start --single-run --browsers Firefox",
     "dev": "webpack-dev-server --config webpack/dev.js",
-    "ci": "karma start --single-run --browsers Firefox"
+    "prod": "webpack-dev-server --config webpack/production.js"
   },
   "devDependencies": {
     "babel-core": "^6.3.17",

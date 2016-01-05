@@ -5,22 +5,23 @@ import './polyfill';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import {Provider} from 'react-redux';
-
+// Set up store
 import createStore from './store';
-
-import runLoop from './runLoop';
-
 const store = createStore();
-runLoop.setStore(store);
 
+// Set up runLoop
+import runLoop from './runLoop';
+runLoop.setStore(store);
 runLoop.start();
 
 // Set up router
-import routes from './config/routes';
 import {Router} from 'react-router';
-import createBrowserHistory from 'history/lib/createBrowserHistory';
-let history = createBrowserHistory();
+
+import routes from './config/routes';
+import history from './config/history';
+
+// Render root
+import {Provider} from 'react-redux';
 
 ReactDOM.render((
   <Provider store={store}>
