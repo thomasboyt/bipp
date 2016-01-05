@@ -8,7 +8,9 @@ class RunLoop {
     this._listeners = [];
 
     this._lastTickMs = Date.now();
+  }
 
+  start() {
     window.requestAnimationFrame(this._runLoop.bind(this));
   }
 

@@ -14,6 +14,8 @@ import runLoop from './runLoop';
 const store = createStore();
 runLoop.setStore(store);
 
+runLoop.start();
+
 // Set up router
 import routes from './config/routes';
 import {Router} from 'react-router';
