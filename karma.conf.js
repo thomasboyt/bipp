@@ -1,6 +1,6 @@
 var webpack = require('webpack');
 
-var defaultConfig = require('./webpack.config');
+var defaultConfig = require('./webpack/test');
 
 var webpackConfig = {
   devtool: 'inline-source-map',

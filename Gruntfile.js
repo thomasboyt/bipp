@@ -11,7 +11,7 @@ module.exports = function(grunt) {
     },
 
     webpack: {
-      production: require('./webpack.production')
+      production: require('./webpack/production')
     },
 
     sftp: {

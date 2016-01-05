@@ -1,7 +1,4 @@
-var webpack = require('webpack');
-var path = require('path');
-
-var createGlobChunk = require('./webpack-glob-chunk');
+var createGlobChunk = require('./util/glob-chunk');
 
 module.exports = {
   entry: {
@@ -9,7 +6,7 @@ module.exports = {
   },
 
   output: {
-    path: 'build/',
+    path: './build/',
     filename: '[name].bundle.js'
   },
 

@@ -6,8 +6,8 @@
   "author": "",
   "license": "MIT",
   "scripts": {
-    "lint": "node_modules/.bin/eslint app/",
-    "dev": "node_modules/.bin/webpack-dev-server",
+    "lint": "eslint app/",
+    "dev": "webpack-dev-server --config webpack/dev.js",
     "karma": "karma start"
   },
   "devDependencies": {
@@ -50,7 +50,7 @@
   "dependencies": {
     "babel-polyfill": "^6.3.14",
     "bootstrap": "^3.3.4",
-    "history": "^1.13.1",
+    "history": "1.13.1",
     "immutable": "^3.7.3",
     "lodash": "^3.9.1",
     "qs": "^5.2.0",
