@@ -9,5 +9,7 @@ export default {
 
   hidden: true,
 
+  bpm: 125,
+
   'musicUrl': require('./click.mp3')
 };

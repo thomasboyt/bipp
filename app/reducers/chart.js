@@ -43,7 +43,7 @@ const chartReducer = createImmutableReducer(initialState, {
     return new StateRecord({
       loaded: true,
       notes,
-      bpm: chart.bpm,
+      bpm: song.bpm,
 
       songInfo: {
         title: song.title,

@@ -1,4 +1,5 @@
 import React from 'react';
+import I from 'immutable';
 import { connect } from 'react-redux';
 
 import {Button, Well} from 'react-bootstrap';
@@ -11,9 +12,12 @@ import {
 
 
 function serializeData(chartData) {
-  const {notes, bpm} = chartData;
+  const {notes} = chartData;
 
-  const serialized = JSON.stringify({notes, bpm});
+  // Convert Notes from Record to Map so we can remove props from them
+  const serializedNotes = notes.map((note) => I.Map(note).remove('time'));
+
+  const serialized = JSON.stringify({notes: serializedNotes});
 
   return serialized;
 }
