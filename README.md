@@ -4,7 +4,17 @@
 
 This is a music game engine I'm working on. Currently the only working piece is the editor.
 
-### Running
+### Install
+
+You're probably going to want `node@4.x` and `npm@3.x`.
+
+Then:
+
+```
+npm install
+```
+
+### Run
 
 ```
 npm run-script dev
@@ -12,7 +22,15 @@ npm run-script dev
 
 Navigate to `localhost:8080` and you should be in business. I recommend loading the demo song and chart in the `demo/` folder.
 
-### Manual
+### Test
+
+```
+npm run-script karma
+```
+
+Will run tests in Chrome.
+
+### Editor Manual
 
 ```
 sdf<space>jkl - set the 7 columns
