@@ -1,12 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import runLoop from '../../../../runLoop';
+import runLoop from '../../runLoop';
 
 const RenderedCanvas = React.createClass({
   propTypes: {
     render: React.PropTypes.func.isRequired,
     params: React.PropTypes.object,
+    makeStatic: React.PropTypes.bool,
   },
 
   componentDidMount() {
@@ -14,11 +15,15 @@ const RenderedCanvas = React.createClass({
     this._ctx = this._canvas.getContext('2d');
     this.renderCanvas();
 
-    runLoop.subscribe(this.renderCanvas);
+    if (!this.props.makeStatic) {
+      runLoop.subscribe(this.renderCanvas);
+    }
   },
 
   componentWillUnmount() {
-    runLoop.unsubscribe(this.renderCanvas);
+    if (!this.props.makeStatic) {
+      runLoop.unsubscribe(this.renderCanvas);
+    }
   },
 
   renderCanvas() {

@@ -4,7 +4,7 @@ import _ from 'lodash';
 
 import ordinal from '../../../../util/ordinal';
 
-import RenderedCanvas from './RenderedCanvas';
+import RenderedCanvas from '../../RenderedCanvas';
 
 import {LANE_WIDTH, CENTER_LANE_WIDTH, NOTE_HEIGHT, WIDTH} from '../constants';
 import {SHOW_FPS} from '../../../../config/flags';

@@ -1,0 +1,56 @@
+.song-list-container {
+  font-family: "Determination Mono";
+  font-size: 32px;
+  -webkit-font-smoothing: none;
+  cursor: default;
+  background: black;
+  color: white;
+
+  overflow: hidden;
+}
+
+.song-list {
+  display: flex;
+  height: 100vh;
+  align-items: center;
+}
+
+.song-item {
+  text-align: center;
+  flex: 1 0 100%;
+  position: relative;
+
+  transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.song-item-enter {
+  left: 100%;
+}
+
+.song-item-enter.song-item-enter-active {
+  left: 0;
+}
+
+.song-item-leave {
+  left: -100%;
+}
+
+.song-item-leave.song-item-leave-active {
+  left: -200%;
+}
+
+.backward .song-item-enter {
+	left: -100%;
+}
+
+.backward .song-item-enter.song-item-enter-active {
+	left: 0;
+}
+
+.backward .song-item-leave.song-item-leave {
+  left: -100%;
+}
+
+.backward .song-item-leave.song-item-leave-active {
+	left: 0;
+}
