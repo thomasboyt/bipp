@@ -65,7 +65,7 @@ function judgementFor(diff) {
 
 function getJudgementsMap() {
   const types = judgements.map((judgement) => judgement[1]).concat(missedJudgement);
-  return new IMap(types.map((type) => [type, 0]))
+  return new IMap(types.map((type) => [type, 0]));
 }
 
 function getMsPerOffset(bpm) {

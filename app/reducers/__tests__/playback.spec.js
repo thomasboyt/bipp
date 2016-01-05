@@ -1,6 +1,6 @@
-import expect from 'expect';
-
-import reducer from '../playback';
+// import expect from 'expect';
+//
+// import reducer from '../playback';
 
 describe('playback reducer', () => {
 
