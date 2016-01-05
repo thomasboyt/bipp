@@ -2,7 +2,8 @@ import expect from 'expect';
 import I from 'immutable';
 
 import {Note} from '../../../../../reducers/chart';
-import {NOTE_HEIGHT} from '../..//constants';
+import {NOTE_HEIGHT} from '../../constants';
+import {playerColors} from '../../../../../config/constants';
 
 import {
   WIDTH,
@@ -37,6 +38,7 @@ describe('<CanvasChart>', () => {
     const offsetBarY = (1 - offsetPositionYPercent) * HEIGHT;
 
     renderNotes(ctx, {
+      colors: playerColors,
       notes: I.Set([note]),
       beatSpacing: 160,
       offset,
