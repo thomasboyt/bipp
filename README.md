@@ -1,6 +1,4 @@
-# Bipp
-
-[![Stories in Ready](https://badge.waffle.io/thomasboyt/bipp.svg?label=ready&title=Ready)](http://waffle.io/thomasboyt/bipp)
+# Bipp [![Build Status](https://travis-ci.org/thomasboyt/bipp.svg?branch=master)](https://travis-ci.org/thomasboyt/bipp) [![Stories in Ready](https://badge.waffle.io/thomasboyt/bipp.svg?label=ready&title=Ready)](http://waffle.io/thomasboyt/bipp)
 
 This is a music game engine I'm working on. Currently the only working piece is the editor.
 
