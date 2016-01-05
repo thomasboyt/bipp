@@ -1,9 +1,12 @@
 var webpack = require('webpack');
-var webpackMerge = require('webpack-merge');
 
-var config = require('./base');
+var baseConfig = require('./base');
 
-module.exports = webpackMerge(config, {
+module.exports = {
+  devtool: 'inline-source-map',
+
+  module: baseConfig.module,
+
   plugins: [
     new webpack.DefinePlugin({
       'process.env': {
@@ -11,4 +14,4 @@ module.exports = webpackMerge(config, {
       }
     }),
   ],
-});
+};

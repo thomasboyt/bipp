@@ -1,20 +1,4 @@
-var webpack = require('webpack');
-
-var defaultConfig = require('./webpack/test');
-
-var webpackConfig = {
-  devtool: 'inline-source-map',
-
-  module: defaultConfig.module,
-
-  plugins: [
-    new webpack.DefinePlugin({
-      'process.env': {
-        NODE_ENV: '"test"'
-      }
-    })
-  ],
-};
+var webpackConfig = require('./webpack/test');
 
 module.exports = function(config) {
   config.set({
