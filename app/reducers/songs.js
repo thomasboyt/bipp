@@ -12,6 +12,7 @@ const Song = I.Record({
   musicUrl: null,
   img: null,
   slug: null,
+  hidden: false,
 });
 
 const State = I.Record({
