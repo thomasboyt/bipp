@@ -24,16 +24,22 @@ const SongSelect = React.createClass({
     History,
   ],
 
-  componentDidMount() {
-    ReactDOM.findDOMNode(this).focus();
-  },
-
   getInitialState() {
     return {
       selectedSongIdx: 0,
       selectedDifficultyIdx: 0,
       direction: null,
     };
+  },
+
+  componentWillMount() {
+    if (!this.getAudioData()) {
+      this.props.dispatch(loadAudio(this.getCurrentSong()));
+    }
+  },
+
+  componentDidMount() {
+    ReactDOM.findDOMNode(this).focus();
   },
 
   getCurrentSong() {
