@@ -68,7 +68,10 @@ class Editor extends React.Component {
   componentWillMount() {
     const difficulty = this.props.params.difficulty;
     this.props.dispatch(loadSong(this.props.song, difficulty));
-    this.props.dispatch(loadAudio(this.props.song.musicUrl));
+
+    if (!this.props.audioData) {
+      this.props.dispatch(loadAudio(this.props.song));
+    }
   }
 
   componentWillUnmount() {
@@ -302,8 +305,10 @@ class Editor extends React.Component {
 }
 
 function select(state, props) {
+  const slug = props.params.slug;
+
   return {
-    song: state.songs.songs.get(props.params.slug),
+    song: state.songs.songs.get(slug),
 
     songNotes: state.chart.notes,
     bpm: state.chart.bpm,
@@ -313,7 +318,7 @@ function select(state, props) {
     playbackNotes: state.playback.notes,
     playbackRate: state.playback.playbackRate,
 
-    audioData: state.audio.audioData,
+    audioData: state.audio.audioData.get(slug),
 
     fps: state.fps,
   };

@@ -4,9 +4,12 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import {HotKeys} from 'react-hotkeys';
 import {History} from 'react-router';
 import {connect} from 'react-redux';
-
 import classNames from 'classnames';
 
+import {loadAudio} from '../../actions/AudioActions';
+
+import audioCtx from '../../audioContext';
+import AudioPlayback from '../lib/AudioPlayback';
 import Arrow from './Arrow';
 
 function capitalize(str) {
@@ -37,7 +40,11 @@ const SongSelect = React.createClass({
     return this.props.songs.get(this.state.selectedSongIdx);
   },
 
-  setTransition(idx, direction) {
+  getAudioData() {
+    return this.props.audioData.get(this.getCurrentSong().slug);
+  },
+
+  setSong(idx, direction) {
     if (this.state.inTransition || idx < 0 || idx >= this.props.songs.size) {
       return;
     }
@@ -46,6 +53,10 @@ const SongSelect = React.createClass({
       direction: direction,
       selectedSongIdx: idx,
       inTransition: true,
+    }, () => {
+      if (!this.getAudioData()) {
+        this.props.dispatch(loadAudio(this.getCurrentSong()));
+      }
     });
 
     setTimeout(() => {
@@ -84,14 +95,14 @@ const SongSelect = React.createClass({
         e.preventDefault();
 
         const idx = this.state.selectedSongIdx - 1;
-        this.setTransition(idx, 'backward');
+        this.setSong(idx, 'backward');
       },
 
       next: (e) => {
         e.preventDefault();
 
         const idx = this.state.selectedSongIdx + 1;
-        this.setTransition(idx, 'forward');
+        this.setSong(idx, 'forward');
       },
 
       prevDifficulty: (e) => {
@@ -148,6 +159,16 @@ const SongSelect = React.createClass({
     return this.renderItem(song, idx);
   },
 
+  renderAudio() {
+    const audioData = this.getAudioData();
+
+    if (audioData) {
+      return (
+        <AudioPlayback playing audioData={audioData} ctx={audioCtx} />
+      );
+    }
+  },
+
   render() {
     const className = classNames('song-list', {
       'backward': this.state.direction === 'backward',
@@ -174,6 +195,8 @@ const SongSelect = React.createClass({
             <Arrow dir="right" height={60} width={60} />}
         </div>
 
+        {this.renderAudio()}
+
       </HotKeys>
     );
   }
@@ -181,7 +204,9 @@ const SongSelect = React.createClass({
 
 function select(state) {
   return {
-    songs: state.songs.songs.filter((song) => !song.hidden).toList()
+    songs: state.songs.songs.filter((song) => !song.hidden).toList(),
+
+    audioData: state.audio.audioData,
  };
 }
 

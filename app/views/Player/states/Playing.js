@@ -134,13 +134,11 @@ const Playing = React.createClass({
   },
 });
 
-function select(state) {
+function select(state, props) {
   return {
     bpm: state.chart.bpm,
     songNotes: state.chart.notes,
     songInfo: state.chart.songInfo,
-
-    audioData: state.audio.audioData,
 
     playbackNotes: state.playback.notes,
     playbackOffset: state.playback.playbackOffset,

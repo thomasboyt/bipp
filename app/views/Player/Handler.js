@@ -37,7 +37,10 @@ class Player extends React.Component {
   componentWillMount() {
     const difficulty = this.props.params.difficulty;
     this.props.dispatch(loadSong(this.props.song, difficulty));
-    this.props.dispatch(loadAudio(this.props.song.musicUrl));
+
+    if (!this.props.audioData) {
+      this.props.dispatch(loadAudio(this.props.song));
+    }
   }
 
   componentWillUnmount() {
@@ -62,7 +65,7 @@ class Player extends React.Component {
       return STATE_PLAYING;
     } else if (this.state.didPlayback) {
       return STATE_DONE;
-    } else if (this.props.audioLoaded && this.props.songLoaded) {
+    } else if (this.props.audioData && this.props.songLoaded) {
       return STATE_LOADED;
     } else {
       return STATE_LOADING;
@@ -77,7 +80,7 @@ class Player extends React.Component {
     } else if (this.getState() === STATE_LOADED) {
       outlet = <Loaded />;
     } else if (this.getState() === STATE_PLAYING) {
-      outlet = <Playing />;
+      outlet = <Playing audioData={this.props.audioData} />;
     } else if (this.getState() === STATE_DONE) {
       outlet = <Done />;
     }
@@ -87,14 +90,16 @@ class Player extends React.Component {
 }
 
 function select(state, props) {
+  const slug = props.params.slug;
+
   return {
-    song: state.songs.songs.get(props.params.slug),
+    song: state.songs.songs.get(slug),
 
     songLoaded: state.chart.loaded,
 
     inPlayback: state.playback.inPlayback,
 
-    audioLoaded: !!state.audio.audioData,
+    audioData: state.audio.audioData.get(slug),
   };
 }
 

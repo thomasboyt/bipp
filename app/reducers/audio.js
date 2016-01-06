@@ -1,22 +1,20 @@
 import createImmutableReducer from '../util/immutableReducer';
-import { Record } from 'immutable';
+import I from 'immutable';
 
 import {
   LOAD_AUDIO,
 } from '../ActionTypes';
 
-const State = Record({
-  audioData: null,
+const State = I.Record({
+  audioData: I.Map(),
 });
 
-const initialState = new State({
-  audioData: null,
-});
+const initialState = new State();
 
 
 const audioReducer = createImmutableReducer(initialState, {
-  [LOAD_AUDIO]: function({audioData}, state) {
-    return state.set('audioData', audioData);
+  [LOAD_AUDIO]: function({audioData, song}, state) {
+    return state.setIn(['audioData', song.slug], audioData);
   },
 });
 
