@@ -7,6 +7,13 @@
 
 @import './song-list';
 
+img, canvas {
+  image-rendering: pixelated;
+  -moz-image-rendering: crisp-edges;
+  image-rendering: -webkit-crisp-edges;
+  -ms-interpolation-mode: nearest-neighbor;
+}
+
 .editor {
   display: flex;
   flex-flow: column;

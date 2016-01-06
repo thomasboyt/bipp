@@ -2,14 +2,27 @@
   font-family: "Determination Mono";
   font-size: 32px;
   -webkit-font-smoothing: none;
+  -moz-osx-font-smoothing: grayscale;  // kiiiinda helps but not really :(
+
   cursor: default;
   background: black;
   color: white;
 
   overflow: hidden;
+
+  display: flex;
+  align-items: center;
+
+  .arrow-container {
+    flex: 0 0 auto;
+    padding: 20px;
+    min-width: 100px;  // 60px arrow + 40px padding
+  }
 }
 
 .song-list {
+  flex: 1 auto;
+
   display: flex;
   height: 100vh;
   align-items: center;
@@ -18,8 +31,50 @@
 .song-item {
   text-align: center;
   flex: 1 0 100%;
-  position: relative;
 
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+
+  .difficulties {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    text-align: left;
+
+    li {
+      position: relative;
+
+      .arrow {
+        position: absolute;
+        left: -20px;
+        top: 15px;
+        animation: arrow-bounce 1s infinite;
+        animation-timing-function: linear;
+      }
+    }
+  }
+}
+
+@keyframes arrow-bounce {
+  0% {
+    left: -20px;
+  }
+
+  50% {
+    left: -25px;
+  }
+
+  100% {
+    left: -20px;
+  }
+}
+
+
+/* Song item slide animation */
+
+.song-item {
+  position: relative;
   transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
 }
 

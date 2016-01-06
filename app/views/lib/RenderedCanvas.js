@@ -7,7 +7,7 @@ const RenderedCanvas = React.createClass({
   propTypes: {
     render: React.PropTypes.func.isRequired,
     params: React.PropTypes.object,
-    makeStatic: React.PropTypes.bool,
+    isStatic: React.PropTypes.bool,
   },
 
   componentDidMount() {
@@ -15,13 +15,13 @@ const RenderedCanvas = React.createClass({
     this._ctx = this._canvas.getContext('2d');
     this.renderCanvas();
 
-    if (!this.props.makeStatic) {
+    if (!this.props.isStatic) {
       runLoop.subscribe(this.renderCanvas);
     }
   },
 
   componentWillUnmount() {
-    if (!this.props.makeStatic) {
+    if (!this.props.isStatic) {
       runLoop.unsubscribe(this.renderCanvas);
     }
   },
