@@ -8,7 +8,9 @@ import classNames from 'classnames';
 
 import Arrow from './Arrow';
 
-import songs from '../../config/songs';
+import allSongs from '../../config/songs';
+
+const songs = allSongs.filter((song) => !song.hidden);
 
 function capitalize(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
