@@ -74,7 +74,7 @@ const SongSelect = React.createClass({
 
   setDifficulty(idx) {
     const currentSong = this.getCurrentSong();
-    const numDifficulties = Object.keys(currentSong.data).size;
+    const numDifficulties = Object.keys(currentSong.data).length;
 
     if (idx < 0 || idx >= numDifficulties) {
       return;
