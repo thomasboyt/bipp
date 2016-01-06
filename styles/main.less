@@ -5,7 +5,12 @@
   src: url("../assets/DeterminationMonoWeb.woff") format("woff");
 }
 
+@import './in-game';
+@import './attract';
 @import './song-list';
+
+@import './editor';
+@import './player';
 
 img, canvas {
   image-rendering: pixelated;
@@ -14,113 +19,3 @@ img, canvas {
   -ms-interpolation-mode: nearest-neighbor;
 }
 
-.editor {
-  display: flex;
-  flex-flow: column;
-  height: 100vh;
-
-  .chart-container {
-    flex: 1;
-    display: flex;  /* causes 100% height in child */
-    margin: 5px;  /* Add margin so focus outline is visible */
-  }
-
-  .chart-overflower {
-    flex: 1;  // ????
-  }
-}
-
-@playfield-height: 720px;
-
-.player-container {
-  display: flex;
-  flex-flow: row;
-  height: 100vh;
-  align-items: center;
-
-  background: black;
-
-  cursor: default;
-
-  .help-text-container {
-    font-family: "Determination Mono";
-    font-size: 32px;
-    -webkit-font-smoothing: none;
-
-    flex: 1;
-    text-align: center;
-    align-self: center;
-    color: white;
-
-    table {
-      margin: 0 auto;
-      td {
-        padding: 0 20px;
-        &:last-child {
-          text-align: right;
-        }
-      }
-    }
-  }
-
-  .playfield {
-    flex: 1;
-    height: @playfield-height;
-    position: relative;
-
-    .chart-overflower {
-      width: 450px;  // TODO: Setting this is lame
-      height: @playfield-height;
-      // background: rgba(0, 0, 0, .5);
-      margin: 0 auto;
-      z-index: 3;
-      position: relative;
-    }
-
-    .judge {
-      position: absolute;
-      bottom: 100px;
-      width: 100%;
-      text-align: center;
-      z-index: 4;
-      color: white;
-    }
-
-    .youtub {
-      position: absolute;
-      z-index: 1;
-
-      top: 0;
-      left: 0;
-      // width: 100%;
-      // height: 100%;
-      width: 0px;
-      height: 0px;
-    }
-  }
-}
-
-/* prevent clicking on youtub */
-// .youtub-overlay {
-//   width: 100%;
-//   height: 100%;
-//   position: fixed;
-//   z-index: 1;
-//   top: 0;
-// }
-
-.info-overlay {
-  position: fixed;
-  z-index: 5;
-  background: rgba(0, 0, 0, .7);
-  left: 0;
-  bottom: 0;
-  padding: 10px;
-
-  color: white;
-
-  a {
-    color: white;
-    text-decoration: underline;
-  }
-}

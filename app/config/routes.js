@@ -8,10 +8,14 @@ export default (
 
     <Route
       path="/"
+      component={require('../views/Attract/Handler').default} />
+
+    <Route
+      path="/song-select"
       component={require('../views/SongSelect/Handler').default} />
 
     <Route
-      path="/songs"
+      path="/songs-list"
       component={require('../views/SongList/Handler').default} />
 
     <Route

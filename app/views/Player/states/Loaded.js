@@ -59,7 +59,7 @@ const Loaded = React.createClass({
 
     return (
       <HotKeys handlers={this.getHandlers()} keyMap={this.getKeyMap()}
-        className="player-container">
+        className="player-container in-game">
         <div className="help-text-container">
           <p>
             Press space to play

@@ -115,7 +115,7 @@ const Playing = React.createClass({
 
   render() {
     return (
-      <div className="player-container" tabIndex="-1"
+      <div className="player-container in-game" tabIndex="-1"
         onKeyDown={this.handleKeyDown}
         onKeyUp={this.handleKeyUp}>
         <div className="playfield">

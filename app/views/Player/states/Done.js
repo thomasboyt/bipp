@@ -19,7 +19,7 @@ const Done = React.createClass({
 
   render() {
     return (
-      <div className="player-container">
+      <div className="player-container in-game">
         <div className="help-text-container">
           <table>
             <tbody>

@@ -3,7 +3,7 @@ import React from 'react';
 class Loading extends React.Component {
   render() {
     return (
-      <div className="player-container">
+      <div className="player-container in-game">
         <div className="help-text-container">
           <p>
             Loading...

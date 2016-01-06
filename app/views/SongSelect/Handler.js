@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import {HotKeys} from 'react-hotkeys';
 import {History} from 'react-router';
@@ -20,6 +21,10 @@ const SongSelect = React.createClass({
   mixins: [
     History,
   ],
+
+  componentDidMount() {
+    ReactDOM.findDOMNode(this).focus();
+  },
 
   getInitialState() {
     return {
@@ -151,7 +156,7 @@ const SongSelect = React.createClass({
 
     return (
       <HotKeys handlers={this.getHandlers()} keyMap={this.getKeyMap()}
-        className="song-list-container">
+        className="song-list-container in-game">
 
         <div className="arrow-container">
           {this.state.selectedSongIdx > 0 &&
