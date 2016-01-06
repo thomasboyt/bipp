@@ -13,3 +13,5 @@ export const PLAY_NOTE = 'PLAY_NOTE';
 export const SET_RATE = 'SET_RATE';
 
 export const TICK = 'TICK';
+
+export const LOAD_SONGS = 'LOAD_SONGS';

@@ -3,14 +3,11 @@ import ReactDOM from 'react-dom';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import {HotKeys} from 'react-hotkeys';
 import {History} from 'react-router';
+import {connect} from 'react-redux';
 
 import classNames from 'classnames';
 
 import Arrow from './Arrow';
-
-import allSongs from '../../config/songs';
-
-const songs = allSongs.filter((song) => !song.hidden);
 
 function capitalize(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
@@ -37,11 +34,11 @@ const SongSelect = React.createClass({
   },
 
   getCurrentSong() {
-    return songs[this.state.selectedSongIdx];
+    return this.props.songs.get(this.state.selectedSongIdx);
   },
 
   setTransition(idx, direction) {
-    if (this.state.inTransition || idx < 0 || idx >= songs.length) {
+    if (this.state.inTransition || idx < 0 || idx >= this.props.songs.size) {
       return;
     }
 
@@ -60,7 +57,7 @@ const SongSelect = React.createClass({
 
   setDifficulty(idx) {
     const currentSong = this.getCurrentSong();
-    const numDifficulties = Object.keys(currentSong.data).length;
+    const numDifficulties = Object.keys(currentSong.data).size;
 
     if (idx < 0 || idx >= numDifficulties) {
       return;
@@ -115,7 +112,7 @@ const SongSelect = React.createClass({
         const song = this.getCurrentSong();
         const difficulty = Object.keys(song.data)[this.state.selectedDifficultyIdx];
 
-        this.history.pushState(null, `/play/${this.state.selectedSongIdx}/${difficulty}`);
+        this.history.pushState(null, `/play/${song.slug}/${difficulty}`);
       }
     };
   },
@@ -173,7 +170,7 @@ const SongSelect = React.createClass({
         </ReactCSSTransitionGroup>
 
         <div className="arrow-container">
-          {this.state.selectedSongIdx < songs.length - 1 &&
+          {this.state.selectedSongIdx < this.props.songs.size - 1 &&
             <Arrow dir="right" height={60} width={60} />}
         </div>
 
@@ -182,4 +179,10 @@ const SongSelect = React.createClass({
   }
 });
 
-export default SongSelect;
+function select(state) {
+  return {
+    songs: state.songs.songs.filter((song) => !song.hidden).toList()
+ };
+}
+
+export default connect(select)(SongSelect);

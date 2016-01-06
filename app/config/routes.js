@@ -19,11 +19,11 @@ export default (
       component={require('../views/SongList/Handler').default} />
 
     <Route
-      path="/edit/:songIdx/:difficulty"
+      path="/edit/:slug/:difficulty"
       component={require('../views/Editor/Handler').default} />
 
     <Route
-      path="/play/:songIdx/:difficulty"
+      path="/play/:slug/:difficulty"
       component={require('../views/Player/Handler').default} />
 
   </Route>

@@ -4,12 +4,10 @@ import {
   CHANGE_BPM,
 } from '../ActionTypes';
 
-import songs from '../config/songs';
-
-export function loadSong(idx, difficulty) {
+export function loadSong(song, difficulty) {
   return {
     type: LOAD_SONG,
-    song: songs[idx],
+    song: song,
     difficulty,
   };
 }

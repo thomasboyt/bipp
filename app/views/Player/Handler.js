@@ -35,10 +35,9 @@ class Player extends React.Component {
   }
 
   componentWillMount() {
-    const idx = this.props.params.songIdx;
     const difficulty = this.props.params.difficulty;
-    this.props.dispatch(loadSong(idx, difficulty));
-    this.props.dispatch(loadAudio(idx));
+    this.props.dispatch(loadSong(this.props.song, difficulty));
+    this.props.dispatch(loadAudio(this.props.song.musicUrl));
   }
 
   componentWillUnmount() {
@@ -87,8 +86,10 @@ class Player extends React.Component {
   }
 }
 
-function select(state) {
+function select(state, props) {
   return {
+    song: state.songs.songs.get(props.params.slug),
+
     songLoaded: state.chart.loaded,
 
     inPlayback: state.playback.inPlayback,

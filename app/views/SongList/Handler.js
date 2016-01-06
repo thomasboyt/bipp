@@ -1,17 +1,16 @@
 import React from 'react';
 import {Link} from 'react-router';
 import _ from 'lodash';
-
-import songs from '../../config/songs';
+import {connect} from 'react-redux';
 
 class SongList extends React.Component {
-  renderDifficulties(song, idx) {
+  renderDifficulties(song) {
     const difficulties = _.map(_.keys(song.data), (key) => {
       return (
         <li key={key}>
           {key}{': '}
-          <Link to={`/play/${idx}/${key}`}>Play</Link>{' / '}
-          <Link to={`/edit/${idx}/${key}`}>Edit</Link>
+          <Link to={`/play/${song.slug}/${key}`}>Play</Link>{' / '}
+          <Link to={`/edit/${song.slug}/${key}`}>Edit</Link>
         </li>
       );
     });
@@ -24,12 +23,12 @@ class SongList extends React.Component {
   }
 
   renderSongs() {
-    return songs.map((song, idx) => (
-      <li key={idx}>
+    return this.props.songs.map((song, key) => (
+      <li key={key}>
         {song.title} - {song.artist}
-        {this.renderDifficulties(song, idx)}
+        {this.renderDifficulties(song)}
       </li>
-    ));
+    )).toList();
   }
 
   render() {
@@ -43,4 +42,10 @@ class SongList extends React.Component {
   }
 }
 
-export default SongList;
+function select(state) {
+  return {
+    songs: state.songs.songs
+ };
+}
+
+export default connect(select)(SongList);

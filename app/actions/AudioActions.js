@@ -4,12 +4,10 @@ import {
   LOAD_AUDIO,
 } from '../ActionTypes';
 
-import songs from '../config/songs';
-
-export function loadAudio(songIdx) {
+export function loadAudio(musicUrl) {
   // TODO: this should really have some kind of error handling
   return async function(dispatch) {
-    const url = songs[songIdx].musicUrl;
+    const url = musicUrl;
     const resp = await window.fetch(url);
     const data = await resp.arrayBuffer();
 

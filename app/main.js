@@ -9,6 +9,12 @@ import ReactDOM from 'react-dom';
 import createStore from './store';
 const store = createStore();
 
+// Load songs
+// TODO: maybe do this elsewhere...
+import songs from './config/songs';
+import {loadSongs} from './actions/SongActions';
+store.dispatch(loadSongs(songs))
+
 // Set up runLoop
 import runLoop from './runLoop';
 runLoop.setStore(store);
