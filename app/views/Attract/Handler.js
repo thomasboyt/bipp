@@ -33,7 +33,7 @@ const Attract = React.createClass({
       <HotKeys handlers={this.getHandlers()} keyMap={this.getKeyMap()}
         className="attract-container in-game">
         <div className="attract">
-          <h1>Bipp</h1>
+          <h1>Undertune</h1>
           <p>press space</p>
         </div>
       </HotKeys>
