@@ -4,5 +4,5 @@ export function loadSongs(songs) {
   return {
     type: LOAD_SONGS,
     songs
-  }
+  };
 }

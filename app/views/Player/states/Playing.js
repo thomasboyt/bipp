@@ -134,7 +134,7 @@ const Playing = React.createClass({
   },
 });
 
-function select(state, props) {
+function select(state) {
   return {
     bpm: state.chart.bpm,
     songNotes: state.chart.notes,

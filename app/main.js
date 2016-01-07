@@ -13,7 +13,7 @@ const store = createStore();
 // TODO: maybe do this elsewhere...
 import songs from './config/songs';
 import {loadSongs} from './actions/SongActions';
-store.dispatch(loadSongs(songs))
+store.dispatch(loadSongs(songs));
 
 // Set up runLoop
 import runLoop from './runLoop';

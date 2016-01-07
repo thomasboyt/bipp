@@ -7,6 +7,7 @@
     "mocha": true
   },
   "rules": {
+    "semi": 1,
     "strict": 0,
     "quotes": [2, "single"],
     "no-underscore-dangle": [0],

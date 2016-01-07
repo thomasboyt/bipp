@@ -6,10 +6,6 @@ const DOWN = 'down';
 const LEFT = 'left';
 const RIGHT = 'right';
 
-// we render at this internal resolution and scale up
-const HEIGHT = 8;
-const WIDTH = 8;
-
 /*
  * this is a triangle. I am so bad at image editing that it was literally faster to do this
  * than to make triangles of various sizes. shut up.
