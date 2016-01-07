@@ -48,7 +48,8 @@ const chartReducer = createImmutableReducer(initialState, {
       songInfo: {
         title: song.title,
         artist: song.artist,
-        youtubeId: song.youtubeId
+        youtubeId: song.youtubeId,
+        img: song.img,
       }
     });
   },

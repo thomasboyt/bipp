@@ -122,18 +122,18 @@ const Playing = React.createClass({
       <div className="player-container in-game" tabIndex="-1"
         onKeyDown={this.handleKeyDown}
         onKeyUp={this.handleKeyUp}>
+
         <div className="playfield">
           {this.renderChart()}
           {this.renderJudgement()}
           {this.renderLifeBar()}
           {this.renderAudio()}
-
-          <div className="youtub-overlay" />
-
-          <div className="info-overlay">
-            <p />
-          </div>
         </div>
+
+        <div className="character">
+          <img src={this.props.songInfo.img} />
+        </div>
+
       </div>
     );
   },

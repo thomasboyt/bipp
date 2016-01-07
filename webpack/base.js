@@ -55,7 +55,7 @@ module.exports = {
         }
       },
       {
-        test: /(?:\.mp3$|\.png$)/,
+        test: /(?:\.mp3$|\.png$|\.gif$)/,
         loader: 'file-loader',
         query: {
           name: '/assets/[hash].[ext]'
