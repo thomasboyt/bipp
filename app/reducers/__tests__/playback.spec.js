@@ -46,6 +46,7 @@ describe('playback reducer', () => {
       });
 
       expect(playedState.combo).toEqual(1);
+      expect(playedState.maxCombo).toEqual(1);
     });
 
     it('missing a note resets combo', () => {
@@ -64,6 +65,7 @@ describe('playback reducer', () => {
       });
 
       expect(missedState.combo).toEqual(0);
+      expect(playedState.maxCombo).toEqual(1);
     });
   });
 });

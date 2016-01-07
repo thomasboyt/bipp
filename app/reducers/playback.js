@@ -40,6 +40,7 @@ const State = new Record({
   judgement: null,
   judgements: null,
   combo: 0,
+  maxCombo: 0,
   elapsedMs: 0,
 
   playbackRate: 1
@@ -114,6 +115,14 @@ function sweepMissedNotes(state) {
   }
 }
 
+function incCombo(state) {
+  const combo = state.get('combo') + 1;
+
+  return state
+    .set('combo', combo)
+    .update('maxCombo', (maxCombo) => combo > maxCombo ? combo : maxCombo);
+}
+
 /*
  * Reducer
  */
@@ -158,6 +167,7 @@ const playbackReducer = createImmutableReducer(initialState, {
       .remove('judgement')
       .set('judgements', getJudgementsMap())
       .remove('combo')
+      .remove('maxCombo')
       .remove('elapsedMs');
   },
 
@@ -181,7 +191,7 @@ const playbackReducer = createImmutableReducer(initialState, {
     const {judgement, keepCombo} = judgementFor(offset);
 
     if (keepCombo) {
-      state = state.update('combo', (combo) => combo + 1);
+      state = incCombo(state);
     } else {
       state = state.set('combo', 0);
     }

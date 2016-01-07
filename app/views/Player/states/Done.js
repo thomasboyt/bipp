@@ -24,6 +24,10 @@ const Done = React.createClass({
           <table>
             <tbody>
               {this.renderJudgements()}
+              <tr>
+                <td>Max Combo</td>
+                <td>{this.props.maxCombo}</td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -35,6 +39,7 @@ const Done = React.createClass({
 function select(state) {
   return {
     judgements: state.playback.judgements,
+    maxCombo: state.playback.maxCombo,
   };
 }
 
