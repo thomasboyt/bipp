@@ -3,8 +3,7 @@ import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 
 import AudioPlayback from '../../lib/AudioPlayback';
-import SVGChart from '../../lib/Charts/SVGChart';
-import CanvasChart from '../../lib/Charts/CanvasChart';
+import Chart from '../../lib/Chart';
 import audioCtx from '../../../audioContext';
 
 import YouTube from '../YouTube';
@@ -16,7 +15,6 @@ import {
 
 import {
   ENABLE_YT_PLAYBACK,
-  ENABLE_CANVAS_PLAYBACK,
 } from '../../../config/flags';
 
 import {
@@ -76,10 +74,8 @@ const Playing = React.createClass({
     const lastOffset = this.props.songNotes.maxBy((note) => note.totalOffset).totalOffset;
     const numMeasures = Math.ceil(lastOffset / (24 * 4));
 
-    const ChartComponent = ENABLE_CANVAS_PLAYBACK ? CanvasChart : SVGChart;
-
     return (
-      <ChartComponent
+      <Chart
         notes={this.props.playbackNotes}
         offset={this.props.playbackOffset}
         offsetPositionYPercent={0.9}

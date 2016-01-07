@@ -28,10 +28,6 @@ function getFlag(name, type, defaultValue) {
 }
 
 export const ENABLE_YT_PLAYBACK = getFlag('enableyt', types.bool, false);
-export const ENABLE_CANVAS_PLAYBACK = getFlag('canvas', types.bool, true);
-
-// TODO: remove once SVG Chart is removed
-export const ENABLE_3D_ACCEL = getFlag('enable3daccel', types.bool, false);
 
 export const MUTE = getFlag('mute', types.bool, false);
 

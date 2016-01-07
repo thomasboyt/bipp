@@ -1,9 +1,9 @@
 import expect from 'expect';
 import I from 'immutable';
 
-import {Note} from '../../../../../reducers/chart';
-import {NOTE_HEIGHT} from '../../constants';
-import {playerColors} from '../../../../../config/constants';
+import {Note} from '../../../../reducers/chart';
+import {NOTE_HEIGHT} from '../constants';
+import {playerColors} from '../../../../config/constants';
 
 import {
   WIDTH,
@@ -23,7 +23,7 @@ class MockContext {
   }
 }
 
-describe('<CanvasChart>', () => {
+describe('<Chart>', () => {
   it('renders notes on the judgement line when the scroll offset matches the note offset', () => {
     const offsetPositionYPercent = 0.9;
     const offset = 20 * 24 + 12;

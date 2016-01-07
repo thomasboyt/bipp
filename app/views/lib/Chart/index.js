@@ -2,12 +2,12 @@ import React from 'react';
 import I from 'immutable';
 import _ from 'lodash';
 
-import ordinal from '../../../../util/ordinal';
+import ordinal from '../../../util/ordinal';
 
-import RenderedCanvas from '../../RenderedCanvas';
+import RenderedCanvas from '../RenderedCanvas';
 
-import {LANE_WIDTH, CENTER_LANE_WIDTH, NOTE_HEIGHT, WIDTH} from '../constants';
-import {SHOW_FPS} from '../../../../config/flags';
+import {LANE_WIDTH, CENTER_LANE_WIDTH, NOTE_HEIGHT, WIDTH} from './constants';
+import {SHOW_FPS} from '../../../config/flags';
 
 export {WIDTH};
 export const HEIGHT = 720;
@@ -173,7 +173,7 @@ export function renderChart(ctx, {colors, notes, offset, offsetPositionYPercent,
   }
 }
 
-const CanvasChart = React.createClass({
+const Chart = React.createClass({
   propTypes: {
     notes: React.PropTypes.oneOfType([
       React.PropTypes.instanceOf(I.Set),
@@ -206,4 +206,4 @@ const CanvasChart = React.createClass({
   }
 });
 
-export default CanvasChart;
+export default Chart;
