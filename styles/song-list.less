@@ -9,6 +9,10 @@
     flex: 0 0 auto;
     padding: 20px;
     min-width: 100px;  // 60px arrow + 40px padding
+
+    .arrow {
+      cursor: pointer;
+    }
   }
 }
 
@@ -36,6 +40,15 @@
 
     li {
       position: relative;
+
+      a {
+        color: white;
+
+        &:hover {
+          color: white;
+          text-decoration: none;
+        }
+      }
 
       .arrow {
         position: absolute;

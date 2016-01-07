@@ -57,7 +57,8 @@ const Arrow = React.createClass({
       <RenderedCanvas isStatic render={this.renderArrow}
         style={{height: this.props.height, width: this.props.width}}
         className="arrow"
-        height={this.getInternalHeight()} width={this.getInternalWidth()} />
+        height={this.getInternalHeight()} width={this.getInternalWidth()}
+        onClick={this.props.onClick} />
     );
   }
 });

@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import {HotKeys} from 'react-hotkeys';
-import {History} from 'react-router';
+import {History, Link} from 'react-router';
 import {connect} from 'react-redux';
 import {createSelector} from 'reselect';
 import classNames from 'classnames';
@@ -96,20 +96,27 @@ const SongSelect = React.createClass({
     };
   },
 
+  handlePrevSong() {
+    const idx = this.state.selectedSongIdx - 1;
+    this.setSong(idx, 'backward');
+  },
+
+  handleNextSong() {
+    const idx = this.state.selectedSongIdx + 1;
+    this.setSong(idx, 'forward');
+  },
+
   getHandlers() {
     return {
       prev: (e) => {
         e.preventDefault();
 
-        const idx = this.state.selectedSongIdx - 1;
-        this.setSong(idx, 'backward');
+        this.handlePrevSong();
       },
 
       next: (e) => {
         e.preventDefault();
-
-        const idx = this.state.selectedSongIdx + 1;
-        this.setSong(idx, 'forward');
+        this.handleNextSong();
       },
 
       prevDifficulty: (e) => {
@@ -135,14 +142,22 @@ const SongSelect = React.createClass({
     };
   },
 
+  handleDifficultyHover(idx) {
+    this.setState({
+      selectedDifficultyIdx: idx
+    });
+  },
+
   renderItem(song, idx) {
-    const difficulties = Object.keys(song.data).map((key, idx) => {
+    const difficulties = Object.keys(song.data).map((difficulty, idx) => {
       const selected = this.state.selectedDifficultyIdx === idx;
 
       return (
-        <li key={key}>
-          {selected && <Arrow height={16} width={16} dir="right" />}
-          {capitalize(key)}
+        <li key={difficulty} onMouseOver={() => this.handleDifficultyHover(idx)}>
+          <Link to={`/play/${song.slug}/${difficulty}`}>
+            {selected && <Arrow height={16} width={16} dir="right" />}
+            {capitalize(difficulty)}
+          </Link>
         </li>
       );
     });
@@ -187,7 +202,7 @@ const SongSelect = React.createClass({
 
         <div className="arrow-container">
           {this.state.selectedSongIdx > 0 &&
-            <Arrow dir="left" height={60} width={60} />}
+            <Arrow onClick={this.handlePrevSong} dir="left" height={60} width={60} />}
         </div>
 
         <ReactCSSTransitionGroup component="div" className={className}
@@ -199,7 +214,7 @@ const SongSelect = React.createClass({
 
         <div className="arrow-container">
           {this.state.selectedSongIdx < this.props.songs.size - 1 &&
-            <Arrow dir="right" height={60} width={60} />}
+            <Arrow onClick={this.handleNextSong} dir="right" height={60} width={60} />}
         </div>
 
         {this.renderAudio()}
