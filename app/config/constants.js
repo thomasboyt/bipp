@@ -1,8 +1,9 @@
 export const judgements = [
-  [50, 'Perfect'],
-  [100, 'Great'],
-  [135, 'Decent'],
-  [180, 'Way Off']
+  // window (ms), label, continue combo (true) or break (false)
+  [50, 'Perfect', true],
+  [100, 'Great', true],
+  [135, 'Decent', true],
+  [180, 'Way Off', false]
 ];
 
 export const missedJudgement = 'Miss';

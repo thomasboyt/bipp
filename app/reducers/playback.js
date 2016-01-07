@@ -16,7 +16,7 @@ import {
 
 import {judgements, missedJudgement} from '../config/constants';
 
-const maxJudgementThreshold = judgements[judgements.length - 1][0];
+export const maxJudgementThreshold = judgements[judgements.length - 1][0];
 
 const OFFSET_PADDING = 24 * 4;  // One measure
 
@@ -32,13 +32,15 @@ const State = new Record({
   playbackOffset: 0,
 
   startTime: null,
-  initialOffsetTime: null,
+  initialOffsetMs: null,
   msPerOffset: null,
   maxOffset: null,
   beatSpacing: null,
 
   judgement: null,
   judgements: null,
+  combo: 0,
+  elapsedMs: 0,
 
   playbackRate: 1
 });
@@ -51,15 +53,15 @@ const initialState = new State();
 
 function judgementFor(diff) {
   const absDiff = Math.abs(diff);
-  const label = judgements.filter((j) => absDiff < j[0])[0][1];
+  const [threshold, label, keepCombo] = judgements.filter((j) => absDiff < j[0])[0];
 
   // - : you hit the note before it was supposed to be played (too early)
   // + : you hit the note after it was supposed to be played (too late)
-  const sign = diff < 0 ? '-' : '+';
+  // const sign = diff < 0 ? '-' : '+';
 
   return {
-    displayText: `${label} ${sign}`,
-    type: label,
+    judgement: label,
+    keepCombo,
   };
 }
 
@@ -91,11 +93,13 @@ function findNoteFor(notes, time, column) {
 function updatePlaybackOffset(state, dt) {
   const deltaOffset = dt / state.msPerOffset;
 
-  return state.update('playbackOffset', (offset) => offset + deltaOffset);
+  return state
+    .update('elapsedMs', (elapsedMs) => elapsedMs + dt)
+    .update('playbackOffset', (offset) => offset + deltaOffset);
 }
 
 function sweepMissedNotes(state) {
-  const elapsed = Date.now() - state.startTime + state.initialOffsetTime;
+  const elapsed = state.elapsedMs + state.initialOffsetMs;
 
   const missedNotes = state.notes.filter((note) => elapsed > note.time + maxJudgementThreshold);
 
@@ -103,6 +107,7 @@ function sweepMissedNotes(state) {
     return state
       .update('notes', (notes) => notes.subtract(missedNotes))
       .set('judgement', missedJudgement)
+      .set('combo', 0)
       .updateIn(['judgements', missedJudgement], (count) => count + missedNotes.count());
   } else {
     return state;
@@ -140,14 +145,20 @@ const playbackReducer = createImmutableReducer(initialState, {
     return state
       .set('notes', notes)
       .set('bpm', bpm)
+
       .set('inPlayback', true)
-      .set('initialOffsetTime', offsetWithStartPadding * msPerOffset)
       .set('playbackOffset', offsetWithStartPadding)
-      .set('maxOffset', maxOffset)
+
       .set('startTime', Date.now())
+      .set('initialOffsetMs', offsetWithStartPadding * msPerOffset)
       .set('msPerOffset', msPerOffset)
+      .set('maxOffset', maxOffset)
       .set('beatSpacing', beatSpacing)
-      .set('judgements', getJudgementsMap());
+
+      .remove('judgement')
+      .set('judgements', getJudgementsMap())
+      .remove('combo')
+      .remove('elapsedMs');
   },
 
   [EXIT_PLAYBACK]: function(action, state) {
@@ -155,19 +166,30 @@ const playbackReducer = createImmutableReducer(initialState, {
   },
 
   [PLAY_NOTE]: function({time, column}, state) {
-    const elapsed = time - state.startTime + state.initialOffsetTime;
+    // This calculates time from the action, and not from the `elapsedMs` state, to be more
+    // accurate to the original hit time.
+    // The action supplies the time so that this reducer is actually testable
+    const elapsed = time - state.startTime + state.initialOffsetMs;
+
     const note = findNoteFor(state.notes, elapsed, column);
 
     if (!note) {
       return state;
     }
 
-    const judgement = judgementFor(elapsed - note.time);
+    const offset = elapsed - note.time;
+    const {judgement, keepCombo} = judgementFor(offset);
+
+    if (keepCombo) {
+      state = state.update('combo', (combo) => combo + 1);
+    } else {
+      state = state.set('combo', 0);
+    }
 
     return state
       .update('notes', (notes) => notes.remove(note))
-      .set('judgement', judgement.displayText)
-      .updateIn(['judgements', judgement.type], (count) => count + 1);
+      .set('judgement', judgement)
+      .updateIn(['judgements', judgement], (count) => count + 1);
   },
 
   [SET_RATE]: function({rate}, state) {
