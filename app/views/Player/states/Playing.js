@@ -8,6 +8,7 @@ import CanvasChart from '../../lib/Charts/CanvasChart';
 import audioCtx from '../../../audioContext';
 
 import YouTube from '../YouTube';
+import LifeBar from '../LifeBar';
 
 import {
   playNote,
@@ -113,6 +114,13 @@ const Playing = React.createClass({
     );
   },
 
+  renderLifeBar() {
+    // TODO: import width from chart constants
+    return (
+      <LifeBar width={450} height={30} hp={this.props.hp} />
+    );
+  },
+
   render() {
     return (
       <div className="player-container in-game" tabIndex="-1"
@@ -121,6 +129,7 @@ const Playing = React.createClass({
         <div className="playfield">
           {this.renderChart()}
           {this.renderJudgement()}
+          {this.renderLifeBar()}
           {this.renderAudio()}
 
           <div className="youtub-overlay" />
@@ -144,6 +153,7 @@ function select(state) {
     playbackOffset: state.playback.playbackOffset,
     judgement: state.playback.judgement,
     beatSpacing: state.playback.beatSpacing,
+    hp: state.playback.hp,
 
     fps: state.fps,
   };

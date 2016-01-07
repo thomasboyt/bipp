@@ -46,6 +46,7 @@ const State = new Record({
   combo: 0,
   maxCombo: 0,
   elapsedMs: 0,
+  hp: 50,
 
   playbackRate: 1
 });
@@ -120,6 +121,18 @@ function sweepMissedNotes(state) {
   }
 }
 
+function updateHp(state, judgement) {
+  let hp = state.hp + judgement.hp;
+
+  // hp can't go < 0 or > 100
+  hp = hp < 0 ? 0 : hp;
+  hp = hp > 100 ? 100 : hp;
+
+  // TODO: if dead, do something
+  return state
+    .set('hp', hp);
+}
+
 /*
  * "Play" a note (also could indicate a miss). Removes the note, updates combo, sets
  * current judgement, and updates the judgement count and score.
@@ -137,6 +150,7 @@ function playNote(state, note, judgement) {
       }
     })
     .set('judgement', label)
+    .update((state) => updateHp(state, judgement))
     .updateIn(['judgements', label], (count) => count + 1);
 }
 
@@ -198,6 +212,7 @@ const playbackReducer = createImmutableReducer(initialState, {
       .set('judgements', getJudgementsMap())
       .remove('combo')
       .remove('maxCombo')
+      .remove('hp')
       .remove('elapsedMs');
   },
 

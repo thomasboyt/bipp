@@ -200,10 +200,8 @@ const CanvasChart = React.createClass({
     const width = this.props.showOffsetText ? WIDTH + 100 : WIDTH;
 
     return (
-      <div className="chart-overflower">
-        <RenderedCanvas render={renderChart} params={this.props}
-          height={HEIGHT} width={width} />
-      </div>
+      <RenderedCanvas render={renderChart} params={this.props}
+        height={HEIGHT} width={width} className="chart" />
     );
   }
 });

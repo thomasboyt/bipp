@@ -27,16 +27,11 @@
 
   .playfield {
     flex: 1;
-    height: @playfield-height;
     position: relative;
 
-    .chart-overflower {
-      width: 450px;  // TODO: Setting this is lame
-      height: @playfield-height;
-      // background: rgba(0, 0, 0, .5);
+    canvas {
+      display: block;
       margin: 0 auto;
-      z-index: 3;
-      position: relative;
     }
 
     .judge {
