@@ -4,6 +4,7 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import {HotKeys} from 'react-hotkeys';
 import {History} from 'react-router';
 import {connect} from 'react-redux';
+import {createSelector} from 'reselect';
 import classNames from 'classnames';
 
 import {loadAudio} from '../../actions/AudioActions';
@@ -208,12 +209,28 @@ const SongSelect = React.createClass({
   }
 });
 
+// filter songs down to only visible ones
+//
+// this uses reselect instead of just calculating inside the select() function below because the
+// select() function is called on every single redux update, and the result was being picked up as
+// a "changed" (by object identity) prop, causing this component to re-render unnecessarily
+//
+// reselect memoizes the result, so the repeated select() calls always get the same list, and thus
+// the props don't change :)
+const selectSongs = createSelector(
+  (state) => state.songs.songs,
+  (allSongs) => {
+    const songs = allSongs.filter((song) => !song.hidden).toList();
+
+    return songs;
+  }
+);
+
 function select(state) {
   return {
-    songs: state.songs.songs.filter((song) => !song.hidden).toList(),
-
+    songs: selectSongs(state),
     audioData: state.audio.audioData,
- };
+  };
 }
 
 export default connect(select)(SongSelect);
