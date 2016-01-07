@@ -11,17 +11,21 @@ import {
 } from '../ActionTypes';
 
 /*
+ *
  * Constants
+ *
  */
 
 import {judgements, missedJudgement} from '../config/constants';
 
-export const maxJudgementThreshold = judgements[judgements.length - 1][0];
+export const maxJudgementThreshold = judgements[judgements.length - 1].threshold;
 
 const OFFSET_PADDING = 24 * 4;  // One measure
 
 /*
+ *
  * Initial state
+ *
  */
 
 const State = new Record({
@@ -49,25 +53,21 @@ const State = new Record({
 const initialState = new State();
 
 /*
+ *
  * Utility methods
+ *
  */
 
 function judgementFor(diff) {
   const absDiff = Math.abs(diff);
-  const [threshold, label, keepCombo] = judgements.filter((j) => absDiff < j[0])[0];
-
-  // - : you hit the note before it was supposed to be played (too early)
-  // + : you hit the note after it was supposed to be played (too late)
-  // const sign = diff < 0 ? '-' : '+';
-
-  return {
-    judgement: label,
-    keepCombo,
-  };
+  return judgements.filter((j) => absDiff < j.threshold)[0];
 }
 
+/*
+ * Get a map of {judgementLabel: 0} for use for counting judgements
+ */
 function getJudgementsMap() {
-  const types = judgements.map((judgement) => judgement[1]).concat(missedJudgement);
+  const types = judgements.concat(missedJudgement).map((judgement) => judgement.label);
   return new IMap(types.map((type) => [type, 0]));
 }
 
@@ -77,6 +77,9 @@ function getMsPerOffset(bpm) {
   return secPerThirtySecond * 1000;
 }
 
+/*
+ * Find a hit note for a given column and time.
+ */
 function findNoteFor(notes, time, column) {
   // 1. Calculate offset for time
   // 2. Calculate offset for time-50ms and time+50ms
@@ -91,6 +94,9 @@ function findNoteFor(notes, time, column) {
   }).minBy((note) => note.totalOffset);
 }
 
+/*
+ * Update the playback offset and elapsed milliseconds counters.
+ */
 function updatePlaybackOffset(state, dt) {
   const deltaOffset = dt / state.msPerOffset;
 
@@ -99,22 +105,44 @@ function updatePlaybackOffset(state, dt) {
     .update('playbackOffset', (offset) => offset + deltaOffset);
 }
 
+/*
+ * Remove notes that have fallen out of the judgement window.
+ */
 function sweepMissedNotes(state) {
   const elapsed = state.elapsedMs + state.initialOffsetMs;
 
   const missedNotes = state.notes.filter((note) => elapsed > note.time + maxJudgementThreshold);
 
   if (missedNotes.count() > 0) {
-    return state
-      .update('notes', (notes) => notes.subtract(missedNotes))
-      .set('judgement', missedJudgement)
-      .set('combo', 0)
-      .updateIn(['judgements', missedJudgement], (count) => count + missedNotes.count());
+    return missedNotes.reduce((state, note) => playNote(state, note, missedJudgement), state);
   } else {
     return state;
   }
 }
 
+/*
+ * "Play" a note (also could indicate a miss). Removes the note, updates combo, sets
+ * current judgement, and updates the judgement count and score.
+ */
+function playNote(state, note, judgement) {
+  const label = judgement.label;
+
+  return state
+    .update('notes', (notes) => notes.remove(note))
+    .update((state) => {
+      if (judgement.keepCombo) {
+        return incCombo(state);
+      } else {
+        return state.set('combo', 0);
+      }
+    })
+    .set('judgement', label)
+    .updateIn(['judgements', label], (count) => count + 1);
+}
+
+/*
+ * Increment combo. Called if a note was played. Update maxCombo if necessary.
+ */
 function incCombo(state) {
   const combo = state.get('combo') + 1;
 
@@ -124,7 +152,9 @@ function incCombo(state) {
 }
 
 /*
+ *
  * Reducer
+ *
  */
 
 const playbackReducer = createImmutableReducer(initialState, {
@@ -188,18 +218,9 @@ const playbackReducer = createImmutableReducer(initialState, {
     }
 
     const offset = elapsed - note.time;
-    const {judgement, keepCombo} = judgementFor(offset);
+    const judgement = judgementFor(offset);
 
-    if (keepCombo) {
-      state = incCombo(state);
-    } else {
-      state = state.set('combo', 0);
-    }
-
-    return state
-      .update('notes', (notes) => notes.remove(note))
-      .set('judgement', judgement)
-      .updateIn(['judgements', judgement], (count) => count + 1);
+    return playNote(state, note, judgement);
   },
 
   [SET_RATE]: function({rate}, state) {

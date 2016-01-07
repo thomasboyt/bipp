@@ -1,12 +1,15 @@
 export const judgements = [
   // window (ms), label, continue combo (true) or break (false)
-  [50, 'Perfect', true],
-  [100, 'Great', true],
-  [135, 'Decent', true],
-  [180, 'Way Off', false]
+  { threshold: 50, label: 'Perfect', keepCombo: true },
+  { threshold: 100, label: 'Great', keepCombo: true },
+  { threshold: 135, label: 'Decent', keepCombo: true },
+  { threshold: 180, label: 'Way Off', keepCombo: false },
 ];
 
-export const missedJudgement = 'Miss';
+export const missedJudgement = {
+  label: 'Miss',
+  keepCombo: false,
+};
 
 // [fill, stroke]
 const editorColors = {
