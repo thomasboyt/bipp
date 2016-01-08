@@ -16,8 +16,9 @@ before_script:
   - npm install npm@^3
 
 script:
-  - npm run-script lint
-  - npm run-script ci
+  # --silent surpresses that big ol' NPM script error
+  - npm run-script lint  --silent
+  - npm run-script ci --silent
 
 cache:
   directories:

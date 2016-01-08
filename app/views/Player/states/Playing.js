@@ -104,8 +104,10 @@ const Playing = React.createClass({
 
   renderJudgement() {
     if (!this.props.judgement) {
-      return <div className="judge" />
-    };
+      return (
+        <div className="judge" />
+      );
+    }
 
     const {label, className} = this.props.judgement;
 
