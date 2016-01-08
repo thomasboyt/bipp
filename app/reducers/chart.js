@@ -1,5 +1,5 @@
 import createImmutableReducer from '../util/immutableReducer';
-import { Record, List } from 'immutable';
+import I from 'immutable';
 
 import {
   LOAD_SONG,
@@ -7,50 +7,34 @@ import {
   CHANGE_BPM,
 } from '../ActionTypes';
 
-export const Note = Record({
-  // Offset, in "24ths", from the start of the beat
-  // e.g.: 0 is a 4th
-  //       12 is an 8th
-  //       8 and 16 are triplets ("12ths")
-  //       6 and 18 are 16ths
-  //       3 is a 32nd...
-  totalOffset: 0,
+import {
+  Note,
+} from '../records';
 
-  // Column, between 0 and 6, for the note to be placed in
-  col: 0,
-
-  // Calculated at playback time, not saved
-  time: 0,
-});
-
-const StateRecord = Record({
+export const ChartState = I.Record({
   loaded: false,
   notes: null,
   bpm: null,
-  songInfo: null
+  song: null
 });
 
-const initialState = new StateRecord({
-  loaded: false,
-});
+const initialState = new ChartState();
 
+/*
+ * The chart reducer holds the state of the currently-loaded chart & song.
+ */
 const chartReducer = createImmutableReducer(initialState, {
   [LOAD_SONG]: function({song, difficulty}) {
     const chart = song.data[difficulty];
     const noteRecords = chart.notes.map((noteProps) => new Note(noteProps));
-    const notes = new List(noteRecords);
+    const notes = new I.List(noteRecords);
 
-    return new StateRecord({
+    return new ChartState({
       loaded: true,
       notes,
       bpm: song.bpm,
 
-      songInfo: {
-        title: song.title,
-        artist: song.artist,
-        youtubeId: song.youtubeId,
-        img: song.img,
-      }
+      song: song,
     });
   },
 

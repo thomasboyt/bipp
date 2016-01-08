@@ -9,6 +9,8 @@ import audioCtx from '../../../audioContext';
 import YouTube from '../YouTube';
 import LifeBar from '../LifeBar';
 
+import {Song} from '../../../records';
+
 import {
   playNote,
 } from '../../../actions/PlaybackActions';
@@ -37,7 +39,7 @@ const Playing = React.createClass({
 
     bpm: React.PropTypes.number.isRequired,
     songNotes: React.PropTypes.object.isRequired,
-    songInfo: React.PropTypes.object.isRequired,
+    song: React.PropTypes.instanceOf(Song).isRequired,
 
     audioData: React.PropTypes.object.isRequired,
 
@@ -90,7 +92,7 @@ const Playing = React.createClass({
     // TODO: Move me to the wrapper container, so Youtube starts loading ASAP...
     if (ENABLE_YT_PLAYBACK) {
       return (
-        <YouTube onPlaying={() => this.handleYoutubePlaying()} youtubeId={this.props.songInfo.youtubeId} />
+        <YouTube onPlaying={() => this.handleYoutubePlaying()} youtubeId={this.props.song.youtubeId} />
       );
 
     } else {
@@ -139,7 +141,7 @@ const Playing = React.createClass({
         </div>
 
         <div className="character">
-          <img src={this.props.songInfo.img} />
+          <img src={this.props.song.img} />
         </div>
 
       </div>
@@ -151,7 +153,7 @@ function select(state) {
   return {
     bpm: state.chart.bpm,
     songNotes: state.chart.notes,
-    songInfo: state.chart.songInfo,
+    song: state.chart.song,
 
     playbackNotes: state.playback.notes,
     playbackOffset: state.playback.playbackOffset,

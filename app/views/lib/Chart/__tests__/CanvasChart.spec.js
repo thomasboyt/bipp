@@ -1,7 +1,7 @@
 import expect from 'expect';
 import I from 'immutable';
 
-import {Note} from '../../../../reducers/chart';
+import {Note} from '../../../../records';
 import {NOTE_HEIGHT} from '../constants';
 import {playerColors} from '../../../../config/constants';
 

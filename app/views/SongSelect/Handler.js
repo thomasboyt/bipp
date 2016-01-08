@@ -6,6 +6,7 @@ import {History, Link} from 'react-router';
 import {connect} from 'react-redux';
 import {createSelector} from 'reselect';
 import classNames from 'classnames';
+import ImmutablePropTypes from 'react-immutable-proptypes';
 
 import {loadAudio} from '../../actions/AudioActions';
 
@@ -15,6 +16,8 @@ import AudioPlayback from '../lib/AudioPlayback';
 import Arrow from './Arrow';
 import GameWrapper from '../lib/GameWrapper';
 
+import {Song} from '../../records';
+
 function capitalize(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
@@ -23,6 +26,11 @@ function capitalize(str) {
 const SONG_TRANSITION_MS = 300;
 
 const SongSelect = React.createClass({
+  propTypes: {
+    songs: ImmutablePropTypes.listOf(Song).isRequired,
+    audioData: ImmutablePropTypes.map.isRequired,
+  },
+
   mixins: [
     History,
   ],

@@ -4,22 +4,15 @@ import slugify from 'slug';
 
 import {LOAD_SONGS} from '../ActionTypes';
 
-const Song = I.Record({
-  title: null,
-  artist: null,
-  data: null,
-  bpm: null,
-  musicUrl: null,
-  img: null,
-  slug: null,
-  hidden: false,
-});
+import {
+  Song,
+} from '../records';
 
-const State = I.Record({
+export const SongsState = I.Record({
   songs: null,
 });
 
-const initialState = new State();
+const initialState = new SongsState();
 
 
 const songsReducer = createImmutableReducer(initialState, {
