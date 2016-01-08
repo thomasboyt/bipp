@@ -1,3 +1,9 @@
+/*
+ * This reducer is used in dev to display an FPS meter based on runLoop tick times. This is just
+ * accurate for internal computation time, not the actual browser render FPS (you can use browser
+ * dev tools for that).
+ */
+
 import _ from 'lodash';
 import createImmutableReducer from '../util/immutableReducer';
 import {TICK} from '../ActionTypes';

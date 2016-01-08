@@ -1,3 +1,7 @@
+/*
+ * This reducer holds the state of the currently-loaded chart & song.
+ */
+
 import createImmutableReducer from '../util/immutableReducer';
 import I from 'immutable';
 
@@ -20,9 +24,6 @@ export const ChartState = I.Record({
 
 const initialState = new ChartState();
 
-/*
- * The chart reducer holds the state of the currently-loaded chart & song.
- */
 const chartReducer = createImmutableReducer(initialState, {
   [LOAD_SONG]: function({song, difficulty}) {
     const chart = song.data[difficulty];

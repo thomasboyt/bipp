@@ -1,3 +1,7 @@
+/*
+ * This reducer holds the loaded list of songs.
+ */
+
 import createImmutableReducer from '../util/immutableReducer';
 import I from 'immutable';
 import slugify from 'slug';
