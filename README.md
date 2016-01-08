@@ -1,6 +1,6 @@
 # Bipp [![Build Status](https://travis-ci.org/thomasboyt/bipp.svg?branch=master)](https://travis-ci.org/thomasboyt/bipp) [![Stories in Ready](https://badge.waffle.io/thomasboyt/bipp.svg?label=ready&title=Ready)](http://waffle.io/thomasboyt/bipp)
 
-This is a music game engine I'm working on. Currently the only working piece is the editor.
+This is a music game + engine I'm working on.
 
 ### Install
 
@@ -18,7 +18,7 @@ npm install
 npm run-script dev
 ```
 
-Navigate to `localhost:8080` and you should be in business. I recommend loading the demo song and chart in the `demo/` folder.
+Navigate to `localhost:8080/songs-list` and you should be in business. I recommend loading the demo song and chart in the `demo/` folder.
 
 ### Test
 
