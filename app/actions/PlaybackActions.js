@@ -1,4 +1,5 @@
 import {
+  RESET_PLAYBACK,
   ENTER_PLAYBACK,
   EXIT_PLAYBACK,
   PLAY_NOTE,
@@ -18,6 +19,12 @@ export function enterPlayback(offset, bpm, notes, beatSpacing) {
 export function exitPlayback() {
   return {
     type: EXIT_PLAYBACK,
+  };
+}
+
+export function resetPlayback() {
+  return {
+    type: RESET_PLAYBACK,
   };
 }
 

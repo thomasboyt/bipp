@@ -12,6 +12,7 @@ import createImmutableReducer from '../util/immutableReducer';
 import I from 'immutable';
 
 import {
+  RESET_PLAYBACK,
   ENTER_PLAYBACK,
   EXIT_PLAYBACK,
   PLAY_NOTE,
@@ -181,6 +182,10 @@ function incCombo(state) {
  */
 
 const playbackReducer = createImmutableReducer(initialState, {
+  [RESET_PLAYBACK]: function() {
+    return initialState;
+  },
+
   [ENTER_PLAYBACK]: function({offset, bpm, notes, beatSpacing}, state) {
     const playbackRate = state.playbackRate;
 
