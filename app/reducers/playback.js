@@ -1,8 +1,17 @@
+/*
+ * This reducer contains playback state, including:
+ *
+ * - The (unplayed) notes of the chart
+ * - Current playback offset & elapsed ms
+ * - Scoring info (combo, judgments, life bar...)
+ *
+ * It gets completely reset every time playback is entered.
+ */
+
 import createImmutableReducer from '../util/immutableReducer';
-import { Record, Map as IMap } from 'immutable';
+import I from 'immutable';
 
 import {
-  RESET_PLAYBACK,
   ENTER_PLAYBACK,
   EXIT_PLAYBACK,
   PLAY_NOTE,
@@ -28,7 +37,7 @@ const OFFSET_PADDING = 24 * 4;  // One measure
  *
  */
 
-const State = new Record({
+export const PlaybackState = I.Record({
   notes: null,
   bpm: null,
 
@@ -42,7 +51,7 @@ const State = new Record({
   beatSpacing: null,
 
   judgement: null,
-  judgements: null,
+  judgements: getJudgementsMap(),
   combo: 0,
   maxCombo: 0,
   elapsedMs: 0,
@@ -51,7 +60,7 @@ const State = new Record({
   playbackRate: 1
 });
 
-const initialState = new State();
+const initialState = new PlaybackState();
 
 /*
  *
@@ -69,7 +78,7 @@ function judgementFor(diff) {
  */
 function getJudgementsMap() {
   const types = judgements.concat(missedJudgement).map((judgement) => judgement.label);
-  return new IMap(types.map((type) => [type, 0]));
+  return new I.Map(types.map((type) => [type, 0]));
 }
 
 function getMsPerOffset(bpm) {
@@ -172,10 +181,6 @@ function incCombo(state) {
  */
 
 const playbackReducer = createImmutableReducer(initialState, {
-  [RESET_PLAYBACK]: function() {
-    return initialState;
-  },
-
   [ENTER_PLAYBACK]: function({offset, bpm, notes, beatSpacing}, state) {
     const playbackRate = state.playbackRate;
 
@@ -195,25 +200,19 @@ const playbackReducer = createImmutableReducer(initialState, {
 
     const maxOffset = notes.maxBy((note) => note.totalOffset).totalOffset + OFFSET_PADDING;
 
-    return state
-      .set('notes', notes)
-      .set('bpm', bpm)
+    return new PlaybackState({
+      notes,
+      bpm,
 
-      .set('inPlayback', true)
-      .set('playbackOffset', offsetWithStartPadding)
+      inPlayback: true,
+      playbackOffset: offsetWithStartPadding,
 
-      .set('startTime', Date.now())
-      .set('initialOffsetMs', offsetWithStartPadding * msPerOffset)
-      .set('msPerOffset', msPerOffset)
-      .set('maxOffset', maxOffset)
-      .set('beatSpacing', beatSpacing)
-
-      .remove('judgement')
-      .set('judgements', getJudgementsMap())
-      .remove('combo')
-      .remove('maxCombo')
-      .remove('hp')
-      .remove('elapsedMs');
+      startTime: Date.now(),  // TODO: probably should supply this from the action for testing
+      initialOffsetMs: offsetWithStartPadding * msPerOffset,
+      msPerOffset,
+      maxOffset,
+      beatSpacing,
+    });
   },
 
   [EXIT_PLAYBACK]: function(action, state) {
