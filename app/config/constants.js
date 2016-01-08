@@ -1,13 +1,14 @@
 export const judgements = [
   // window (ms), label, continue combo (true) or break (false)
-  { threshold: 50, label: 'Perfect', keepCombo: true, hp: 4 },
-  { threshold: 100, label: 'Great', keepCombo: true, hp: 2 },
-  { threshold: 135, label: 'Decent', keepCombo: true, hp: 1 },
-  { threshold: 180, label: 'Way Off', keepCombo: false, hp: -2 },
+  { threshold: 50, label: 'Perfect', className: 'perfect', keepCombo: true, hp: 4 },
+  { threshold: 100, label: 'Great', className: 'great', keepCombo: true, hp: 2 },
+  { threshold: 135, label: 'Decent', className: 'decent', keepCombo: true, hp: 1 },
+  { threshold: 180, label: 'Way Off', className: 'way-off', keepCombo: false, hp: -2 },
 ];
 
 export const missedJudgement = {
   label: 'Miss',
+  className: 'miss',
   keepCombo: false,
   hp: -6,
 };

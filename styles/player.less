@@ -26,7 +26,7 @@
   }
 
   .playfield {
-    flex: 1;
+    flex: 0 0 450px;  // TODO: don't love chart width being specified here, but doesn't expand for canvas...
     position: relative;
 
     canvas {
@@ -36,7 +36,7 @@
 
     .judge {
       position: absolute;
-      bottom: 100px;
+      bottom: 170px;
       width: 100%;
       text-align: center;
       z-index: 4;

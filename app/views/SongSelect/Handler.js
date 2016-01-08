@@ -10,8 +10,10 @@ import classNames from 'classnames';
 import {loadAudio} from '../../actions/AudioActions';
 
 import audioCtx from '../../audioContext';
+
 import AudioPlayback from '../lib/AudioPlayback';
 import Arrow from './Arrow';
+import GameWrapper from '../lib/GameWrapper';
 
 function capitalize(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
@@ -197,29 +199,31 @@ const SongSelect = React.createClass({
     });
 
     return (
-      <HotKeys handlers={this.getHandlers()} keyMap={this.getKeyMap()}
-        className="song-list-container in-game">
+      <GameWrapper>
+        <HotKeys handlers={this.getHandlers()} keyMap={this.getKeyMap()}
+          className="song-list-container">
 
-        <div className="arrow-container">
-          {this.state.selectedSongIdx > 0 &&
-            <Arrow onClick={this.handlePrevSong} dir="left" height={60} width={60} />}
-        </div>
+          <div className="arrow-container">
+            {this.state.selectedSongIdx > 0 &&
+              <Arrow onClick={this.handlePrevSong} dir="left" height={60} width={60} />}
+          </div>
 
-        <ReactCSSTransitionGroup component="div" className={className}
-          transitionName="song-item"
-          transitionEnterTimeout={SONG_TRANSITION_MS}
-          transitionLeaveTimeout={SONG_TRANSITION_MS}>
-          {this.renderCurrentItem()}
-        </ReactCSSTransitionGroup>
+          <ReactCSSTransitionGroup component="div" className={className}
+            transitionName="song-item"
+            transitionEnterTimeout={SONG_TRANSITION_MS}
+            transitionLeaveTimeout={SONG_TRANSITION_MS}>
+            {this.renderCurrentItem()}
+          </ReactCSSTransitionGroup>
 
-        <div className="arrow-container">
-          {this.state.selectedSongIdx < this.props.songs.size - 1 &&
-            <Arrow onClick={this.handleNextSong} dir="right" height={60} width={60} />}
-        </div>
+          <div className="arrow-container">
+            {this.state.selectedSongIdx < this.props.songs.size - 1 &&
+              <Arrow onClick={this.handleNextSong} dir="right" height={60} width={60} />}
+          </div>
 
-        {this.renderAudio()}
+          {this.renderAudio()}
 
-      </HotKeys>
+        </HotKeys>
+      </GameWrapper>
     );
   }
 });

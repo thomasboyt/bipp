@@ -43,7 +43,7 @@ const Playing = React.createClass({
 
     playbackNotes: React.PropTypes.object.isRequired,
     playbackOffset: React.PropTypes.number.isRequired,
-    judgement: React.PropTypes.node,
+    judgement: React.PropTypes.object,
     beatSpacing: React.PropTypes.number.isRequired,
   },
 
@@ -103,9 +103,15 @@ const Playing = React.createClass({
   },
 
   renderJudgement() {
+    if (!this.props.judgement) {
+      return <div className="judge" />
+    };
+
+    const {label, className} = this.props.judgement;
+
     return (
-      <div className="judge">
-        {this.props.judgement}
+      <div className={`judge judgement-${className}`}>
+        {label}
       </div>
     );
   },
@@ -119,7 +125,7 @@ const Playing = React.createClass({
 
   render() {
     return (
-      <div className="player-container in-game" tabIndex="-1"
+      <div className="player-container" tabIndex="-1"
         onKeyDown={this.handleKeyDown}
         onKeyUp={this.handleKeyUp}>
 

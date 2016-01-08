@@ -6,6 +6,7 @@ import Loading from './states/Loading';
 import Loaded from './states/Loaded';
 import Playing from './states/Playing';
 import Done from './states/Done';
+import GameWrapper from '../lib/GameWrapper';
 
 import {
   resetPlayback,
@@ -85,7 +86,11 @@ class Player extends React.Component {
       outlet = <Done />;
     }
 
-    return outlet;
+    return (
+      <GameWrapper>
+        {outlet}
+      </GameWrapper>
+    );
   }
 }
 

@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom';
 import {HotKeys} from 'react-hotkeys';
 import {History} from 'react-router';
 
+import GameWrapper from '../lib/GameWrapper';
+
 const Attract = React.createClass({
   mixins: [
     History,
@@ -30,13 +32,15 @@ const Attract = React.createClass({
 
   render() {
     return (
-      <HotKeys handlers={this.getHandlers()} keyMap={this.getKeyMap()}
-        className="attract-container in-game">
-        <div className="attract">
-          <h1>Undertune</h1>
-          <p>press space</p>
-        </div>
-      </HotKeys>
+      <GameWrapper>
+        <HotKeys handlers={this.getHandlers()} keyMap={this.getKeyMap()}
+          className="attract-container">
+          <div className="attract">
+            <h1>Undertune</h1>
+            <p>press space</p>
+          </div>
+        </HotKeys>
+      </GameWrapper>
     );
   }
 });

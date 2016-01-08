@@ -149,7 +149,7 @@ function playNote(state, note, judgement) {
         return state.set('combo', 0);
       }
     })
-    .set('judgement', label)
+    .set('judgement', judgement)
     .update((state) => updateHp(state, judgement))
     .updateIn(['judgements', label], (count) => count + 1);
 }
