@@ -1,9 +1,9 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 
 import AudioPlayback from '../../lib/AudioPlayback';
 import Chart from '../../lib/Chart';
+import PlaybackWrapper from '../../lib/PlaybackWrapper';
 import audioCtx from '../../../audioContext';
 
 import YouTube from '../YouTube';
@@ -12,26 +12,12 @@ import LifeBar from '../LifeBar';
 import {Song} from '../../../records';
 
 import {
-  playNote,
-} from '../../../actions/PlaybackActions';
-
-import {
   ENABLE_YT_PLAYBACK,
 } from '../../../config/flags';
 
 import {
   playerColors,
 } from '../../../config/constants';
-
-const colMap = {
-  '83': 0,
-  '68': 1,
-  '70': 2,
-  '32': 3,
-  '74': 4,
-  '75': 5,
-  '76': 6
-};
 
 const Playing = React.createClass({
   propTypes: {
@@ -47,29 +33,6 @@ const Playing = React.createClass({
     playbackOffset: React.PropTypes.number.isRequired,
     judgement: React.PropTypes.object,
     beatSpacing: React.PropTypes.number.isRequired,
-  },
-
-  _keysDown: new Set(),
-
-  componentDidMount() {
-    ReactDOM.findDOMNode(this).focus();
-  },
-
-  handleKeyDown(e) {
-    const col = colMap[e.keyCode];
-
-    if (col !== undefined) {
-      if (!this._keysDown.has(e.keyCode)) {
-        this.props.dispatch(playNote(Date.now(), col));
-        this._keysDown.add(e.keyCode);
-      }
-    }
-  },
-
-  handleKeyUp(e) {
-    if (this._keysDown.has(e.keyCode)) {
-      this._keysDown.delete(e.keyCode);
-    }
   },
 
   renderChart() {
@@ -129,10 +92,7 @@ const Playing = React.createClass({
 
   render() {
     return (
-      <div className="player-container" tabIndex="-1"
-        onKeyDown={this.handleKeyDown}
-        onKeyUp={this.handleKeyUp}>
-
+      <PlaybackWrapper className="player-container">
         <div className="playfield">
           {this.renderChart()}
           {this.renderJudgement()}
@@ -143,8 +103,7 @@ const Playing = React.createClass({
         <div className="character">
           <img src={this.props.song.img} />
         </div>
-
-      </div>
+      </PlaybackWrapper>
     );
   },
 });

@@ -1,9 +1,14 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import {HotKeys} from 'react-hotkeys';
 import { connect } from 'react-redux';
 
 import AudioPlayback from '../lib/AudioPlayback';
 import Chart from '../lib/Chart';
+import {
+  default as PlaybackWrapper,
+  colMap
+} from '../lib/PlaybackWrapper';
 
 import EditorControls from './components/EditorControls';
 
@@ -13,7 +18,6 @@ import {
   resetPlayback,
   enterPlayback,
   exitPlayback,
-  playNote,
 } from '../../actions/PlaybackActions';
 
 import {
@@ -30,16 +34,6 @@ import {
 } from '../../config/constants';
 
 const resolutions = [24, 12, 8, 6, 4, 3];
-
-const colMap = {
-  's': 0,
-  'd': 1,
-  'f': 2,
-  'space': 3,
-  'j': 4,
-  'k': 5,
-  'l': 6
-};
 
 const findSmallestResIdx = function(offset) {
   for (let i = 0; i < resolutions.length; i++) {
@@ -71,11 +65,16 @@ const Editor = React.createClass({
     this.props.dispatch(resetPlayback());
   },
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.inPlayback && !this.props.inPlayback) {
+      ReactDOM.findDOMNode(this.refs.hotKeysContainer).focus();
+    }
+  },
+
   getKeyMap() {
     if (this.props.inPlayback) {
       return {
         'exitPlayback': ['p', 'esc'],
-        'playNote': ['s', 'd', 'f', 'space', 'j', 'k', 'l']
       };
 
     } else {
@@ -185,12 +184,6 @@ const Editor = React.createClass({
 
         this.props.dispatch(toggleNote(this.state.offset, col));
       },
-
-      playNote: (e, key) => {
-        const col = colMap[key];
-
-        this.props.dispatch(playNote(Date.now(), col));
-      }
     };
   },
 
@@ -251,7 +244,7 @@ const Editor = React.createClass({
   },
 
   renderChart() {
-    return (
+    const chart = (
       <Chart
         notes={this.getNotes()}
         offset={this.getOffset()}
@@ -265,6 +258,16 @@ const Editor = React.createClass({
         fps={this.props.fps}
         colors={editorColors} />
     );
+
+    if (this.props.inPlayback) {
+      return (
+        <PlaybackWrapper>
+          {chart}
+        </PlaybackWrapper>
+      );
+    }
+
+    return chart;
   },
 
   renderLoaded() {
@@ -272,7 +275,7 @@ const Editor = React.createClass({
       <span>
         <div className="editor">
           <HotKeys handlers={this.getHandlers()} keyMap={this.getKeyMap()}
-            className="chart-container">
+            className="chart-container" ref="hotKeysContainer">
             {this.renderChart()}
           </HotKeys>
 
