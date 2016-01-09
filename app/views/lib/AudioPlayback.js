@@ -2,7 +2,22 @@ import React from 'react';
 
 import {MUTE} from '../../config/flags';
 
-class AudioPlayback extends React.Component {
+const AudioPlayback = React.createClass({
+  propTypes: {
+    // Whether the audio is playing or stopped
+    playing: React.PropTypes.bool.isRequired,
+
+    // The offset, in 1/24th beats, to start playing at
+    playbackOffset: React.PropTypes.number,
+
+    // bpm of current audio track
+    bpm: React.PropTypes.number,
+
+    // TODO: make these objects more specific
+    ctx: React.PropTypes.object.isRequired,
+    audioData: React.PropTypes.object.isRequired
+  },
+
   componentWillMount() {
     this.volumeNode = this.props.ctx.createGain();
     this.volumeNode.connect(this.props.ctx.destination);
@@ -16,11 +31,11 @@ class AudioPlayback extends React.Component {
     if (this.props.playing) {
       this.play(this.props);
     }
-  }
+  },
 
   componentWillUnmount() {
     this.stop();
-  }
+  },
 
   componentWillReceiveProps(nextProps) {
     const curProps = this.props;
@@ -37,7 +52,7 @@ class AudioPlayback extends React.Component {
       this.stop();
       this.play(nextProps);
     }
-  }
+  },
 
   play(props) {
     this.src = props.ctx.createBufferSource();
@@ -66,32 +81,17 @@ class AudioPlayback extends React.Component {
     } else {
       this.src.start(0, offsetSec);
     }
-  }
+  },
 
   stop() {
     if (this.src) {
       this.src.stop();
     }
-  }
+  },
 
   render() {
     return <span />;
-  }
-}
-
-AudioPlayback.propTypes = {
-  // Whether the audio is playing or stopped
-  playing: React.PropTypes.bool.isRequired,
-
-  // The offset, in 1/24th beats, to start playing at
-  playbackOffset: React.PropTypes.number,
-
-  // bpm of current audio track
-  bpm: React.PropTypes.number,
-
-  // TODO: make these objects more specific
-  ctx: React.PropTypes.object.isRequired,
-  audioData: React.PropTypes.object.isRequired
-};
+  },
+});
 
 export default AudioPlayback;

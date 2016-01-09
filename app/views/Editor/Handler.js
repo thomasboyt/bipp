@@ -49,16 +49,14 @@ const findSmallestResIdx = function(offset) {
   }
 };
 
-class Editor extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
+const Editor = React.createClass({
+  getInitialState() {
+    return {
       offset: 0,
       scrollResolutionIdx: 0,
       beatSpacing: 80
     };
-  }
+  },
 
   componentWillMount() {
     const difficulty = this.props.params.difficulty;
@@ -67,11 +65,11 @@ class Editor extends React.Component {
     if (!this.props.audioData) {
       this.props.dispatch(loadAudio(this.props.song));
     }
-  }
+  },
 
   componentWillUnmount() {
     this.props.dispatch(resetPlayback());
-  }
+  },
 
   getKeyMap() {
     if (this.props.inPlayback) {
@@ -96,7 +94,7 @@ class Editor extends React.Component {
         'toggleNote': ['s', 'd', 'f', 'space', 'j', 'k', 'l']
       };
     }
-  }
+  },
 
   setOffset(nextOffset) {
     if (nextOffset <= this.getMaxOffset() && nextOffset >= 0) {
@@ -104,7 +102,7 @@ class Editor extends React.Component {
         offset: nextOffset
       });
     }
-  }
+  },
 
   getHandlers() {
     return {
@@ -194,7 +192,7 @@ class Editor extends React.Component {
         this.props.dispatch(playNote(Date.now(), col));
       }
     };
-  }
+  },
 
   getOffset() {
     if (this.props.inPlayback) {
@@ -202,7 +200,7 @@ class Editor extends React.Component {
     } else {
       return this.state.offset;
     }
-  }
+  },
 
   getNotes() {
     if (this.props.inPlayback) {
@@ -210,24 +208,24 @@ class Editor extends React.Component {
     } else {
       return this.props.songNotes;
     }
-  }
+  },
 
   getScrollResolution() {
     return resolutions[this.state.scrollResolutionIdx];
-  }
+  },
 
   getNumMeasures() {
     const numBeats = Math.ceil(this.props.bpm / (60 / this.props.audioData.duration));
     return Math.ceil(numBeats / 4);
-  }
+  },
 
   getMaxOffset() {
     return this.getNumMeasures() * 4 * 24 - 24;
-  }
+  },
 
   getLastNoteOffset() {
     return this.props.songNotes.maxBy((note) => note.totalOffset).totalOffset;
-  }
+  },
 
   handleUpdateScrollResolution(increase) {
     const inc = increase ? 1 : -1;
@@ -250,7 +248,7 @@ class Editor extends React.Component {
       scrollResolutionIdx: nextResIdx,
       offset: nextOffset
     });
-  }
+  },
 
   renderChart() {
     return (
@@ -267,7 +265,7 @@ class Editor extends React.Component {
         fps={this.props.fps}
         colors={editorColors} />
     );
-  }
+  },
 
   renderLoaded() {
     return (
@@ -286,7 +284,7 @@ class Editor extends React.Component {
           playbackRate={this.props.playbackRate} />
       </span>
     );
-  }
+  },
 
   render() {
     return (
@@ -294,8 +292,8 @@ class Editor extends React.Component {
         {this.props.audioData ? this.renderLoaded() : null}
       </div>
     );
-  }
-}
+  },
+});
 
 function select(state, props) {
   const slug = props.params.slug;

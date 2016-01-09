@@ -1,7 +1,11 @@
 import React from 'react';
 import {Button, Modal} from 'react-bootstrap';
 
-class SaveModal extends React.Component {
+const SaveModal = React.createClass({
+  propTypes: {
+    data: React.PropTypes.string.isRequired,
+    onClose: React.PropTypes.func.isRequired,
+  },
 
   // Select all data text on click
   handleClickData() {
@@ -12,7 +16,7 @@ class SaveModal extends React.Component {
     range.selectNodeContents(el);
     selection.removeAllRanges();
     selection.addRange(range);
-  }
+  },
 
   render() {
     return (
@@ -37,12 +41,7 @@ class SaveModal extends React.Component {
         </Modal.Footer>
       </Modal>
     );
-  }
-}
-
-SaveModal.propTypes = {
-  data: React.PropTypes.string.isRequired,
-  onClose: React.PropTypes.func.isRequired,
-};
+  },
+});
 
 export default SaveModal;

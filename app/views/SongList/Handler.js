@@ -3,7 +3,7 @@ import {Link} from 'react-router';
 import _ from 'lodash';
 import {connect} from 'react-redux';
 
-class SongList extends React.Component {
+const SongList = React.createClass({
   renderDifficulties(song) {
     const difficulties = _.map(_.keys(song.data), (key) => {
       return (
@@ -20,7 +20,7 @@ class SongList extends React.Component {
         {difficulties}
       </ul>
     );
-  }
+  },
 
   renderSongs() {
     return this.props.songs.map((song, key) => (
@@ -29,7 +29,7 @@ class SongList extends React.Component {
         {this.renderDifficulties(song)}
       </li>
     )).toList();
-  }
+  },
 
   render() {
     return (
@@ -40,7 +40,7 @@ class SongList extends React.Component {
       </div>
     );
   }
-}
+});
 
 function select(state) {
   return {

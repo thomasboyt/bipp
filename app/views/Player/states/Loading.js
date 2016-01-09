@@ -1,6 +1,6 @@
 import React from 'react';
 
-class Loading extends React.Component {
+const Loading = React.createClass({
   render() {
     return (
       <div className="player-container">
@@ -12,6 +12,6 @@ class Loading extends React.Component {
       </div>
     );
   }
-}
+});
 
 export default Loading;

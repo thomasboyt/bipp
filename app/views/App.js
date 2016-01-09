@@ -1,6 +1,6 @@
 import React from 'react';
 
-class App extends React.Component {
+const App = React.createClass({
   render() {
     return (
       <div className="root">
@@ -8,6 +8,6 @@ class App extends React.Component {
       </div>
     );
   }
-}
+});
 
 export default App;

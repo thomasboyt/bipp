@@ -22,18 +22,16 @@ function serializeData(chartData) {
   return serialized;
 }
 
-class EditorControls extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
+const EditorControls = React.createClass({
+  getInitialState() {
+    return {
       openModal: null
     };
-  }
+  },
 
   requestCloseModal() {
     this.setState({openModal: null});
-  }
+  },
 
   handleSave() {
     const serialized = serializeData(this.props.chartData);
@@ -45,11 +43,11 @@ class EditorControls extends React.Component {
     this.setState({
       openModal: modal
     });
-  }
+  },
 
   handlePlaybackRateChange(val) {
     this.props.dispatch(updateRate(val));
-  }
+  },
 
   render() {
     return (
@@ -67,8 +65,8 @@ class EditorControls extends React.Component {
         {this.state.openModal}
       </Well>
     );
-  }
-}
+  },
+});
 
 function select(state) {
   return {

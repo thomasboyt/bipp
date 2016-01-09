@@ -2,7 +2,7 @@
 
 import React from 'react';
 
-class YouTube extends React.Component {
+const YouTube = React.createClass({
   componentDidMount() {
     const tub = this.refs.tub;
 
@@ -12,7 +12,7 @@ class YouTube extends React.Component {
         onStateChange: (e) => this.onStateChange(e)
       }
     });
-  }
+  },
 
   onPlayerReady(evt) {
     this._player = evt.target;
@@ -21,13 +21,13 @@ class YouTube extends React.Component {
     this._player.playVideo();
 
     window._player = this._player;
-  }
+  },
 
   onStateChange(evt) {
     if (evt.data === YT.PlayerState.PLAYING) {
       this.props.onPlaying();
     }
-  }
+  },
 
   render() {
     let url = `https://www.youtube.com/embed/${this.props.youtubeId}`;
@@ -50,6 +50,6 @@ class YouTube extends React.Component {
         />
     );
   }
-}
+});
 
 export default YouTube;

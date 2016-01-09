@@ -26,14 +26,12 @@ const STATE_LOADED = 'loaded';
 const STATE_PLAYING = 'playing';
 const STATE_DONE = 'done';
 
-class Player extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
+const Player = React.createClass({
+  getInitialState() {
+    return {
       didPlayback: false,
     };
-  }
+  },
 
   componentWillMount() {
     const difficulty = this.props.params.difficulty;
@@ -42,15 +40,15 @@ class Player extends React.Component {
     if (!this.props.audioData) {
       this.props.dispatch(loadAudio(this.props.song));
     }
-  }
+  },
 
   componentWillUnmount() {
     this.props.dispatch(resetPlayback());
-  }
+  },
 
   componentDidMount() {
     ReactDOM.findDOMNode(this).focus();
-  }
+  },
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.inPlayback && !this.props.inPlayback) {
@@ -58,7 +56,7 @@ class Player extends React.Component {
         didPlayback: true
       });
     }
-  }
+  },
 
   getState() {
     // TODO: Replace this with a proper state machine so we can easily go from playing -> done -> playing...
@@ -71,7 +69,7 @@ class Player extends React.Component {
     } else {
       return STATE_LOADING;
     }
-  }
+  },
 
   render() {
     let outlet;
@@ -92,7 +90,7 @@ class Player extends React.Component {
       </GameWrapper>
     );
   }
-}
+});
 
 function select(state, props) {
   const slug = props.params.slug;
