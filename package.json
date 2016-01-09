@@ -64,7 +64,6 @@
     "react-dom": "^0.14.3",
     "react-hotkeys": "git://github.com/thomasboyt/react-hotkeys#fix-map-change",
     "react-immutable-proptypes": "^1.5.1",
-    "react-immutable-render-mixin": "^0.8.1",
     "react-redux": "^4.0.0",
     "react-router": "^1.0.3",
     "redux": "^3.0.4",
