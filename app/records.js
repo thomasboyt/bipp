@@ -8,8 +8,9 @@ import I from 'immutable';
  */
 
 export const Note = I.Record({
-  // Offset, in "24ths", from the start of the beat
-  // e.g.: 0 is a 4th
+  // Offset, in "24ths", from the start of the song
+  // e.g., if it's the first beat:
+  //       0 is a 4th
   //       12 is an 8th
   //       8 and 16 are triplets ("12ths")
   //       6 and 18 are 16ths
