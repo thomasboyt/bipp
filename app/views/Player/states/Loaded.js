@@ -1,8 +1,7 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 
-import {HotKeys} from 'react-hotkeys';
+import HotKeys from '../../lib/GlobalHotKeys';
 
 import {
   enterPlayback,
@@ -20,10 +19,6 @@ const Loaded = React.createClass({
     return {
       beatSpacing: 160,
     };
-  },
-
-  componentDidMount() {
-    ReactDOM.findDOMNode(this).focus();
   },
 
   getHandlers() {
@@ -58,16 +53,17 @@ const Loaded = React.createClass({
     const spd = this.state.beatSpacing / 160;
 
     return (
-      <HotKeys handlers={this.getHandlers()} keyMap={this.getKeyMap()}
-        className="player-container">
-        <div className="help-text-container">
-          <p>
-            Press space to play
-          </p>
-          <p>
-            Speed: {spd}x<br/>
-            (use -/= keys to adjust)
-          </p>
+      <HotKeys handlers={this.getHandlers()} keyMap={this.getKeyMap()}>
+        <div className="player-container">
+          <div className="help-text-container">
+            <p>
+              Press space to play
+            </p>
+            <p>
+              Speed: {spd}x<br/>
+              (use -/= keys to adjust)
+            </p>
+          </div>
         </div>
       </HotKeys>
     );
