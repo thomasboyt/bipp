@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 
 import {
@@ -19,10 +18,25 @@ export const colMap = {
 
 /*
  * Wrapper that handles playing notes during playback
+ *
+ * This uses a different system from the rest of the hotkeys in the app so that we can track the
+ * down/up state of buttons instead of just firing events on trigger. This prevents things like
+ * multiple events being fired for a held-down key, and in the future will allow us to adapt for
+ * hold notes or other weird mechanics.
  */
 const PlaybackWrapper = React.createClass({
+  propTypes: {
+    children: React.PropTypes.element.isRequired,
+  },
+
   componentDidMount() {
-    ReactDOM.findDOMNode(this).focus();
+    document.addEventListener('keydown', this.handleKeyDown);
+    document.addEventListener('keyup', this.handleKeyUp);
+  },
+
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.handleKeyDown);
+    document.removeEventListener('keyup', this.handleKeyUp);
   },
 
   _keysDown: new Set(),
@@ -48,12 +62,7 @@ const PlaybackWrapper = React.createClass({
   },
 
   render() {
-    return (
-      <div onKeyDown={this.handleKeyDown} onKeyUp={this.handleKeyUp} tabIndex="-1"
-        {...this.props} >
-        {this.props.children}
-      </div>
-    );
+    return this.props.children;
   }
 });
 
