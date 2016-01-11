@@ -5,10 +5,7 @@ import { connect } from 'react-redux';
 
 import AudioPlayback from '../lib/AudioPlayback';
 import Chart from '../lib/Chart';
-import {
-  default as PlaybackWrapper,
-  colMap
-} from '../lib/PlaybackWrapper';
+import PlaybackWrapper from '../lib/PlaybackWrapper';
 
 import EditorControls from './components/EditorControls';
 
@@ -32,6 +29,16 @@ import {
 import {
   editorColors
 } from '../../config/constants';
+
+const colMap = {
+  's': 0,
+  'd': 1,
+  'f': 2,
+  'space': 3,
+  'j': 4,
+  'k': 5,
+  'l': 6
+};
 
 const resolutions = [24, 12, 8, 6, 4, 3];
 
