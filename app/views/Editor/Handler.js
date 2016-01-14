@@ -269,7 +269,7 @@ const Editor = React.createClass({
             {this.renderChart()}
           </div>
 
-          <EditorControls flux={this.props.flux} playbackRate={this.props.playbackRate} />
+          <EditorControls playbackRate={this.props.playbackRate} />
 
           <AudioPlayback playing={this.props.inPlayback} playbackOffset={this.props.playbackOffset}
             audioData={this.props.audioData} bpm={this.props.bpm} ctx={audioCtx}
