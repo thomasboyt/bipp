@@ -92,16 +92,18 @@ const Playing = React.createClass({
 
   render() {
     return (
-      <PlaybackWrapper className="player-container">
-        <div className="playfield">
-          {this.renderChart()}
-          {this.renderJudgement()}
-          {this.renderLifeBar()}
-          {this.renderAudio()}
-        </div>
+      <PlaybackWrapper>
+        <div className="player-container">
+          <div className="playfield">
+            {this.renderChart()}
+            {this.renderJudgement()}
+            {this.renderLifeBar()}
+            {this.renderAudio()}
+          </div>
 
-        <div className="character">
-          <img src={this.props.song.img} />
+          <div className="character">
+            <img src={this.props.song.img} />
+          </div>
         </div>
       </PlaybackWrapper>
     );

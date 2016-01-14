@@ -1,6 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import {HotKeys} from 'react-hotkeys';
+import HotKeys from '../lib/GlobalHotKeys';
 import {History} from 'react-router';
 
 import GameWrapper from '../lib/GameWrapper';
@@ -9,10 +8,6 @@ const Attract = React.createClass({
   mixins: [
     History,
   ],
-
-  componentDidMount() {
-    ReactDOM.findDOMNode(this).focus();
-  },
 
   getHandlers() {
     return {
@@ -33,11 +28,12 @@ const Attract = React.createClass({
   render() {
     return (
       <GameWrapper>
-        <HotKeys handlers={this.getHandlers()} keyMap={this.getKeyMap()}
-          className="attract-container">
-          <div className="attract">
-            <h1>Undertune</h1>
-            <p>press space</p>
+        <HotKeys handlers={this.getHandlers()} keyMap={this.getKeyMap()}>
+          <div className="attract-container">
+            <div className="attract">
+              <h1>Undertune</h1>
+              <p>press space</p>
+            </div>
           </div>
         </HotKeys>
       </GameWrapper>

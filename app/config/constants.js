@@ -13,6 +13,28 @@ export const missedJudgement = {
   hp: -6,
 };
 
+// Map keyCodes to columns
+export const keyCodeColMap = {
+  '83': 0,
+  '68': 1,
+  '70': 2,
+  '32': 3,
+  '74': 4,
+  '75': 5,
+  '76': 6
+};
+
+// Map keys (as seen by Mousetrap) to columns
+export const keyColMap = {
+  's': 0,
+  'd': 1,
+  'f': 2,
+  'space': 3,
+  'j': 4,
+  'k': 5,
+  'l': 6
+};
+
 // [fill, stroke]
 const editorColors = {
   color1: ['white', 'black'],

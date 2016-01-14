@@ -1,6 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import {HotKeys} from 'react-hotkeys';
+import HotKeys from '../lib/GlobalHotKeys';
 import { connect } from 'react-redux';
 
 import AudioPlayback from '../lib/AudioPlayback';
@@ -27,18 +26,9 @@ import {
 } from '../../actions/AudioActions';
 
 import {
-  editorColors
+  editorColors,
+  keyColMap as colMap,
 } from '../../config/constants';
-
-const colMap = {
-  's': 0,
-  'd': 1,
-  'f': 2,
-  'space': 3,
-  'j': 4,
-  'k': 5,
-  'l': 6
-};
 
 const resolutions = [24, 12, 8, 6, 4, 3];
 
@@ -70,12 +60,6 @@ const Editor = React.createClass({
 
   componentWillUnmount() {
     this.props.dispatch(resetPlayback());
-  },
-
-  componentDidUpdate(prevProps) {
-    if (prevProps.inPlayback && !this.props.inPlayback) {
-      ReactDOM.findDOMNode(this.refs.hotKeysContainer).focus();
-    }
   },
 
   getKeyMap() {
@@ -279,20 +263,19 @@ const Editor = React.createClass({
 
   renderLoaded() {
     return (
-      <span>
+      <HotKeys handlers={this.getHandlers()} keyMap={this.getKeyMap()}>
         <div className="editor">
-          <HotKeys handlers={this.getHandlers()} keyMap={this.getKeyMap()}
-            className="chart-container" ref="hotKeysContainer">
+          <div className="chart-container">
             {this.renderChart()}
-          </HotKeys>
+          </div>
 
           <EditorControls flux={this.props.flux} playbackRate={this.props.playbackRate} />
-        </div>
 
-        <AudioPlayback playing={this.props.inPlayback} playbackOffset={this.props.playbackOffset}
-          audioData={this.props.audioData} bpm={this.props.bpm} ctx={audioCtx}
-          playbackRate={this.props.playbackRate} />
-      </span>
+          <AudioPlayback playing={this.props.inPlayback} playbackOffset={this.props.playbackOffset}
+            audioData={this.props.audioData} bpm={this.props.bpm} ctx={audioCtx}
+            playbackRate={this.props.playbackRate} />
+        </div>
+      </HotKeys>
     );
   },
 

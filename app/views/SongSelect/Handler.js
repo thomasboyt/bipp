@@ -1,7 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
-import {HotKeys} from 'react-hotkeys';
 import {History, Link} from 'react-router';
 import {connect} from 'react-redux';
 import {createSelector} from 'reselect';
@@ -15,6 +13,7 @@ import audioCtx from '../../audioContext';
 import AudioPlayback from '../lib/AudioPlayback';
 import Arrow from './Arrow';
 import GameWrapper from '../lib/GameWrapper';
+import HotKeys from '../lib/GlobalHotKeys';
 
 import {Song} from '../../records';
 
@@ -47,10 +46,6 @@ const SongSelect = React.createClass({
     if (!this.getAudioData()) {
       this.props.dispatch(loadAudio(this.getCurrentSong()));
     }
-  },
-
-  componentDidMount() {
-    ReactDOM.findDOMNode(this).focus();
   },
 
   getCurrentSong() {
@@ -208,27 +203,28 @@ const SongSelect = React.createClass({
 
     return (
       <GameWrapper>
-        <HotKeys handlers={this.getHandlers()} keyMap={this.getKeyMap()}
-          className="song-list-container">
+        <HotKeys handlers={this.getHandlers()} keyMap={this.getKeyMap()}>
 
-          <div className="arrow-container">
-            {this.state.selectedSongIdx > 0 &&
-              <Arrow onClick={this.handlePrevSong} dir="left" height={60} width={60} />}
+          <div className="song-list-container">
+            <div className="arrow-container">
+              {this.state.selectedSongIdx > 0 &&
+                <Arrow onClick={this.handlePrevSong} dir="left" height={60} width={60} />}
+            </div>
+
+            <ReactCSSTransitionGroup component="div" className={className}
+              transitionName="song-item"
+              transitionEnterTimeout={SONG_TRANSITION_MS}
+              transitionLeaveTimeout={SONG_TRANSITION_MS}>
+              {this.renderCurrentItem()}
+            </ReactCSSTransitionGroup>
+
+            <div className="arrow-container">
+              {this.state.selectedSongIdx < this.props.songs.size - 1 &&
+                <Arrow onClick={this.handleNextSong} dir="right" height={60} width={60} />}
+            </div>
+
+            {this.renderAudio()}
           </div>
-
-          <ReactCSSTransitionGroup component="div" className={className}
-            transitionName="song-item"
-            transitionEnterTimeout={SONG_TRANSITION_MS}
-            transitionLeaveTimeout={SONG_TRANSITION_MS}>
-            {this.renderCurrentItem()}
-          </ReactCSSTransitionGroup>
-
-          <div className="arrow-container">
-            {this.state.selectedSongIdx < this.props.songs.size - 1 &&
-              <Arrow onClick={this.handleNextSong} dir="right" height={60} width={60} />}
-          </div>
-
-          {this.renderAudio()}
 
         </HotKeys>
       </GameWrapper>

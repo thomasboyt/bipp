@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 
 import Loading from './states/Loading';
@@ -44,10 +43,6 @@ const Player = React.createClass({
 
   componentWillUnmount() {
     this.props.dispatch(resetPlayback());
-  },
-
-  componentDidMount() {
-    ReactDOM.findDOMNode(this).focus();
   },
 
   componentWillReceiveProps(nextProps) {
