@@ -54,7 +54,9 @@
   },
   "dependencies": {
     "babel-polyfill": "^6.3.14",
+    "babel-regenerator-runtime": "^6.3.13",
     "bootstrap": "^3.3.4",
+    "core-js": "^2.0.3",
     "history": "^1.17.0",
     "immutable": "^3.7.3",
     "lodash": "^3.9.1",
