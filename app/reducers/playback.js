@@ -208,6 +208,7 @@ const playbackReducer = createImmutableReducer(initialState, {
     return new PlaybackState({
       notes,
       bpm,
+      playbackRate,
 
       inPlayback: true,
       playbackOffset: offsetWithStartPadding,
