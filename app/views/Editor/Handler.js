@@ -26,18 +26,9 @@ import {
 } from '../../actions/AudioActions';
 
 import {
-  editorColors
+  editorColors,
+  keyColMap as colMap,
 } from '../../config/constants';
-
-const colMap = {
-  's': 0,
-  'd': 1,
-  'f': 2,
-  'space': 3,
-  'j': 4,
-  'k': 5,
-  'l': 6
-};
 
 const resolutions = [24, 12, 8, 6, 4, 3];
 

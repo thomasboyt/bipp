@@ -5,16 +5,7 @@ import {
   playNote,
 } from '../../actions/PlaybackActions';
 
-// Map keyCodes to columns
-export const colMap = {
-  '83': 0,
-  '68': 1,
-  '70': 2,
-  '32': 3,
-  '74': 4,
-  '75': 5,
-  '76': 6
-};
+import {keyCodeColMap as colMap} from '../../config/constants';
 
 /*
  * Wrapper that handles playing notes during playback
