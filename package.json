@@ -61,6 +61,9 @@
     "react-addons-css-transition-group": "^0.14.6",
     "react-bootstrap": "^0.28.1",
     "react-immutable-proptypes": "^1.5.1",
+    "redux-devtools-dock-monitor": "^1.0.1",
+    "redux-devtools-filter-actions": "^1.0.1",
+    "redux-devtools-log-monitor": "^1.0.2",
     "redux-thunk": "^1.0.0",
     "reselect": "^2.0.1",
     "slug": "^0.9.1"
