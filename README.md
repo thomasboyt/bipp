@@ -23,7 +23,7 @@ Navigate to `localhost:8080/songs-list` and you should be in business. I recomme
 ### Test
 
 ```
-npm run-script karma
+npm run-script watch-test
 ```
 
 Will run tests in Chrome.

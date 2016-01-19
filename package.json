@@ -7,8 +7,11 @@
   "license": "MIT",
   "scripts": {
     "test": "earthling test --single-run",
+    "ci": "earthling test --single-run --browsers Firefox",
+    "watch-test": "earthling test",
     "lint": "eslint app/",
-    "ci": "earthling test --single-run --browsers Firefox"
+    "dev": "earthling serve --hot",
+    "prod": "earthling build"
   },
   "devDependencies": {
     "babel-eslint": "^5.0.0-beta6",
