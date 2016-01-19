@@ -4,7 +4,7 @@ import React from 'react';
 import {renderIntoDocument} from 'react-addons-test-utils';
 import {Provider} from 'react-redux';
 import Mousetrap from 'mousetrap';
-import createStore from '../../../store';
+import {createStore} from 'earthling';
 import {loadSongs} from '../../../actions/SongActions';
 import {loadSong, toggleNote} from '../../../actions/ChartActions';
 
