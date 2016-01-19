@@ -22,6 +22,7 @@
     "babel-preset-react": "^6.3.13",
     "babel-preset-react-hmre": "^1.0.1",
     "css-loader": "^0.13.1",
+    "earthling": "0.0.2",
     "eslint": "^1.10.3",
     "eslint-plugin-react": "^2.3.0",
     "expect": "^1.13.2",
