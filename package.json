@@ -6,9 +6,9 @@
   "author": "",
   "license": "MIT",
   "scripts": {
-    "test": "karma start --single-run",
+    "test": "earthling test --single-run",
     "lint": "eslint app/",
-    "ci": "earthling --single-run --browsers Firefox"
+    "ci": "earthling test --single-run --browsers Firefox"
   },
   "devDependencies": {
     "babel-core": "^6.3.17",
