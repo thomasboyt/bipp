@@ -9,11 +9,14 @@ notifications:
 # see https://docs.travis-ci.com/user/workers/container-based-infrastructure/#Routing-your-build-to-container-based-infrastructure
 sudo: false
 
+install:
+  - npm install -g npm@^3
+  - npm install
+
 # enable firefox
 before_script:
   - export DISPLAY=:99.0
   - sh -e /etc/init.d/xvfb start
-  - npm install npm@^3
 
 script:
   # --silent surpresses that big ol' NPM script error
