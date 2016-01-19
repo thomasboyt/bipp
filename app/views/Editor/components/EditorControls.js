@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 
 import {Button, Well} from 'react-bootstrap';
 import SaveModal from './SaveModal';
-import BlurInput from '../../../../vendor/BlurInput';
+import BlurInput from '../../../vendor/BlurInput';
 
 import {
   updateRate
